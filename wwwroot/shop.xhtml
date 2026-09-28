@@ -1,0 +1,544 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+
+    <meta charset="UTF-8" />
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    />
+
+    <title>Shop | StrideX Sports</title>
+
+    <link
+        rel="stylesheet"
+        type="text/css"
+        href="css/style.css"
+    />
+
+</head>
+
+
+<body>
+
+
+    <!-- HEADER -->
+
+    <header class="site-header">
+
+        <div class="header-top">
+
+            <div class="logo">
+
+                <a href="index.html">
+
+                    <img
+                        src="images/stridex-logo.jpeg"
+                        alt="StrideX Sports Logo"
+                    />
+
+                </a>
+
+            </div>
+
+
+            <form
+                class="header-search"
+                action="shop.xhtml"
+                method="get"
+            >
+
+                <input
+                    id="shopSearch"
+                    type="text"
+                    name="search"
+                    placeholder="Search products, brands or sports..."
+                />
+
+                <button type="submit">
+                    Search
+                </button>
+
+            </form>
+
+
+            <div class="header-actions">
+
+                <a
+                    href="account.html"
+                    class="header-action"
+                >
+
+                    <span class="action-icon">
+                        &#128100;
+                    </span>
+
+                    <span>
+                        Account
+                    </span>
+
+                </a>
+                <a href="orders.html" class="header-action">
+    <span class="action-icon">&#128230;</span>
+    <span>My Orders</span>
+</a>
+
+
+                <a
+                    href="cart.html"
+                    class="header-action cart-action"
+                >
+
+                    <span class="action-icon">
+                        &#128722;
+                    </span>
+
+                    <span>
+                        Cart
+                    </span>
+
+                    <span
+                        class="cart-count"
+                        id="cartCount"
+                    >
+                        0
+                    </span>
+
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <nav class="main-nav">
+
+            <a href="index.html">
+                Home
+            </a>
+
+            <a
+                href="shop.xhtml"
+                class="active-nav"
+            >
+                Shop
+            </a>
+
+            <a href="shop.xhtml?sport=soccer">
+                Soccer
+            </a>
+
+            <a href="shop.xhtml?sport=rugby">
+                Rugby
+            </a>
+
+            <a href="shop.xhtml?sport=cycling">
+                Cycling
+            </a>
+
+            <a href="shop.xhtml?sport=tennis">
+                Tennis
+            </a>
+
+            <a href="custom-kit.xhtml">
+                Custom Kit
+            </a>
+
+        </nav>
+
+    </header>
+
+
+    <!-- SHOP HERO -->
+
+    <section class="shop-header">
+
+        <p class="shop-page-label">
+            STRIDEX STORE
+        </p>
+
+        <h1>
+            Find Your Gear
+        </h1>
+
+        <p>
+            Shop StrideX originals and selected performance
+            brands across all five of our sports.
+        </p>
+
+    </section>
+
+
+    <!-- SHOP AREA -->
+
+    <section class="shop-layout">
+
+
+        <!-- FILTER SIDEBAR -->
+
+        <aside class="shop-filters">
+
+            <div class="filter-heading">
+
+                <h2>
+                    Filters
+                </h2>
+
+                <button
+                    type="button"
+                    id="clearFilters"
+                    class="clear-filter-btn"
+                >
+                    Clear All
+                </button>
+
+            </div>
+
+
+            <!-- SPORT FILTERS -->
+
+            <div class="filter-group">
+
+                <h3>
+                    Sport
+                </h3>
+
+                <label>
+                    <input
+                        type="checkbox"
+                        class="filter-checkbox"
+                        data-filter-type="sport"
+                        value="soccer"
+                    />
+                    Soccer
+                </label>
+
+                <label>
+                    <input
+                        type="checkbox"
+                        class="filter-checkbox"
+                        data-filter-type="sport"
+                        value="rugby"
+                    />
+                    Rugby
+                </label>
+
+                <label>
+                    <input
+                        type="checkbox"
+                        class="filter-checkbox"
+                        data-filter-type="sport"
+                        value="cycling"
+                    />
+                    Cycling
+                </label>
+
+                <label>
+                    <input
+                        type="checkbox"
+                        class="filter-checkbox"
+                        data-filter-type="sport"
+                        value="tennis"
+                    />
+                    Tennis
+                </label>
+
+            </div>
+
+
+            <!-- BRAND FILTERS -->
+
+            <div class="filter-group">
+
+                <h3>
+                    Brand
+                </h3>
+
+                <label>
+                    <input
+                        type="checkbox"
+                        class="filter-checkbox"
+                        data-filter-type="brand"
+                        value="stridex"
+                    />
+                    StrideX
+                </label>
+
+                <label>
+                    <input
+                        type="checkbox"
+                        class="filter-checkbox"
+                        data-filter-type="brand"
+                        value="nike"
+                    />
+                    Nike
+                </label>
+
+                <label>
+                    <input
+                        type="checkbox"
+                        class="filter-checkbox"
+                        data-filter-type="brand"
+                        value="adidas"
+                    />
+                    Adidas
+                </label>
+
+                <label>
+                    <input
+                        type="checkbox"
+                        class="filter-checkbox"
+                        data-filter-type="brand"
+                        value="puma"
+                    />
+                    Puma
+                </label>
+
+            </div>
+
+
+            <!-- CATEGORY FILTERS -->
+
+            <div class="filter-group">
+
+                <h3>
+                    Category
+                </h3>
+
+                <label>
+                    <input
+                        type="checkbox"
+                        class="filter-checkbox"
+                        data-filter-type="category"
+                        value="footwear"
+                    />
+                    Footwear
+                </label>
+
+                <label>
+                    <input
+                        type="checkbox"
+                        class="filter-checkbox"
+                        data-filter-type="category"
+                        value="apparel"
+                    />
+                    Apparel
+                </label>
+
+                <label>
+                    <input
+                        type="checkbox"
+                        class="filter-checkbox"
+                        data-filter-type="category"
+                        value="equipment"
+                    />
+                    Equipment
+                </label>
+
+                <label>
+                    <input
+                        type="checkbox"
+                        class="filter-checkbox"
+                        data-filter-type="category"
+                        value="accessories"
+                    />
+                    Accessories
+                </label>
+
+            </div>
+
+        </aside>
+
+
+        <!-- PRODUCTS -->
+
+        <main class="shop-products">
+
+            <div class="shop-toolbar">
+
+                <div>
+
+                    <h2>
+                        All Products
+                    </h2>
+
+                    <p
+                        class="product-results"
+                        id="productResults"
+                    >
+                        46 products
+                    </p>
+
+                </div>
+
+
+                <select id="sortProducts">
+
+                    <option value="default">
+                        Sort By
+                    </option>
+
+                    <option value="low-high">
+                        Price: Low to High
+                    </option>
+
+                    <option value="high-low">
+                        Price: High to Low
+                    </option>
+
+                    <option value="name">
+                        Name: A to Z
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- PRODUCT GRID -->
+
+            <div
+                class="shop-product-grid"
+                id="productGrid"
+            >
+                <!-- Product cards are created automatically by js/shop.js -->
+            </div>
+
+
+            <!-- NO PRODUCTS MESSAGE -->
+
+            <div
+                id="noProducts"
+                class="no-products"
+            >
+
+                <h3>
+                    No products found
+                </h3>
+
+                <p>
+                    Try changing your filters or search.
+                </p>
+
+            </div>
+
+        </main>
+
+    </section>
+
+
+    <!-- FOOTER -->
+
+    <footer class="site-footer">
+
+        <div class="footer-grid footer-grid-large">
+
+            <div class="footer-brand">
+
+                <img
+                    src="images/stridex-logo.jpeg"
+                    alt="StrideX Sports Logo"
+                />
+
+                <p>
+                    Performance gear for every move.
+                    Shop StrideX originals and selected sports brands
+                    across Soccer, Rugby, Cycling and Tennis.
+                </p>
+
+            </div>
+
+
+            <div class="footer-column">
+
+                <h3>
+                    Shop
+                </h3>
+
+                <a href="shop.xhtml">Shop All</a>
+                <a href="shop.xhtml?sport=soccer">Soccer</a>
+                <a href="shop.xhtml?sport=rugby">Rugby</a>
+                <a href="shop.xhtml?sport=cycling">Cycling</a>
+                <a href="shop.xhtml?sport=tennis">Tennis</a>
+
+            </div>
+
+
+            <div class="footer-column">
+
+                <h3>
+                    StrideX
+                </h3>
+
+                <a href="#">About Us</a>
+                <a href="custom-kit.xhtml">Custom Teamwear</a>
+                <a href="#">New Arrivals</a>
+                <a href="#">Brands</a>
+                <a href="#">Contact</a>
+
+            </div>
+
+
+            <div class="footer-column">
+
+                <h3>
+                    Customer Support
+                </h3>
+
+                <a href="#">My Account</a>
+                <a href="#">Track My Order</a>
+                <a href="#">Delivery Information</a>
+                <a href="#">Returns</a>
+                <a href="#">FAQs</a>
+
+            </div>
+
+
+            <div class="footer-column">
+
+                <h3>
+                    Contact
+                </h3>
+
+                <p>
+                    Email: info@stridexsports.co.za
+                </p>
+
+                <p>
+                    Phone: 012 555 0147
+                </p>
+
+                <p>
+                    South Africa
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="footer-bottom">
+
+            <p>
+                &#169; 2026 StrideX Sports. Every Move Matters.
+            </p>
+
+        </div>
+
+    </footer>
+
+
+    <!-- SHOP JAVASCRIPT -->
+
+    <script
+        type="text/javascript"
+        src="js/shop.js"
+    ></script>
+
+</body>
+
+</html>

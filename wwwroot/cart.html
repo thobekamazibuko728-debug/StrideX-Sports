@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>My Cart | StrideX</title>
+
+    <link
+        rel="stylesheet"
+        type="text/css"
+        href="css/style.css"
+    >
+
+    <style>
+        .cart-page {
+            min-height: 650px;
+            padding: 70px 6%;
+            background: #f7f7f7;
+            color: #111111;
+        }
+
+        .cart-container {
+            width: 100%;
+            max-width: 1250px;
+            margin: 0 auto;
+        }
+
+        .cart-page-heading {
+            margin-bottom: 35px;
+        }
+
+        .cart-page-heading h1 {
+            margin: 0 0 10px;
+            color: #111111;
+            font-size: 38px;
+        }
+
+        .cart-page-heading p {
+            color: #666666;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .cart-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 330px;
+            gap: 28px;
+            align-items: start;
+        }
+
+        .cart-items {
+            display: grid;
+            gap: 18px;
+        }
+
+        .cart-item {
+            display: flex;
+            gap: 22px;
+            padding: 20px;
+            background: #ffffff;
+            border: 1px solid #e3e3e3;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+        }
+
+        .cart-item img {
+            width: 135px;
+            height: 135px;
+            flex-shrink: 0;
+            object-fit: contain;
+            padding: 8px;
+            background: #ffffff;
+            border: 1px solid #eeeeee;
+            border-radius: 12px;
+        }
+
+        .item-details {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .item-details h2 {
+            margin: 0 0 12px;
+            color: #111111;
+            font-size: 20px;
+        }
+
+        .item-details p {
+            margin: 7px 0;
+            color: #666666;
+            font-size: 14px;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .quantity-button {
+            width: 36px;
+            height: 36px;
+            border: 1px solid #d3d3d3;
+            border-radius: 7px;
+            background: #ffffff;
+            color: #111111;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .quantity-button:hover {
+            color: #ffffff;
+            background: #7c3aed;
+            border-color: #7c3aed;
+        }
+
+        .quantity-button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .quantity-number {
+            min-width: 30px;
+            text-align: center;
+            color: #111111;
+            font-weight: bold;
+        }
+
+        .remove-button {
+            margin-top: 14px;
+            padding: 10px 15px;
+            color: #a12638;
+            background: #fde9ec;
+            border: 1px solid #f5c7ce;
+            border-radius: 7px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .remove-button:hover {
+            color: #ffffff;
+            background: #a12638;
+            border-color: #a12638;
+        }
+
+        .remove-button:disabled {
+            opacity: 0.5;
+            cursor: wait;
+        }
+
+        .item-total {
+            margin-top: 16px;
+            color: #7c3aed;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .summary {
+            position: sticky;
+            top: 20px;
+            padding: 27px;
+            background: #ffffff;
+            border: 1px solid #e3e3e3;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+        }
+
+        .summary h2 {
+            margin: 0 0 22px;
+            color: #111111;
+            font-size: 24px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin: 18px 0;
+            color: #555555;
+        }
+
+        .summary-total {
+            padding-top: 20px;
+            border-top: 1px solid #dddddd;
+            color: #111111;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .summary-total strong {
+            color: #7c3aed;
+        }
+
+        .summary-note {
+            margin-top: 18px;
+            color: #777777;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .cart-button {
+            display: block;
+            width: 100%;
+            margin-top: 18px;
+            padding: 14px;
+            color: #ffffff;
+            background: #7c3aed;
+            border: none;
+            border-radius: 7px;
+            text-align: center;
+            text-decoration: none;
+            font: inherit;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .cart-button:hover {
+            background: #5b21b6;
+        }
+
+        .cart-button:disabled {
+            opacity: 0.6;
+            cursor: wait;
+        }
+
+        .secondary-button {
+            background: #111111;
+        }
+
+        .secondary-button:hover {
+            background: #333333;
+        }
+
+        .empty-cart {
+            padding: 65px 30px;
+            text-align: center;
+            background: #ffffff;
+            border: 1px solid #e3e3e3;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+        }
+
+        .empty-cart h2 {
+            margin-bottom: 12px;
+            color: #111111;
+            font-size: 27px;
+        }
+
+        .empty-cart p {
+            color: #666666;
+        }
+
+        .empty-cart .cart-button {
+            max-width: 240px;
+            margin: 25px auto 0;
+        }
+
+        #status {
+            margin: 20px 0;
+            color: #666666;
+            line-height: 1.6;
+        }
+
+        #status a {
+            color: #7c3aed;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        #status a:hover {
+            text-decoration: underline;
+        }
+
+        [hidden] {
+            display: none !important;
+        }
+
+        @media screen and (max-width: 850px) {
+            .cart-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .summary {
+                position: static;
+            }
+        }
+
+        @media screen and (max-width: 600px) {
+            .cart-page {
+                padding: 45px 18px;
+            }
+
+            .cart-item {
+                align-items: flex-start;
+                gap: 15px;
+                padding: 16px;
+            }
+
+            .cart-item img {
+                width: 100px;
+                height: 100px;
+            }
+
+            .item-details h2 {
+                font-size: 17px;
+            }
+
+            .cart-page-heading h1 {
+                font-size: 32px;
+            }
+        }
+
+        @media screen and (max-width: 430px) {
+            .cart-item {
+                flex-direction: column;
+            }
+
+            .cart-item img {
+                width: 100%;
+                height: 180px;
+            }
+        }
+    </style>
+</head>
+
+
+<body>
+
+    <!-- HEADER -->
+
+    <header class="site-header">
+
+        <div class="header-top">
+
+            <div class="logo">
+                <a href="index.html">
+                    <img
+                        src="images/stridex-logo.jpeg"
+                        alt="StrideX Sports Logo"
+                    >
+                </a>
+            </div>
+
+
+            <form
+                class="header-search"
+                action="shop.xhtml"
+                method="get"
+            >
+                <input
+                    type="text"
+                    name="search"
+                    placeholder="Search products, brands or sports..."
+                >
+
+                <button type="submit">
+                    Search
+                </button>
+            </form>
+
+
+            <div class="header-actions">
+
+                <a
+                    href="account.html"
+                    class="header-action"
+                >
+                    <span class="action-icon">
+                        &#128100;
+                    </span>
+
+                    <span>
+                        Account
+                    </span>
+                </a>
+                <a
+    href="orders.html"
+    class="header-action"
+>
+    <span class="action-icon">
+        &#128230;
+    </span>
+
+    <span>
+        My Orders
+    </span>
+</a>
+
+
+                <a
+                    href="cart.html"
+                    class="header-action cart-action"
+                >
+                    <span class="action-icon">
+                        &#128722;
+                    </span>
+
+                    <span>
+                        Cart
+                    </span>
+
+                    <span
+                        class="cart-count"
+                        id="headerCartCount"
+                    >
+                        0
+                    </span>
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <nav class="main-nav">
+
+            <a href="index.html">
+                Home
+            </a>
+
+            <a href="shop.xhtml">
+                Shop
+            </a>
+
+            <a href="shop.xhtml?sport=soccer">
+                Soccer
+            </a>
+
+            <a href="shop.xhtml?sport=rugby">
+                Rugby
+            </a>
+
+            <a href="shop.xhtml?sport=tennis">
+                Tennis
+            </a>
+
+            <a href="shop.xhtml?sport=cycling">
+                Cycling
+            </a>
+
+            <a href="custom-kit.xhtml">
+                Custom Kit
+            </a>
+
+        </nav>
+
+    </header>
+
+
+    <!-- CART PAGE -->
+
+    <main class="cart-page">
+
+        <div class="cart-container">
+
+            <div class="cart-page-heading">
+
+                <h1>
+                    My Cart
+                </h1>
+
+                <p>
+                    Review the products you've added to StrideX.
+                </p>
+
+            </div>
+
+
+            <p id="status">
+                Loading your cart...
+            </p>
+
+
+            <!-- CART WITH ITEMS -->
+
+            <section
+                id="cartLayout"
+                class="cart-layout"
+                hidden
+            >
+
+                <div
+                    id="cartItems"
+                    class="cart-items"
+                ></div>
+
+
+                <aside
+                    id="cartSummary"
+                    class="summary"
+                >
+
+                    <h2>
+                        Order Summary
+                    </h2>
+
+
+                    <div class="summary-row">
+
+                        <span>
+                            Items
+                        </span>
+
+                        <strong id="itemCount">
+                            0
+                        </strong>
+
+                    </div>
+
+
+                    <div
+                        class="summary-row summary-total"
+                    >
+
+                        <span>
+                            Total
+                        </span>
+
+                        <strong id="cartTotal">
+                            R0.00
+                        </strong>
+
+                    </div>
+
+
+                    <!-- PLACE ORDER -->
+
+                    <a
+    class="cart-button"
+    href="checkout.html"
+>
+    Proceed to Checkout
+</a>
+
+
+                    <a
+                        class="cart-button secondary-button"
+                        href="shop.xhtml"
+                    >
+                        Continue Shopping
+                    </a>
+
+
+                </aside>
+
+            </section>
+
+
+            <!-- EMPTY CART -->
+
+            <section
+                id="emptyCart"
+                class="empty-cart"
+                hidden
+            >
+
+                <h2>
+                    Your cart is empty
+                </h2>
+
+                <p>
+                    Find something you love and make every move matter.
+                </p>
+
+
+                <a
+                    class="cart-button"
+                    href="shop.xhtml"
+                >
+                    Browse Products
+                </a>
+
+            </section>
+
+        </div>
+
+    </main>
+
+
+    <script>
+
+        const API_BASE = "";
+
+
+        const statusText =
+            document.getElementById(
+                "status"
+            );
+
+
+        const cartLayout =
+            document.getElementById(
+                "cartLayout"
+            );
+
+
+        const cartItems =
+            document.getElementById(
+                "cartItems"
+            );
+
+
+        const emptyCart =
+            document.getElementById(
+                "emptyCart"
+            );
+
+
+        const headerCartCount =
+            document.getElementById(
+                "headerCartCount"
+            );
+
+
+
+
+        // =====================================================
+        // FORMAT PRICE
+        // =====================================================
+
+        function formatPrice(amount) {
+
+            return (
+                "R" +
+                Number(amount)
+                    .toLocaleString(
+                        "en-ZA",
+                        {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        }
+                    )
+            );
+        }
+
+
+        // =====================================================
+        // PRODUCT DETAIL TEXT
+        // =====================================================
+
+        function addDetail(
+            parent,
+            text
+        ) {
+
+            const paragraph =
+                document.createElement(
+                    "p"
+                );
+
+
+            paragraph.textContent =
+                text;
+
+
+            parent.appendChild(
+                paragraph
+            );
+        }
+
+
+        // =====================================================
+        // UPDATE QUANTITY
+        // =====================================================
+
+        async function updateCartQuantity(
+            cartItemId,
+            quantity
+        ) {
+
+            const response =
+                await fetch(
+                    API_BASE +
+                    "/api/cart/items/" +
+                    cartItemId,
+                    {
+                        method:
+                            "PUT",
+
+                        credentials:
+                            "include",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify(
+                                {
+                                    quantity:
+                                        quantity
+                                }
+                            )
+                    }
+                );
+
+
+            const result =
+                await response
+                    .json()
+                    .catch(
+                        () => ({})
+                    );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    result.message ||
+                    "Could not update the cart quantity."
+                );
+            }
+
+
+            await loadCart();
+        }
+
+
+        // =====================================================
+        // REMOVE ITEM
+        // =====================================================
+
+        async function removeCartItem(
+            cartItemId
+        ) {
+
+            const response =
+                await fetch(
+                    API_BASE +
+                    "/api/cart/items/" +
+                    cartItemId,
+                    {
+                        method:
+                            "DELETE",
+
+                        credentials:
+                            "include"
+                    }
+                );
+
+
+            const result =
+                await response
+                    .json()
+                    .catch(
+                        () => ({})
+                    );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    result.message ||
+                    "Could not remove this product."
+                );
+            }
+
+
+            await loadCart();
+        }
+
+
+        // =====================================================
+        // CREATE CART ITEM
+        // =====================================================
+
+        function createCartItem(item) {
+
+            const card =
+                document.createElement(
+                    "article"
+                );
+
+
+            card.className =
+                "cart-item";
+
+
+            const image =
+                document.createElement(
+                    "img"
+                );
+
+
+            image.src =
+                item.image || "";
+
+
+            image.alt =
+                item.name;
+
+
+            const details =
+                document.createElement(
+                    "div"
+                );
+
+
+            details.className =
+                "item-details";
+
+
+            const name =
+                document.createElement(
+                    "h2"
+                );
+
+
+            name.textContent =
+                item.name;
+
+
+            details.appendChild(
+                name
+            );
+
+
+            addDetail(
+                details,
+                "Size: " +
+                item.size
+            );
+
+
+            addDetail(
+                details,
+                "Price: " +
+                formatPrice(
+                    item.price
+                )
+            );
+
+
+            // QUANTITY CONTROLS
+
+            const quantityControls =
+                document.createElement(
+                    "div"
+                );
+
+
+            quantityControls.className =
+                "quantity-controls";
+
+
+            const decreaseButton =
+                document.createElement(
+                    "button"
+                );
+
+
+            decreaseButton.type =
+                "button";
+
+
+            decreaseButton.className =
+                "quantity-button";
+
+
+            decreaseButton.textContent =
+                "−";
+
+
+            decreaseButton.disabled =
+                item.quantity <= 1;
+
+
+            const quantityNumber =
+                document.createElement(
+                    "span"
+                );
+
+
+            quantityNumber.className =
+                "quantity-number";
+
+
+            quantityNumber.textContent =
+                item.quantity;
+
+
+            const increaseButton =
+                document.createElement(
+                    "button"
+                );
+
+
+            increaseButton.type =
+                "button";
+
+
+            increaseButton.className =
+                "quantity-button";
+
+
+            increaseButton.textContent =
+                "+";
+
+
+            decreaseButton.addEventListener(
+                "click",
+                async () => {
+
+                    decreaseButton.disabled =
+                        true;
+
+
+                    increaseButton.disabled =
+                        true;
+
+
+                    try {
+
+                        await updateCartQuantity(
+                            item.cartItemId,
+                            item.quantity - 1
+                        );
+
+                    } catch (error) {
+
+                        alert(
+                            error.message
+                        );
+                    }
+                }
+            );
+
+
+            increaseButton.addEventListener(
+                "click",
+                async () => {
+
+                    decreaseButton.disabled =
+                        true;
+
+
+                    increaseButton.disabled =
+                        true;
+
+
+                    try {
+
+                        await updateCartQuantity(
+                            item.cartItemId,
+                            item.quantity + 1
+                        );
+
+                    } catch (error) {
+
+                        alert(
+                            error.message
+                        );
+                    }
+                }
+            );
+
+
+            quantityControls.appendChild(
+                decreaseButton
+            );
+
+
+            quantityControls.appendChild(
+                quantityNumber
+            );
+
+
+            quantityControls.appendChild(
+                increaseButton
+            );
+
+
+            details.appendChild(
+                quantityControls
+            );
+
+
+            // REMOVE BUTTON
+
+            const removeButton =
+                document.createElement(
+                    "button"
+                );
+
+
+            removeButton.type =
+                "button";
+
+
+            removeButton.className =
+                "remove-button";
+
+
+            removeButton.textContent =
+                "Remove";
+
+
+            removeButton.addEventListener(
+                "click",
+                async () => {
+
+                    const confirmed =
+                        confirm(
+                            "Remove this product from your cart?"
+                        );
+
+
+                    if (!confirmed) {
+                        return;
+                    }
+
+
+                    removeButton.disabled =
+                        true;
+
+
+                    try {
+
+                        await removeCartItem(
+                            item.cartItemId
+                        );
+
+                    } catch (error) {
+
+                        alert(
+                            error.message
+                        );
+
+
+                        removeButton.disabled =
+                            false;
+                    }
+                }
+            );
+
+
+            details.appendChild(
+                removeButton
+            );
+
+
+            // LINE TOTAL
+
+            const lineTotal =
+                document.createElement(
+                    "div"
+                );
+
+
+            lineTotal.className =
+                "item-total";
+
+
+            lineTotal.textContent =
+                formatPrice(
+                    item.lineTotal
+                );
+
+
+            details.appendChild(
+                lineTotal
+            );
+
+
+            card.appendChild(
+                image
+            );
+
+
+            card.appendChild(
+                details
+            );
+
+
+            return card;
+        }
+
+
+        // =====================================================
+        // LOAD CART
+        // =====================================================
+
+        async function loadCart() {
+
+            try {
+
+                statusText.hidden =
+                    false;
+
+
+                statusText.textContent =
+                    "Loading your cart...";
+
+
+                cartLayout.hidden =
+                    true;
+
+
+                emptyCart.hidden =
+                    true;
+
+
+                const response =
+                    await fetch(
+                        API_BASE +
+                        "/api/cart",
+                        {
+                            credentials:
+                                "include"
+                        }
+                    );
+
+
+                if (
+                    response.status ===
+                    401
+                ) {
+
+                    headerCartCount.textContent =
+                        "0";
+
+
+                    statusText.textContent =
+                        "Please log in to view your cart.";
+
+
+                    const loginLink =
+                        document.createElement(
+                            "a"
+                        );
+
+
+                    loginLink.href =
+                        "account.html";
+
+
+                    loginLink.textContent =
+                        " Go to Login";
+
+
+                    statusText.appendChild(
+                        loginLink
+                    );
+
+
+                    return;
+                }
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Could not load your cart. Please try again."
+                    );
+                }
+
+
+                const cart =
+                    await response.json();
+
+
+                headerCartCount.textContent =
+                    cart.itemCount || 0;
+
+
+                statusText.hidden =
+                    true;
+
+
+                // EMPTY
+
+                if (
+                    !cart.items ||
+                    cart.items.length === 0
+                ) {
+
+                    cartItems.replaceChildren();
+
+                    headerCartCount.textContent =
+                        "0";
+
+
+                    emptyCart.hidden =
+                        false;
+
+
+                    return;
+                }
+
+
+                // HAS PRODUCTS
+
+                cartItems.replaceChildren();
+
+
+                cart.items.forEach(
+                    item => {
+
+                        cartItems.appendChild(
+                            createCartItem(
+                                item
+                            )
+                        );
+                    }
+                );
+
+
+                document.getElementById(
+                    "itemCount"
+                ).textContent =
+                    cart.itemCount;
+
+
+                document.getElementById(
+                    "cartTotal"
+                ).textContent =
+                    formatPrice(
+                        cart.total
+                    );
+
+
+                cartLayout.hidden =
+                    false;
+
+
+            } catch (error) {
+
+                headerCartCount.textContent =
+                    "0";
+
+
+                statusText.hidden =
+                    false;
+
+
+                statusText.textContent =
+                    error.message ||
+                    "Could not connect to the StrideX backend.";
+            }
+        }
+
+
+
+
+
+
+
+        // =====================================================
+        // START
+        // =====================================================
+
+        loadCart();
+
+    </script>
+
+</body>
+
+</html>

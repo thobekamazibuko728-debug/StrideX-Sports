@@ -1,0 +1,1397 @@
+document.addEventListener("DOMContentLoaded", function () {
+
+    // STRIDEX SHOP: Soccer, Rugby, Tennis and Cycling.
+    // Each item is:
+    // [id, name, brand, category, type, price, colour, image]
+
+    const productGrid = document.getElementById("productGrid");
+
+    const checkboxes = Array.from(
+        document.querySelectorAll(".filter-checkbox")
+    );
+
+    const sortSelect = document.getElementById("sortProducts");
+    const clearButton = document.getElementById("clearFilters");
+    const resultText = document.getElementById("productResults");
+    const noProducts = document.getElementById("noProducts");
+    const searchInput = document.getElementById("shopSearch");
+    const cartCount = document.getElementById("cartCount");
+
+    let searchTerm = "";
+
+    const productData = [];
+
+
+    /* =====================================================
+       ADD PRODUCTS TO CATALOGUE
+       ===================================================== */
+
+    function addProducts(rows, sport, sharedSports) {
+
+        rows.forEach(function (p) {
+
+            productData.push({
+                id: p[0],
+                name: p[1],
+                brand: p[2],
+                sport: sport,
+                sports: sharedSports || [sport],
+                category: p[3],
+                type: p[4],
+                price: p[5],
+                colour: p[6],
+                badge: p[2].toUpperCase(),
+                image: p[7]
+            });
+
+        });
+
+    }
+
+
+    /* =====================================================
+       SOCCER + RUGBY SHARED BOOTS
+       ===================================================== */
+
+    addProducts([
+
+        [
+            "stridex-velocity",
+            "StrideX Velocity FG",
+            "stridex",
+            "footwear",
+            "Boots",
+            1299.99,
+            "Black / White",
+            "images/soccer/footwear/stridex/velocity-blackwhite/stridex-velocity-blackwhite-1.png"
+        ],
+
+        [
+            "stridex-phantom",
+            "StrideX Phantom Purple FG",
+            "stridex",
+            "footwear",
+            "Boots",
+            1399.99,
+            "Black / Purple",
+            "images/soccer/footwear/stridex/phantom-purple/stridex-phantom-purple-2.png"
+        ],
+
+        [
+            "stridex-blaze",
+            "StrideX Blaze Red FG",
+            "stridex",
+            "footwear",
+            "Boots",
+            1449.99,
+            "Red / Black",
+            "images/soccer/footwear/stridex/stridex-blaze-red/stridex-blaze-red-1.png"
+        ],
+
+        [
+            "stridex-volt",
+            "StrideX Volt Green FG",
+            "stridex",
+            "footwear",
+            "Boots",
+            1399.99,
+            "Black / Green",
+            "images/soccer/footwear/stridex/stridex-volt-green/stridex-volt-green-1.png"
+        ],
+
+        [
+            "nike-mercurial-pink",
+            "Nike Mercurial Vapor Pink FG",
+            "nike",
+            "footwear",
+            "Boots",
+            1899.99,
+            "Pink / Purple",
+            "images/soccer/footwear/nike/mercurial-vapor-pink/nike-mercurial-vapor-pink-1.png"
+        ],
+
+        [
+            "nike-mercurial-red",
+            "Nike Mercurial Vapor Red FG",
+            "nike",
+            "footwear",
+            "Boots",
+            1999.99,
+            "Red",
+            "images/soccer/footwear/nike/mercurial-vapor-red/nike-mercurial-vapor-red-1.png"
+        ],
+
+        [
+            "nike-phantom-red",
+            "Nike Phantom Red FG",
+            "nike",
+            "footwear",
+            "Boots",
+            2099.99,
+            "Red / Black",
+            "images/soccer/footwear/nike/phantom-red/nike-phantom-red-1.png"
+        ],
+
+        [
+            "adidas-f50",
+            "Adidas F50 Hyperfast FG",
+            "adidas",
+            "footwear",
+            "Boots",
+            2199.99,
+            "Black / Blue",
+            "images/soccer/footwear/adidas/f50-hyperfast-blackblue/adidas-f50-hyperfast-blackblue-1.png"
+        ],
+
+        [
+            "adidas-predator-pink",
+            "Adidas Predator White/Pink FG",
+            "adidas",
+            "footwear",
+            "Boots",
+            2299.99,
+            "White / Pink",
+            "images/soccer/footwear/adidas/predator-whitepink/adidas-predator-whitepink-1.png"
+        ],
+
+        [
+            "adidas-predator-gold",
+            "Adidas Predator White/Gold FG",
+            "adidas",
+            "footwear",
+            "Boots",
+            2499.99,
+            "White / Gold",
+            "images/soccer/footwear/adidas/predator-whitegold/adidas-predator-whitegold-1.png"
+        ],
+
+        [
+            "puma-playmaker",
+            "Puma Future Playmaker Blue FG",
+            "puma",
+            "footwear",
+            "Boots",
+            1899.99,
+            "Blue / Pink / Lime",
+            "images/soccer/footwear/puma/future-playmaker-blue/puma-future-playmaker-blue-3.png"
+        ],
+
+        [
+            "puma-ultra-iceblue",
+            "Puma Ultra Ice Blue FG",
+            "puma",
+            "footwear",
+            "Boots",
+            1999.99,
+            "Ice Blue / Navy",
+            "images/soccer/footwear/puma/ultra-iceblue/puma-ultra-iceblue-2.png"
+        ],
+
+        [
+            "puma-ultra-redwhite",
+            "Puma Ultra Red/White FG",
+            "puma",
+            "footwear",
+            "Boots",
+            1949.99,
+            "Red / White",
+            "images/soccer/footwear/puma/ultra-redwhite/puma-ultra-redwhite-2.png"
+        ]
+
+    ], "soccer", ["soccer", "rugby"]);
+
+
+    /* =====================================================
+       SOCCER APPAREL
+       ===================================================== */
+
+    addProducts([
+
+        ["stridex-phantom-blackpurple-jersey","StrideX Phantom Black/Purple Jersey","stridex","apparel","Jersey",849.99,"Black / Purple","images/apparel/jerseys/stridex/phantom-blackpurple/stridex-phantom-blackpurple-jersey-1.png"],
+
+        ["stridex-phantom-blackpurple-shorts","StrideX Phantom Black/Purple Shorts","stridex","apparel","Shorts",449.99,"Black / Purple","images/apparel/shorts/stridex/phantom-blackpurple/stridex-phantom-blackpurple-shorts-1.png"],
+
+        ["stridex-phantom-blackpurple-socks","StrideX Phantom Black/Purple Socks","stridex","apparel","Socks",199.99,"Black / Purple","images/apparel/socks/stridex/phantom-blackpurple/stridex-phantom-blackpurple-socks-1.png"],
+
+        ["stridex-velocity-whitepurple-jersey","StrideX Velocity White/Purple Jersey","stridex","apparel","Jersey",799.99,"White / Purple","images/apparel/jerseys/stridex/velocity-whitepurple/stridex-velocity-whitepurple-jersey-1.png"],
+
+        ["stridex-velocity-whitepurple-shorts","StrideX Velocity White/Purple Shorts","stridex","apparel","Shorts",429.99,"White / Purple","images/apparel/shorts/stridex/velocity-whitepurple/stridex-velocity-whitepurple-shorts-1.png"],
+
+        ["stridex-velocity-whitepurple-socks","StrideX Velocity White/Purple Socks","stridex","apparel","Socks",189.99,"White / Purple","images/apparel/socks/stridex/velocity-whitepurple/stridex-velocity-whitepurple-socks-1.png"],
+
+        ["stridex-flare-pinkwhite-jersey","StrideX Flare Pink/White Jersey","stridex","apparel","Jersey",829.99,"Pink / White","images/apparel/jerseys/stridex/flare-pinkwhite/stridex-flare-pinkwhite-jersey-1.png"],
+
+        ["stridex-flare-pinkwhite-shorts","StrideX Flare Pink/White Shorts","stridex","apparel","Shorts",439.99,"Pink / White","images/apparel/shorts/stridex/flare-pinkwhite/stridex-flare-pinkwhite-shorts-1.png"],
+
+        ["stridex-flare-pinkwhite-socks","StrideX Flare Pink/White Socks","stridex","apparel","Socks",199.99,"Pink / White","images/apparel/socks/stridex/flare-pinkwhite/stridex-flare-pinkwhite-socks-1.png"],
+
+        ["nike-strike-blackwhite-jersey","Nike Strike Black/White Jersey","nike","apparel","Jersey",1199.99,"Black / White","images/apparel/jerseys/nike/strike-blackwhite/nike-strike-blackwhite-jersey-1.png"],
+
+        ["nike-strike-blackwhite-shorts","Nike Strike Black/White Shorts","nike","apparel","Shorts",699.99,"Black / White","images/apparel/shorts/nike/strike-blackwhite/nike-strike-blackwhite-shorts-1.png"],
+
+        ["nike-strike-blackwhite-socks","Nike Strike Black/White Socks","nike","apparel","Socks",299.99,"Black / White","images/apparel/socks/nike/strike-blackwhite/nike-strike-blackwhite-socks-1.png"],
+
+        ["nike-pulse-blackblue-jersey","Nike Pulse Black/Blue Jersey","nike","apparel","Jersey",1249.99,"Black / Electric Blue","images/apparel/jerseys/nike/pulse-blackblue/nike-pulse-blackblue-jersey-1.png"],
+
+        ["nike-pulse-blackblue-shorts","Nike Pulse Black/Blue Shorts","nike","apparel","Shorts",729.99,"Black / Electric Blue","images/apparel/shorts/nike/pulse-blackblue/nike-pulse-blackblue-shorts-1.png"],
+
+        ["nike-pulse-blackblue-socks","Nike Pulse Black/Blue Socks","nike","apparel","Socks",319.99,"Black / Electric Blue","images/apparel/socks/nike/pulse-blackblue/nike-pulse-blackblue-socks-1.png"],
+
+        ["nike-volt-limewhite-jersey","Nike Volt Lime/White Jersey","nike","apparel","Jersey",1299.99,"Lime / White","images/apparel/jerseys/nike/volt-limewhite/nike-volt-limewhite-jersey-1.png"],
+
+        ["nike-volt-limewhite-shorts","Nike Volt Lime/White Shorts","nike","apparel","Shorts",749.99,"Lime / White","images/apparel/shorts/nike/volt-limewhite/nike-volt-limewhite-shorts-1.png"],
+
+        ["nike-volt-limewhite-socks","Nike Volt Lime/White Socks","nike","apparel","Socks",329.99,"Lime / White","images/apparel/socks/nike/volt-limewhite/nike-volt-limewhite-socks-1.png"],
+
+        ["adidas-aero-navyteal-jersey","Adidas Aero Navy/Teal Jersey","adidas","apparel","Jersey",1149.99,"Navy / Teal","images/apparel/jerseys/adidas/aero-navyteal/adidas-aero-navyteal-jersey-1.png"],
+
+        ["adidas-aero-navyteal-shorts","Adidas Aero Navy/Teal Shorts","adidas","apparel","Shorts",649.99,"Navy / Teal","images/apparel/shorts/adidas/aero-navyteal/adidas-aero-navyteal-shorts-1.png"],
+
+        ["adidas-aero-navyteal-socks","Adidas Aero Navy/Teal Socks","adidas","apparel","Socks",279.99,"Navy / Teal","images/apparel/socks/adidas/aero-navyteal/adidas-aero-navyteal-socks-1.png"],
+
+        ["adidas-vortex-blackcoral-jersey","Adidas Vortex Black/Coral Jersey","adidas","apparel","Jersey",1199.99,"Black / Coral","images/apparel/jerseys/adidas/vortex-blackcoral/adidas-vortex-blackcoral-jersey-1.png"],
+
+        ["adidas-vortex-blackcoral-shorts","Adidas Vortex Black/Coral Shorts","adidas","apparel","Shorts",679.99,"Black / Coral","images/apparel/shorts/adidas/vortex-blackcoral/adidas-vortex-blackcoral-shorts-1.png"],
+
+        ["adidas-vortex-blackcoral-socks","Adidas Vortex Black/Coral Socks","adidas","apparel","Socks",289.99,"Black / Coral","images/apparel/socks/adidas/vortex-blackcoral/adidas-vortex-blackcoral-socks-1.png"],
+
+        ["adidas-blush-whitepink-jersey","Adidas Blush White/Pink Jersey","adidas","apparel","Jersey",1249.99,"White / Pink","images/apparel/jerseys/adidas/blush-whitepink/adidas-blush-whitepink-jersey-1.png"],
+
+        ["adidas-blush-whitepink-shorts","Adidas Blush White/Pink Shorts","adidas","apparel","Shorts",699.99,"White / Pink","images/apparel/shorts/adidas/blush-whitepink/adidas-blush-whitepink-shorts-1.png"],
+
+        ["adidas-blush-whitepink-socks","Adidas Blush White/Pink Socks","adidas","apparel","Socks",299.99,"White / Pink","images/apparel/socks/adidas/blush-whitepink/adidas-blush-whitepink-socks-1.png"],
+
+        ["puma-heritage-ivoryburgundy-jersey","Puma Heritage Ivory/Burgundy Jersey","puma","apparel","Jersey",1099.99,"Ivory / Burgundy / Gold","images/apparel/jerseys/puma/heritage-ivoryburgundy/puma-heritage-ivoryburgundy-jersey-1.png"],
+
+        ["puma-heritage-ivoryburgundy-shorts","Puma Heritage Ivory/Burgundy Shorts","puma","apparel","Shorts",599.99,"Ivory / Burgundy / Gold","images/apparel/shorts/puma/heritage-ivoryburgundy/puma-heritage-ivoryburgundy-shorts-1.png"],
+
+        ["puma-heritage-ivoryburgundy-socks","Puma Heritage Ivory/Burgundy Socks","puma","apparel","Socks",269.99,"Ivory / Burgundy / Gold","images/apparel/socks/puma/heritage-ivoryburgundy/puma-heritage-ivoryburgundy-socks-1.png"],
+
+        ["puma-velocity-blackorange-jersey","Puma Velocity Black/Orange Jersey","puma","apparel","Jersey",1149.99,"Black / Orange / Grey","images/apparel/jerseys/puma/velocity-blackorange/puma-velocity-blackorange-jersey-1.png"],
+
+        ["puma-velocity-blackorange-shorts","Puma Velocity Black/Orange Shorts","puma","apparel","Shorts",629.99,"Black / Orange / Grey","images/apparel/shorts/puma/velocity-blackorange/puma-velocity-blackorange-shorts-1.png"],
+
+        ["puma-velocity-blackorange-socks","Puma Velocity Black/Orange Socks","puma","apparel","Socks",279.99,"Black / Orange / Grey","images/apparel/socks/puma/velocity-blackorange/puma-velocity-blackorange-socks-1.png"]
+
+    ], "soccer");
+
+
+    /* =====================================================
+       SOCCER BALLS
+       ===================================================== */
+
+    addProducts([
+
+        ["stridex-apex-tealgold-ball","StrideX Apex Teal/Gold Ball","stridex","equipment","Soccer Ball",349.99,"Black / Teal / Gold","images/balls/stridex/stridex-apex-tealgold.png"],
+
+        ["stridex-pulse-navynorange-ball","StrideX Pulse Navy/Orange Ball","stridex","equipment","Soccer Ball",329.99,"Navy / Orange / Teal","images/balls/stridex/stridex-pulse-navynorange.png"],
+
+        ["stridex-strike-whiteorange-ball","StrideX Strike White/Orange Ball","stridex","equipment","Soccer Ball",299.99,"White / Navy / Orange","images/balls/stridex/stridex-strike-whiteorange.png"],
+
+        ["stridex-pure-white-ball","StrideX Pure White Ball","stridex","equipment","Soccer Ball",279.99,"White","images/balls/stridex/stridex-pure-white.png"],
+
+        ["stridex-volt-blacklime-ball","StrideX Volt Black/Lime Ball","stridex","equipment","Soccer Ball",319.99,"Black / Lime","images/balls/stridex/stridex-volt-blacklime.png"],
+
+        ["stridex-aero-whiteteal-ball","StrideX Aero White/Teal Ball","stridex","equipment","Soccer Ball",339.99,"White / Teal / Black","images/balls/stridex/stridex-aero-whiteteal.png"],
+
+        ["nike-strike-redgold-ball","Nike Strike Red/Gold Ball","nike","equipment","Soccer Ball",449.99,"Red / Gold / Black","images/balls/nike/nike-strike-redgold.png"],
+
+        ["nike-precision-goldteal-ball","Nike Precision Gold/Teal Ball","nike","equipment","Soccer Ball",549.99,"Gold / Teal / Black","images/balls/nike/nike-precision-goldteal.png"],
+
+        ["nike-academy-whitered-ball","Nike Academy White/Red Ball","nike","equipment","Soccer Ball",399.99,"White / Red / Black","images/balls/nike/nike-academy-whitered.png"],
+
+        ["adidas-pulse-orange-ball","Adidas Pulse Orange Ball","adidas","equipment","Soccer Ball",499.99,"Orange","images/balls/adidas/adidas-pulse-orange.png"],
+
+        ["adidas-elite-whitegold-ball","Adidas Elite White/Gold Ball","adidas","equipment","Soccer Ball",699.99,"White / Gold / Black","images/balls/adidas/adidas-elite-whitegold.png"],
+
+        ["adidas-star-whitesilver-ball","Adidas Star White/Silver Ball","adidas","equipment","Soccer Ball",799.99,"White / Silver","images/balls/adidas/adidas-star-whitesilver.png"]
+
+    ], "soccer");
+
+
+    /* =====================================================
+       SOCCER GOALKEEPER GLOVES
+       ===================================================== */
+
+    addProducts([
+
+        ["stridex-keeper-limewhite","StrideX Keeper Lime/White Gloves","stridex","accessories","Goalkeeper Gloves",699.99,"White / Lime / Black","images/gloves/stridex/stridex-keeper-limewhite.png"],
+
+        ["stridex-keeper-blackwhite","StrideX Keeper Black/White Gloves","stridex","accessories","Goalkeeper Gloves",749.99,"Black / White","images/gloves/stridex/stridex-keeper-blackwhite.png"],
+
+        ["stridex-keeper-bluewhite","StrideX Keeper Blue/White Gloves","stridex","accessories","Goalkeeper Gloves",729.99,"Blue / White / Black","images/gloves/stridex/stridex-keeper-bluewhite.png"],
+
+        ["nike-keeper-blueorange","Nike Keeper Blue/Orange Gloves","nike","accessories","Goalkeeper Gloves",899.99,"Blue / Black / Orange","images/gloves/nike/nike-keeper-blueorange.png"],
+
+        ["nike-keeper-blackred","Nike Keeper Black/Red Gloves","nike","accessories","Goalkeeper Gloves",949.99,"Black / Red / Gold","images/gloves/nike/nike-keeper-blackred.png"],
+
+        ["puma-keeper-whitecoral","Puma Keeper White/Coral Gloves","puma","accessories","Goalkeeper Gloves",849.99,"White / Coral / Black","images/gloves/puma/puma-keeper-whitecoral.png"],
+
+        ["puma-keeper-whitecoral-classic","Puma Keeper White/Coral Classic Gloves","puma","accessories","Goalkeeper Gloves",799.99,"White / Coral","images/gloves/puma/puma-keeper-whitecoral-classic.png"]
+
+    ], "soccer");
+
+
+    /* =====================================================
+       RUGBY TEES AND SHORTS
+       ===================================================== */
+
+    addProducts([
+
+        ["adidas-rugby-black-white-grey-shorts","Adidas Black/White/Grey Rugby Shorts","adidas","apparel","Rugby Shorts",599.99,"Black / White / Grey","images/rugby/apparel/shorts/adidas/black-white-grey/adidas-black-white-grey-rugby-shorts-1.png"],
+
+        ["nike-rugby-navy-teal-coral-shorts","Nike Navy/Teal/Coral Rugby Shorts","nike","apparel","Rugby Shorts",649.99,"Navy / Teal / Coral","images/rugby/apparel/shorts/nike/navy-teal-coral/nike-navy-teal-coral-rugby-shorts-1.png"],
+
+        ["puma-rugby-black-plum-pink-shorts","Puma Black/Plum/Pink Rugby Shorts","puma","apparel","Rugby Shorts",599.99,"Black / Plum / Pink","images/rugby/apparel/shorts/puma/black-plum-pink/puma-black-plum-pink-rugby-shorts-1.png"],
+
+        ["stridex-rugby-black-purple-shorts","StrideX Black/Purple Rugby Shorts","stridex","apparel","Rugby Shorts",449.99,"Black / Purple","images/rugby/apparel/shorts/stridex/black-purple/stridex-black-purple-rugby-shorts-1.png"],
+
+        ["stridex-rugby-voltstorm-shorts","StrideX VoltStorm Black/Blue Rugby Shorts","stridex","apparel","Rugby Shorts",499.99,"Black / Blue","images/rugby/apparel/shorts/stridex/voltstorm-blackblue/stridex-voltstorm-blackblue-rugby-shorts-1.png"],
+
+        ["nike-rugby-navy-teal-coral-tee","Nike Navy/Teal/Coral Rugby Tee","nike","apparel","Rugby Tee",799.99,"Navy / Teal / Coral","images/rugby/apparel/tees/nike/navy-teal-coral/nike-navy-teal-coral-rugby-tee-1.png"],
+
+        ["puma-rugby-black-plum-pink-tee","Puma Black/Plum/Pink Rugby Tee","puma","apparel","Rugby Tee",749.99,"Black / Plum / Pink","images/rugby/apparel/tees/puma/black-plum-pink/puma-black-plum-pink-rugby-tee-1.png"],
+
+        ["stridex-rugby-black-purple-tee","StrideX Black/Purple Rugby Tee","stridex","apparel","Rugby Tee",649.99,"Black / Purple","images/rugby/apparel/tees/stridex/black-purple/stridex-black-purple-rugby-tee-1.png"]
+
+    ], "rugby");
+
+
+    /* =====================================================
+       TENNIS — SETS AND DRESSES
+       ===================================================== */
+
+    addProducts([
+
+        ["stridex-tennis-velocity-whitepurple-set","StrideX Velocity White/Purple Tennis Set","stridex","apparel","Tennis Set",999.99,"White / Purple","images/tennis/apparel/stridex/sets/velocity-whitepurple/stridex-velocity-whitepurple-tennis-set-1.png"],
+
+        ["stridex-tennis-aero-tealcoral-set","StrideX Aero Teal/Coral Tennis Set","stridex","apparel","Tennis Set",949.99,"Teal / Coral","images/tennis/apparel/stridex/sets/aero-tealcoral/stridex-aero-tealcoral-tennis-set-1.png"],
+
+        ["stridex-tennis-blossom-blushlilac-set","StrideX Blossom Blush/Lilac Tennis Set","stridex","apparel","Tennis Set",1049.99,"Blush Pink / Lilac / White","images/tennis/apparel/stridex/sets/blossom-blushlilac/stridex-blossom-blushlilac-tennis-set-1.png"],
+
+        ["stridex-tennis-sunlit-yellowwhite-dress","StrideX Sunlit Yellow/White Tennis Dress","stridex","apparel","Tennis Dress",899.99,"Yellow / White","images/tennis/apparel/stridex/dresses/stridex/sunlit-yellowwhite/stridex-sunlit-yellowwhite-dress-1.png"],
+
+        ["stridex-tennis-blush-pinkwhite-dress","StrideX Blush Pink/White Tennis Dress","stridex","apparel","Tennis Dress",929.99,"Pink / White","images/tennis/apparel/stridex/dresses/stridex/blush-pinkwhite/stridex-blush-pinkwhite-dress-1.png"],
+
+        ["nike-tennis-court-ivorytealcoral-set","Nike Court Ivory/Teal/Coral Tennis Set","nike","apparel","Tennis Set",1499.99,"Ivory / Teal / Coral","images/tennis/apparel/nike/sets/court-ivorytealcoral/nike-court-ivorytealcoral-tennis-set-1.png"],
+
+        ["nike-tennis-volt-blackfuchsia-set","Nike Volt Black/Fuchsia Tennis Set","nike","apparel","Tennis Set",1549.99,"Black / Fuchsia / Aqua","images/tennis/apparel/nike/sets/volt-blackfuchsia/nike-volt-blackfuchsia-tennis-set-1.png"],
+
+        ["nike-tennis-lavender-white-dress","Nike Lavender/White Tennis Dress","nike","apparel","Tennis Dress",1399.99,"Lavender / White / Silver","images/tennis/apparel/nike/dresses/lavender-white/nike-lavender-white-dress-1.png"],
+
+        ["nike-tennis-forest-green-dress","Nike Forest Green Tennis Dress","nike","apparel","Tennis Dress",1449.99,"Forest Green / White","images/tennis/apparel/nike/dresses/forest-green/nike-forest-green-dress-1.png"],
+
+        ["puma-tennis-velocity-blackorange-set","Puma Velocity Black/Orange Tennis Set","puma","apparel","Tennis Set",1299.99,"Black / Orange / White","images/tennis/apparel/puma/sets/velocity-blackorange/puma-velocity-blackorange-tennis-set-1.png"],
+
+        ["puma-tennis-heritage-plumpink-set","Puma Heritage Plum/Pink Tennis Set","puma","apparel","Tennis Set",1349.99,"Plum / Pink / White","images/tennis/apparel/puma/sets/aero-creamred/puma-heritage-plumpink-tennis-set-1.png"]
+
+    ], "tennis");
+
+
+    /* =====================================================
+       TENNIS — ACCESSORIES AND EQUIPMENT
+       ===================================================== */
+
+    addProducts([
+
+        ["nike-tennis-whitecoral-visor","Nike White/Coral Tennis Visor","nike","accessories","Tennis Visor",449.99,"White / Coral","images/tennis/accessories/visors/nike/white-coral/nike-white-coral-visor.png"],
+
+        ["stridex-tennis-lavenderwhite-visor","StrideX Lavender/White Tennis Visor","stridex","accessories","Tennis Visor",349.99,"White / Lavender","images/tennis/accessories/visors/stridex/lavender-white/stridex-lavender-white-visor.png"],
+
+        ["stridex-tennis-creampink-visor","StrideX Cream/Pink Tennis Visor","stridex","accessories","Tennis Visor",329.99,"Cream / Pink","images/tennis/accessories/visors/cream-pink/stridex-cream-pink-visor.png"],
+
+        ["puma-tennis-blackpink-gloves","Puma Black/Pink Training Gloves","puma","accessories","Training Gloves",499.99,"Black / Pink","images/tennis/accessories/gloves/puma/black-pink/puma-black-pink-training-gloves.png"],
+
+        ["stridex-tennis-lilaccoral-gloves","StrideX Lilac/Coral Training Gloves","stridex","accessories","Training Gloves",399.99,"White / Lilac / Coral","images/tennis/accessories/gloves/stridex/lilac-coral-white/stridex-lilac-coral-training-gloves.png"],
+
+        ["stridex-tennis-blackhotpink-gloves","StrideX Black/Hot Pink Training Gloves","stridex","accessories","Training Gloves",379.99,"Black / Hot Pink","images/tennis/accessories/gloves/stridex/black-hotpink/stridex-black-hotpink-training-gloves.png"],
+
+        ["stridex-tennis-lavenderwhite-knee-support","StrideX Lavender/White Knee Support","stridex","accessories","Knee Support",299.99,"Lavender / White","images/tennis/accessories/knee-supports/stridex/lavender-white/stridex-lavender-white-knee-support.png"],
+
+        ["stridex-tennis-lavenderpink-knee-support","StrideX Lavender/Pink Knee Support","stridex","accessories","Knee Support",319.99,"Lavender / Pink / Grey","images/tennis/accessories/knee-supports/stridex/lavender-pink/stridex-lavender-pink-knee-support.png"],
+
+        ["stridex-tennis-pastelpink-knee-support","StrideX Pastel Pink Knee Support","stridex","accessories","Knee Support",289.99,"Pastel Pink / Grey","images/tennis/accessories/knee-supports/stridex/pastel-pink/stridex-pastel-pink-knee-support.png"],
+
+        ["adidas-tennis-whiteblackblue-bag","Adidas White/Black/Blue Tennis Bag","adidas","accessories","Tennis Bag",1199.99,"White / Black / Blue","images/tennis/accessories/bags/adidas/white-black-blue/adidas-white-black-blue-tennis-bag.png"],
+
+        ["stridex-tennis-tealcoral-equipment-set","StrideX Teal/Coral Tennis Equipment Set","stridex","equipment","Tennis Equipment Set",1799.99,"Teal / White / Coral","images/tennis/accessories/sets/stridex/teal-coral/stridex-teal-coral-tennis-set.png"],
+
+        ["stridex-tennis-purpleblack-equipment-set","StrideX Purple/Black Tennis Equipment Set","stridex","equipment","Tennis Equipment Set",1699.99,"Purple / Black / Blue","images/tennis/accessories/sets/stridex/purple-black/stridex-purple-black-tennis-set.png"]
+
+    ], "tennis");
+
+
+    /* =====================================================
+       TENNIS SHOES
+       ===================================================== */
+
+    addProducts([
+
+        ["stridex-tennis-blue-court","StrideX Blue Court Tennis Shoes","stridex","footwear","Tennis Shoes",999.99,"White / Blue","images/tennis/shoes/blue-court/stridex-blue-court-shoes.png"],
+
+        ["stridex-tennis-blush-court","StrideX Blush Court Tennis Shoes","stridex","footwear","Tennis Shoes",999.99,"Cream / Blush","images/tennis/shoes/blush-court/stridex-blush-court-shoes.png"],
+
+        ["stridex-tennis-crimson-court","StrideX Crimson Court Tennis Shoes","stridex","footwear","Tennis Shoes",1049.99,"Black / Red","images/tennis/shoes/crimson-court/stridex-crimson-court-shoes.png"],
+
+        ["stridex-tennis-ivory-court","StrideX Ivory Court Tennis Shoes","stridex","footwear","Tennis Shoes",999.99,"Cream / Grey","images/tennis/shoes/ivory-court/stridex-ivory-court-shoes.png"],
+
+        ["stridex-tennis-violet-court","StrideX Violet Court Tennis Shoes","stridex","footwear","Tennis Shoes",1049.99,"Black / Purple","images/tennis/shoes/violet-court/stridex-violet-court-shoes.png"]
+
+    ], "tennis");
+
+
+    /* =====================================================
+       TENNIS BALLS
+       ===================================================== */
+
+    addProducts([
+
+        ["stridex-tennis-blush-set","StrideX Blush Set Tennis Balls (3-Pack)","stridex","equipment","Tennis Balls",159.99,"Pink","images/tennis/stridex/balls/blush-set/stridex-blush-set-balls.png"],
+
+        ["stridex-tennis-classic","StrideX Classic Tennis Balls (3-Pack)","stridex","equipment","Tennis Balls",139.99,"Yellow","images/tennis/stridex/balls/classic/stridex-classic-balls.png"],
+
+        ["stridex-tennis-crimson-rally","StrideX Crimson Rally Tennis Balls (3-Pack)","stridex","equipment","Tennis Balls",159.99,"Yellow / Red","images/tennis/stridex/balls/crimson-rally/stridex-crimson-rally-balls.png"],
+
+        ["stridex-tennis-purple-spin","StrideX Purple Spin Tennis Balls (3-Pack)","stridex","equipment","Tennis Balls",179.99,"Purple","images/tennis/stridex/balls/purple-spin/stridex-purple-spin-balls.png"]
+
+    ], "tennis");
+
+
+    /* =====================================================
+       CYCLING — ADIDAS
+       ===================================================== */
+
+    addProducts([
+
+        ["adidas-cycling-blue-sprint-bottoms","Adidas Blue Sprint Cycling Bottoms","adidas","apparel","Bottoms",749.99,"Blue","images/cycling/adidas/bottoms/blue-sprint/adidas-blue-sprint-front.png"],
+
+        ["adidas-cycling-blue-sprint-shoes","Adidas Blue Sprint Cycling Shoes","adidas","footwear","Cycling Shoes",1499.99,"Blue","images/cycling/adidas/shoes/blue-sprint/adidas-blue-sprint.png"]
+
+    ], "cycling");
+
+
+    /* =====================================================
+       CYCLING — NIKE
+       ===================================================== */
+
+    addProducts([
+
+        ["nike-cycling-volt-grip-gloves","Nike Volt Grip Cycling Gloves","nike","accessories","Cycling Gloves",349.99,"Volt","images/cycling/nike/gloves/volt-grip/nike-volt-grip-gloves.png"],
+
+        ["nike-cycling-coral-rush-top","Nike Coral Rush Cycling Top","nike","apparel","Tops",799.99,"Coral","images/cycling/nike/tops/coral-rush/nike-coral-rush-front.png"],
+
+        ["nike-cycling-volt-sprint-top","Nike Volt Sprint Cycling Top","nike","apparel","Tops",799.99,"Volt","images/cycling/nike/tops/volt-sprint/nike-volt-sprint-front.png"]
+
+    ], "cycling");
+
+
+    /* =====================================================
+       CYCLING — PUMA
+       ===================================================== */
+
+    addProducts([
+
+        ["puma-cycling-pink-pulse-gloves","Puma Pink Pulse Cycling Gloves","puma","accessories","Cycling Gloves",329.99,"Pink","images/cycling/puma/gloves/pink-pulse/puma-pink-pulse-gloves.png"],
+
+        ["puma-cycling-pink-pulse-shoes","Puma Pink Pulse Cycling Shoes","puma","footwear","Cycling Shoes",1399.99,"Pink","images/cycling/puma/shoes/pink-pulse/puma-pink-pulse.png"],
+
+        ["puma-cycling-forest-sprint-vest","Puma Forest Sprint Cycling Vest","puma","apparel","Vests",649.99,"Forest Green","images/cycling/puma/vests/forest-sprint/puma-forest-sprint-front.png"],
+
+        ["puma-cycling-magenta-pulse-bottle","Puma Magenta Pulse Water Bottle","puma","accessories","Water Bottles",199.99,"Magenta","images/cycling/puma/water-bottles/magenta-pulse/puma-magenta-pulse.png"]
+
+    ], "cycling");
+
+
+    /* =====================================================
+       CYCLING — STRIDEX BICYCLES
+       ===================================================== */
+
+    addProducts([
+
+        ["stridex-cycling-race-300-bicycle","StrideX Race 300 Bicycle","stridex","equipment","Bicycles",12499.99,"Mixed","images/cycling/stridex/bicycles/race-300/stridex-race-300-view-1.png"],
+
+        ["stridex-cycling-trail-500-bicycle","StrideX Trail 500 Bicycle","stridex","equipment","Bicycles",9999.99,"Mixed","images/cycling/stridex/bicycles/trail-500/stridex-trail-500-view-1.png"]
+
+    ], "cycling");
+
+
+    /* =====================================================
+       CYCLING — STRIDEX BOTTOMS
+       ===================================================== */
+
+    addProducts([
+
+        ["stridex-cycling-violet-ride-bottoms","StrideX Violet Ride Cycling Bottoms","stridex","apparel","Bottoms",699.99,"Violet","images/cycling/stridex/bottoms/violet-ride/stridex-violet-ride-1.png"]
+
+    ], "cycling");
+
+
+    /* =====================================================
+       CYCLING — STRIDEX GLOVES
+       ===================================================== */
+
+    addProducts([
+
+        ["stridex-cycling-crimson-grip-gloves","StrideX Crimson Grip Cycling Gloves","stridex","accessories","Cycling Gloves",299.99,"Crimson","images/cycling/stridex/gloves/crimson-grip/stridex-crimson-grip-gloves.png"],
+
+        ["stridex-cycling-violet-grip-gloves","StrideX Violet Grip Cycling Gloves","stridex","accessories","Cycling Gloves",299.99,"Violet","images/cycling/stridex/gloves/violet-grip/stridex-violet-grip-gloves.png"]
+
+    ], "cycling");
+
+
+    /* =====================================================
+       CYCLING — STRIDEX HELMETS
+       ===================================================== */
+
+    addProducts([
+
+        ["stridex-cycling-crimson-rush-helmet","StrideX Crimson Rush Cycling Helmet","stridex","accessories","Cycling Helmets",899.99,"Crimson","images/cycling/stridex/helmets/crimson-rush/stridex-crimson-rush.png"],
+
+        ["stridex-cycling-purple-vortex-helmet","StrideX Purple Vortex Cycling Helmet","stridex","accessories","Cycling Helmets",899.99,"Purple","images/cycling/stridex/helmets/purple-vortex/stridex-purple-vortex.png"],
+
+        ["stridex-cycling-violet-aero-helmet","StrideX Violet Aero Cycling Helmet","stridex","accessories","Cycling Helmets",899.99,"Violet","images/cycling/stridex/helmets/violet-aero/stridex-violet-aero.png"]
+
+    ], "cycling");
+
+
+    /* =====================================================
+       CYCLING — STRIDEX SHOES
+       ===================================================== */
+
+    addProducts([
+
+        ["stridex-cycling-crimson-rush-shoes","StrideX Crimson Rush Cycling Shoes","stridex","footwear","Cycling Shoes",1249.99,"Crimson","images/cycling/stridex/shoes/crimson-rush/stridex-crimson-rush-shoes.png"],
+
+        ["stridex-cycling-violet-ride-shoes","StrideX Violet Ride Cycling Shoes","stridex","footwear","Cycling Shoes",1249.99,"Violet","images/cycling/stridex/shoes/violet-ride/stridex-violet-ride.png"]
+
+    ], "cycling");
+
+
+    /* =====================================================
+       CYCLING — STRIDEX SUNGLASSES
+       ===================================================== */
+
+    addProducts([
+
+        ["stridex-cycling-arctic-prism-sunglasses","StrideX Arctic Prism Cycling Sunglasses","stridex","accessories","Sunglasses",449.99,"Arctic","images/cycling/stridex/sunglasses/arctic-prism/stridex-arctic-prism.png"],
+
+        ["stridex-cycling-crimson-shadow-sunglasses","StrideX Crimson Shadow Cycling Sunglasses","stridex","accessories","Sunglasses",449.99,"Crimson","images/cycling/stridex/sunglasses/crimson-shadow/stridex-crimson-shadow.png"],
+
+        ["stridex-cycling-purple-apex-sunglasses","StrideX Purple Apex Cycling Sunglasses","stridex","accessories","Sunglasses",449.99,"Purple","images/cycling/stridex/sunglasses/purple-apex/stridex-purple-apex.png"],
+
+        ["stridex-cycling-sunset-blaze-sunglasses","StrideX Sunset Blaze Cycling Sunglasses","stridex","accessories","Sunglasses",449.99,"Sunset","images/cycling/stridex/sunglasses/sunset-blaze/stridex-sunset-blaze.png"]
+
+    ], "cycling");
+
+
+    /* =====================================================
+       CYCLING — STRIDEX TOPS
+       ===================================================== */
+
+    addProducts([
+
+        ["stridex-cycling-blue-surge-top","StrideX Blue Surge Cycling Top","stridex","apparel","Tops",649.99,"Blue","images/cycling/stridex/tops/blue-surge/stridex-blue-surge-front.png"],
+
+        ["stridex-cycling-crimson-flare-top","StrideX Crimson Flare Cycling Top","stridex","apparel","Tops",649.99,"Crimson","images/cycling/stridex/tops/crimson-flare/stridex-crimson-flare-front.png"]
+
+    ], "cycling");
+
+
+    /* =====================================================
+       CYCLING — STRIDEX WATER BOTTLES
+       ===================================================== */
+
+    addProducts([
+
+        ["stridex-cycling-purple-flow-bottle","StrideX Purple Flow Water Bottle","stridex","accessories","Water Bottles",179.99,"Purple","images/cycling/stridex/water-bottles/purple-flow/stridex-purple-flow.png"],
+
+        ["stridex-cycling-volt-hydrate-bottle","StrideX Volt Hydrate Water Bottle","stridex","accessories","Water Bottles",179.99,"Volt","images/cycling/stridex/water-bottles/volt-hydrate/stridex-volt-hydrate.png"]
+
+    ], "cycling");
+
+
+    /* =====================================================
+       CYCLING — STRIDEX WINDBREAKERS
+       ===================================================== */
+
+    addProducts([
+
+        ["stridex-cycling-arctic-teal-windbreaker","StrideX Arctic Teal Cycling Windbreaker","stridex","apparel","Windbreakers",999.99,"Teal","images/cycling/stridex/windbreakers/arctic-teal/stridex-arctic-teal-front.png"],
+
+        ["stridex-cycling-violet-rush-windbreaker","StrideX Violet Rush Cycling Windbreaker","stridex","apparel","Windbreakers",999.99,"Violet","images/cycling/stridex/windbreakers/violet-rush/stridex-violet-rush-front.png"]
+
+    ], "cycling");
+
+
+    /* =====================================================
+       BASIC SOCKS — ALL FOUR SPORTS
+       ===================================================== */
+
+    addProducts([
+
+        ["stridex-tennis-court-crew","StrideX Court Crew Socks (3-Pack)","stridex","apparel","Socks",169.99,"White / Lime","images/tennis/stridex/socks/court-crew/stridex-court-crew-socks.png"],
+
+        ["stridex-tennis-everyday-ankle","StrideX Everyday Ankle Socks (3-Pack)","stridex","apparel","Socks",149.99,"White / Black","images/tennis/stridex/socks/everyday-ankle/stridex-everyday-ankle-socks.png"]
+
+    ], "tennis", ["soccer", "rugby", "tennis", "cycling"]);
+
+
+    /* =====================================================
+       NEW RUGBY PRODUCTS
+       ===================================================== */
+
+    addProducts([
+
+        ["stridex-rugby-phantom-scrum-cap","StrideX Phantom Black/Purple Scrum Cap","stridex","accessories","Scrum Cap",449.99,"Black / Purple","images/rugby/new-products/stridex-phantom-scrum-cap.jpg"],
+
+        ["stridex-rugby-teal-kicking-tee","StrideX Teal Rugby Kicking Tee","stridex","equipment","Kicking Tee",189.99,"Teal","images/rugby/new-products/stridex-teal-kicking-tee.jpg"],
+
+        ["stridex-rugby-blue-mouthguard","StrideX Blue Rugby Mouthguard","stridex","accessories","Mouthguard",139.99,"Blue","images/rugby/new-products/stridex-blue-mouthguard.jpg"],
+
+        ["stridex-rugby-phantom-ball","StrideX Phantom Black/Purple Rugby Ball","stridex","equipment","Rugby Ball",399.99,"Black / Purple / White","images/rugby/new-products/stridex-phantom-rugby-ball.png"],
+
+        ["puma-rugby-blackpink-ball","Puma Black/Pink Rugby Ball","puma","equipment","Rugby Ball",449.99,"Black / Pink","images/rugby/new-products/puma-blackpink-rugby-ball.png"],
+
+        ["stridex-rugby-royal-bluegold-tee","StrideX Royal Blue/Gold Rugby Tee","stridex","apparel","Rugby Tee",699.99,"Royal Blue / Gold","images/rugby/new-products/stridex-royal-bluegold-rugby-tee.jpg"],
+
+        ["stridex-rugby-white-navygold-tee","StrideX White/Navy/Gold Rugby Tee","stridex","apparel","Rugby Tee",699.99,"White / Navy / Gold","images/rugby/new-products/stridex-white-navygold-rugby-tee.jpg"],
+
+        ["stridex-rugby-white-navygold-shorts","StrideX White/Navy/Gold Rugby Shorts","stridex","apparel","Rugby Shorts",429.99,"White / Navy / Gold","images/rugby/new-products/stridex-white-navygold-rugby-shorts.jpg"],
+
+        ["stridex-rugby-blue-sprint-shorts","StrideX Blue Sprint Rugby Shorts","stridex","apparel","Rugby Shorts",449.99,"Navy / Blue","images/rugby/new-products/tridex-blue-sprint-rugby-shorts.jpg"]
+
+    ], "rugby");
+
+
+    /* =====================================================
+       ORDERING
+       ===================================================== */
+
+    const sportOrder = [
+        "soccer",
+        "rugby",
+        "tennis",
+        "cycling"
+    ];
+
+    const typeOrder = [
+
+        "Jersey",
+
+        "Rugby Tee",
+        "Kicking Tee",
+
+        "Tops",
+        "Tennis Set",
+        "Tennis Dress",
+        "Vests",
+        "Windbreakers",
+
+        "Shorts",
+        "Rugby Shorts",
+        "Bottoms",
+
+        "Boots",
+        "Tennis Shoes",
+        "Cycling Shoes",
+        "Socks",
+
+        "Soccer Ball",
+        "Rugby Ball",
+        "Tennis Balls",
+        "Bicycles",
+        "Tennis Equipment Set",
+
+        "Goalkeeper Gloves",
+        "Scrum Cap",
+        "Mouthguard",
+        "Cycling Gloves",
+        "Training Gloves",
+        "Cycling Helmets",
+        "Tennis Visor",
+        "Knee Support",
+        "Tennis Bag",
+        "Sunglasses",
+        "Water Bottles"
+
+    ];
+
+
+    /* =====================================================
+       FORMAT PRICE
+       ===================================================== */
+
+    function formatPrice(value) {
+
+        return (
+            "R" +
+            Number(value)
+                .toFixed(2)
+                .replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+        );
+
+    }
+
+
+    /* =====================================================
+       DISPLAY SPORT NAMES
+       ===================================================== */
+
+    function sportNames(sports) {
+
+        return sports.map(function (sport) {
+
+            return (
+                sport.charAt(0).toUpperCase() +
+                sport.slice(1)
+            );
+
+        }).join(" / ");
+
+    }
+
+
+    /* =====================================================
+       CREATE PRODUCT CARD
+       ===================================================== */
+
+    function createProductCard(product) {
+
+        const card = document.createElement("div");
+
+        card.className = "shop-product-card";
+
+        card.dataset.id = product.id;
+        card.dataset.name = product.name;
+        card.dataset.brand = product.brand;
+        card.dataset.sport = product.sport;
+        card.dataset.sports = product.sports.join(",");
+        card.dataset.category = product.category;
+        card.dataset.type = product.type.toLowerCase();
+        card.dataset.price = product.price;
+        card.dataset.colour = product.colour.toLowerCase();
+
+        const badgeClass =
+            product.brand === "stridex"
+                ? "shop-badge"
+                : "shop-badge brand-badge";
+
+        card.innerHTML =
+
+            '<div class="shop-image-wrap">' +
+
+                '<span class="' + badgeClass + '">' +
+                    product.badge +
+                '</span>' +
+
+                '<img src="' +
+                    product.image +
+                    '" alt="' +
+                    product.name +
+                '" />' +
+
+            '</div>' +
+
+            '<p class="product-brand">' +
+                product.brand.toUpperCase() +
+            '</p>' +
+
+            '<h3>' +
+                product.name +
+            '</h3>' +
+
+            '<p class="product-sport">' +
+                sportNames(product.sports) +
+                ' | ' +
+                product.type +
+            '</p>' +
+
+            '<p class="price">' +
+                formatPrice(product.price) +
+            '</p>' +
+
+            '<div class="shop-card-actions">' +
+
+                '<a class="product-btn" href="product.xhtml?id=' +
+                    encodeURIComponent(product.id) +
+                '">' +
+                    'View Product' +
+                '</a>' +
+
+                '<button type="button" class="shop-cart-btn">' +
+                    'Add to Cart' +
+                '</button>' +
+
+            '</div>';
+
+        return card;
+
+    }
+
+
+    /* =====================================================
+       DISPLAY ALL PRODUCTS
+       ===================================================== */
+
+    if (!productGrid) {
+        return;
+    }
+
+    productData.forEach(function (product) {
+
+        productGrid.appendChild(
+            createProductCard(product)
+        );
+
+    });
+
+    const productCards = Array.from(
+        productGrid.querySelectorAll(".shop-product-card")
+    );
+
+
+    /* =====================================================
+       REAL BACKEND CART
+       ===================================================== */
+
+    
+       const API_BASE = "";
+
+
+
+    async function updateCartCount() {
+
+        if (!cartCount) {
+            return;
+        }
+
+        try {
+
+            const response = await fetch(
+                API_BASE + "/api/cart",
+                {
+                    method: "GET",
+                    credentials: "include"
+                }
+            );
+
+            if (!response.ok) {
+                cartCount.textContent = "0";
+                return;
+            }
+
+            const cart = await response.json();
+
+            const items = Array.isArray(cart.items)
+                ? cart.items
+                : [];
+
+            const totalQuantity = items.reduce(
+                function (sum, item) {
+
+                    return (
+                        sum +
+                        (Number(item.quantity) || 0)
+                    );
+
+                },
+                0
+            );
+
+            cartCount.textContent =
+                String(totalQuantity);
+
+        } catch (error) {
+
+            console.error(
+                "Could not load cart count:",
+                error
+            );
+
+            cartCount.textContent = "0";
+
+        }
+
+    }
+
+
+    /*
+       The Shop page does not directly add a product
+       because the customer must first choose a size.
+
+       Add to Cart therefore opens the product page.
+    */
+
+    productGrid.addEventListener(
+        "click",
+        function (event) {
+
+            const button =
+                event.target.closest(
+                    ".shop-cart-btn"
+                );
+
+            if (!button) {
+                return;
+            }
+
+            const card =
+                button.closest(
+                    ".shop-product-card"
+                );
+
+            if (!card) {
+                return;
+            }
+
+            const productId =
+                card.dataset.id;
+
+            if (!productId) {
+                return;
+            }
+
+            window.location.href =
+                "product.xhtml?id=" +
+                encodeURIComponent(productId);
+
+        }
+    );
+
+
+    /* =====================================================
+       FILTERS
+       ===================================================== */
+
+    function selectedValues(type) {
+
+        return checkboxes
+
+            .filter(function (input) {
+
+                return (
+                    input.dataset.filterType === type &&
+                    input.checked
+                );
+
+            })
+
+            .map(function (input) {
+
+                return input.value.toLowerCase();
+
+            });
+
+    }
+
+
+    function applyFilters() {
+
+        const sports =
+            selectedValues("sport");
+
+        const brands =
+            selectedValues("brand");
+
+        const categories =
+            selectedValues("category");
+
+        let count = 0;
+
+        productCards.forEach(
+            function (card) {
+
+                const cardSports =
+                    card.dataset.sports
+                        .toLowerCase()
+                        .split(",");
+
+                const matchesSport =
+
+                    !sports.length ||
+
+                    sports.some(
+                        function (sport) {
+
+                            return cardSports.includes(
+                                sport
+                            );
+
+                        }
+                    );
+
+
+                const matchesBrand =
+
+                    !brands.length ||
+
+                    brands.includes(
+                        card.dataset.brand
+                    );
+
+
+                const matchesCategory =
+
+                    !categories.length ||
+
+                    categories.includes(
+                        card.dataset.category
+                    );
+
+
+                const text = [
+
+                    card.dataset.name,
+                    card.dataset.brand,
+                    card.dataset.category,
+                    card.dataset.type,
+                    card.dataset.colour,
+                    cardSports.join(" ")
+
+                ].join(" ").toLowerCase();
+
+
+                const show =
+
+                    matchesSport &&
+
+                    matchesBrand &&
+
+                    matchesCategory &&
+
+                    (
+                        !searchTerm ||
+                        text.includes(searchTerm)
+                    );
+
+
+                card.style.display =
+                    show
+                        ? ""
+                        : "none";
+
+
+                if (show) {
+                    count++;
+                }
+
+            }
+        );
+
+
+        if (resultText) {
+
+            resultText.textContent =
+                count +
+                (
+                    count === 1
+                        ? " product"
+                        : " products"
+                );
+
+        }
+
+
+        if (noProducts) {
+
+            noProducts.style.display =
+                count
+                    ? "none"
+                    : "block";
+
+        }
+
+    }
+
+
+    /* =====================================================
+       SORTING
+       ===================================================== */
+
+    function sortProducts() {
+
+        const method =
+            sortSelect
+                ? sortSelect.value
+                : "default";
+
+        const sorted =
+            productCards.slice();
+
+
+        sorted.sort(
+            function (a, b) {
+
+
+                if (method === "low-high") {
+
+                    return (
+                        Number(a.dataset.price) -
+                        Number(b.dataset.price)
+                    );
+
+                }
+
+
+                if (method === "high-low") {
+
+                    return (
+                        Number(b.dataset.price) -
+                        Number(a.dataset.price)
+                    );
+
+                }
+
+
+                if (method === "name") {
+
+                    return (
+                        a.dataset.name.localeCompare(
+                            b.dataset.name
+                        )
+                    );
+
+                }
+
+
+                /*
+                    Default:
+                    Sport → Type → Name
+                */
+
+                const sportDiff =
+
+                    sportOrder.indexOf(
+                        a.dataset.sport
+                    ) -
+
+                    sportOrder.indexOf(
+                        b.dataset.sport
+                    );
+
+
+                if (sportDiff) {
+                    return sportDiff;
+                }
+
+
+                const typeDiff =
+
+                    typeOrder.findIndex(
+                        function (t) {
+
+                            return (
+                                t.toLowerCase() ===
+                                a.dataset.type
+                            );
+
+                        }
+                    ) -
+
+                    typeOrder.findIndex(
+                        function (t) {
+
+                            return (
+                                t.toLowerCase() ===
+                                b.dataset.type
+                            );
+
+                        }
+                    );
+
+
+                if (typeDiff) {
+                    return typeDiff;
+                }
+
+
+                return (
+                    a.dataset.name.localeCompare(
+                        b.dataset.name
+                    )
+                );
+
+            }
+        );
+
+
+        sorted.forEach(
+            function (card) {
+
+                productGrid.appendChild(
+                    card
+                );
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       FILTER EVENTS
+       ===================================================== */
+
+    checkboxes.forEach(
+        function (input) {
+
+            input.addEventListener(
+                "change",
+                applyFilters
+            );
+
+        }
+    );
+
+
+    if (sortSelect) {
+
+        sortSelect.addEventListener(
+            "change",
+            sortProducts
+        );
+
+    }
+
+
+    /* =====================================================
+       CLEAR FILTERS
+       ===================================================== */
+
+    if (clearButton) {
+
+        clearButton.addEventListener(
+            "click",
+            function () {
+
+                checkboxes.forEach(
+                    function (input) {
+
+                        input.checked =
+                            false;
+
+                    }
+                );
+
+
+                searchTerm = "";
+
+
+                if (searchInput) {
+
+                    searchInput.value =
+                        "";
+
+                }
+
+
+                if (sortSelect) {
+
+                    sortSelect.value =
+                        "default";
+
+                }
+
+
+                sortProducts();
+
+                applyFilters();
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       URL FILTERS
+       ===================================================== */
+
+    const params =
+        new URLSearchParams(
+            window.location.search
+        );
+
+
+    searchTerm = (
+        params.get("search") || ""
+    )
+        .trim()
+        .toLowerCase();
+
+
+    if (searchInput) {
+
+        searchInput.value =
+            params.get("search") || "";
+
+    }
+
+
+    [
+        "sport",
+        "brand",
+        "category"
+    ].forEach(
+
+        function (type) {
+
+            const value = (
+                params.get(type) || ""
+            ).toLowerCase();
+
+
+            checkboxes.forEach(
+                function (input) {
+
+                    if (
+                        input.dataset.filterType === type &&
+                        input.value === value
+                    ) {
+
+                        input.checked = true;
+
+                    }
+
+                }
+            );
+
+        }
+
+    );
+
+
+    /* =====================================================
+       LIVE SEARCH
+       ===================================================== */
+
+    if (searchInput) {
+
+        searchInput.addEventListener(
+            "input",
+            function () {
+
+                searchTerm =
+                    searchInput.value
+                        .trim()
+                        .toLowerCase();
+
+                applyFilters();
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       START SHOP
+       ===================================================== */
+
+    updateCartCount();
+
+    sortProducts();
+
+    applyFilters();
+
+});

@@ -1,0 +1,1158 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    />
+
+    <title>StrideX KitLab | Custom Team Kit</title>
+
+    <link
+        rel="stylesheet"
+        type="text/css"
+        href="css/style.css"
+    />
+
+    <link
+        rel="stylesheet"
+        type="text/css"
+        href="css/kitlab.css"
+    />
+</head>
+
+<body>
+
+    <!-- HEADER -->
+
+    <header class="site-header">
+
+        <div class="header-top">
+
+            <div class="logo">
+                <a href="index.html">
+                    <img
+                        src="images/stridex-logo.jpeg"
+                        alt="StrideX Sports Logo"
+                    />
+                </a>
+            </div>
+
+            <form
+                class="header-search"
+                action="shop.xhtml"
+                method="get"
+            >
+                <input
+                    type="text"
+                    name="search"
+                    placeholder="Search products, brands or sports..."
+                />
+
+                <button type="submit">
+                    Search
+                </button>
+            </form>
+
+            <div class="header-actions">
+
+    <a href="account.html" class="header-action">
+        <span class="action-icon">
+            &#128100;
+        </span>
+
+        <span>Account</span>
+    </a>
+    <a
+    href="orders.html"
+    class="header-action"
+>
+    <span class="action-icon">
+        &#128230;
+    </span>
+
+    <span>
+        My Orders
+    </span>
+</a>
+
+
+    <a href="cart.html" class="header-action cart-action">
+        <span class="action-icon">
+            &#128722;
+        </span>
+
+        <span>Cart</span>
+
+        <span
+            class="cart-count"
+            id="cartCount"
+        >
+            0
+        </span>
+    </a>
+
+</div>
+
+        </div>
+
+        <nav class="main-nav">
+
+            <a href="index.html">Home</a>
+
+            <a href="shop.xhtml">Shop</a>
+
+            <a href="shop.xhtml?sport=soccer">
+                Soccer
+            </a>
+
+            <a href="shop.xhtml?sport=rugby">
+                Rugby
+            </a>
+
+            <a href="shop.xhtml?sport=tennis">
+                Tennis
+            </a>
+
+            <a href="shop.xhtml?sport=cycling">
+                Cycling
+            </a>
+
+            <a
+                href="custom-kit.xhtml"
+                class="active-nav"
+            >
+                Custom Kit
+            </a>
+
+        </nav>
+
+    </header>
+
+
+    <!-- KITLAB HERO -->
+
+    <section class="kitlab-hero">
+
+        <div class="kitlab-hero-content">
+
+            <p class="kitlab-eyebrow">
+                STRIDEX KITLAB
+            </p>
+
+            <h1>
+                Build Your Team.
+                Design Your Identity.
+            </h1>
+
+            <p>
+                Create a custom StrideX team kit with
+                your colours, team name, player details
+                and crest.
+            </p>
+
+            <div class="kitlab-hero-tags">
+                <span>Live Preview</span>
+                <span>Team Colours</span>
+                <span>Custom Crest</span>
+                <span>Instant Estimate</span>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- PROGRESS INDICATOR -->
+
+    <section class="kitlab-progress">
+
+        <div class="kitlab-progress-item active-step">
+            <span>1</span>
+            <p>Sport</p>
+        </div>
+
+        <div class="kitlab-progress-line"></div>
+
+        <div class="kitlab-progress-item">
+            <span>2</span>
+            <p>Design</p>
+        </div>
+
+        <div class="kitlab-progress-line"></div>
+
+        <div class="kitlab-progress-item">
+            <span>3</span>
+            <p>Team Details</p>
+        </div>
+
+        <div class="kitlab-progress-line"></div>
+
+        <div class="kitlab-progress-item">
+            <span>4</span>
+            <p>Order</p>
+        </div>
+
+    </section>
+
+
+    <!-- MAIN KIT BUILDER -->
+
+    <main class="kitlab-builder">
+
+        <!-- LEFT: CUSTOMISATION CONTROLS -->
+
+        <section class="kitlab-controls">
+
+            <!-- 1. SPORT -->
+
+            <div class="kitlab-panel">
+
+                <div class="kitlab-panel-heading">
+
+                    <span class="kitlab-number">
+                        01
+                    </span>
+
+                    <div>
+                        <h2>Choose Your Sport</h2>
+                        <p>
+                            Select the sport you are
+                            designing for.
+                        </p>
+                    </div>
+
+                </div>
+
+                <div class="kitlab-sport-options">
+
+                    <button
+                        type="button"
+                        class="kitlab-sport-button selected"
+                        data-sport="Soccer"
+                    >
+                        Soccer
+                    </button>
+
+                    <button
+                        type="button"
+                        class="kitlab-sport-button"
+                        data-sport="Rugby"
+                    >
+                        Rugby
+                    </button>
+
+                    <button
+                        type="button"
+                        class="kitlab-sport-button"
+                        data-sport="Tennis"
+                    >
+                        Tennis
+                    </button>
+
+                    <button
+                        type="button"
+                        class="kitlab-sport-button"
+                        data-sport="Cycling"
+                    >
+                        Cycling
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- 2. TEMPLATE -->
+
+            <div class="kitlab-panel">
+
+                <div class="kitlab-panel-heading">
+
+                    <span class="kitlab-number">
+                        02
+                    </span>
+
+                    <div>
+                        <h2>Choose a Kit Design</h2>
+                        <p>
+                            Select your preferred StrideX
+                            base style.
+                        </p>
+                    </div>
+
+                </div>
+
+                <div class="kitlab-template-options">
+
+                    <button
+                        type="button"
+                        class="kit-template-card selected"
+                        data-template="Velocity"
+                    >
+
+                        <span
+                            class="template-preview template-velocity"
+                        ></span>
+
+                        <strong>Velocity</strong>
+
+                        Velocity
+<small>
+    Side Panels
+</small>
+
+                    </button>
+
+                    <button
+                        type="button"
+                        class="kit-template-card"
+                        data-template="Apex"
+                    >
+
+                        <span
+                            class="template-preview template-apex"
+                        ></span>
+
+                        <strong>Apex</strong>
+
+  Apex
+<small>
+    Diagonal Sash
+</small>
+
+                    </button>
+
+                    <button
+                        type="button"
+                        class="kit-template-card"
+                        data-template="Phantom"
+                    >
+
+                        <span
+                            class="template-preview template-phantom"
+                        ></span>
+
+                        <strong>Phantom</strong>
+
+ Phantom
+<small>
+    Centre Stripe
+</small>>
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- 3. TEAM COLOURS -->
+
+            <div class="kitlab-panel">
+
+                <div class="kitlab-panel-heading">
+
+                    <span class="kitlab-number">
+                        03
+                    </span>
+
+                    <div>
+                        <h2>Team Colours</h2>
+                        <p>
+                            Create a colour combination
+                            for your team.
+                        </p>
+                    </div>
+
+                </div>
+
+                <div class="kitlab-colour-grid">
+
+                    <div class="kitlab-field">
+
+                        <label for="primaryColour">
+                            Primary Colour
+                        </label>
+
+                        <div class="colour-control">
+
+                            <input
+                                type="color"
+                                id="primaryColour"
+                                value="#6d28d9"
+                            />
+
+                            <span id="primaryColourValue">
+                                #6D28D9
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <div class="kitlab-field">
+
+                        <label for="secondaryColour">
+                            Secondary Colour
+                        </label>
+
+                        <div class="colour-control">
+
+                            <input
+                                type="color"
+                                id="secondaryColour"
+                                value="#111111"
+                            />
+
+                            <span id="secondaryColourValue">
+                                #111111
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <div class="kitlab-field">
+
+                        <label for="accentColour">
+                            Accent Colour
+                        </label>
+
+                        <div class="colour-control">
+
+                            <input
+                                type="color"
+                                id="accentColour"
+                                value="#ffffff"
+                            />
+
+                            <span id="accentColourValue">
+                                #FFFFFF
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- 4. TEAM DETAILS -->
+
+            <div class="kitlab-panel">
+
+                <div class="kitlab-panel-heading">
+
+                    <span class="kitlab-number">
+                        04
+                    </span>
+
+                    <div>
+                        <h2>Team Details</h2>
+                        <p>
+                            Personalise the kit with
+                            your team identity.
+                        </p>
+                    </div>
+
+                </div>
+
+                <div class="kitlab-form-grid">
+
+                    <div class="kitlab-field">
+
+                        <label for="teamName">
+                            Team Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="teamName"
+                            maxlength="20"
+                            placeholder="e.g. StrideX United"
+                        />
+
+                    </div>
+
+
+
+                    <div class="kitlab-field">
+
+                        <label for="teamCrest">
+                            Upload Team Crest
+                        </label>
+
+                        <input
+                            type="file"
+                            id="teamCrest"
+                            accept="image/*"
+                        />
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- 5. SIZE AND QUANTITY -->
+
+            <div class="kitlab-panel">
+
+    <div class="kitlab-panel-heading">
+
+        <span class="kitlab-number">
+            05
+        </span>
+
+        <div>
+
+            <h2>
+                Team Roster
+            </h2>
+
+            <p>
+                Add each team member and choose
+                the correct size for every player.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div
+        id="teamRoster"
+        class="team-roster"
+    >
+
+        <div class="roster-header">
+
+            <span>
+                Player Name
+            </span>
+
+            <span>
+                Number
+            </span>
+
+            <span>
+                Size
+            </span>
+
+            <span>
+                Remove
+            </span>
+
+        </div>
+
+
+        <div
+    class="roster-row"
+    data-player-row=""
+>
+
+            <input
+    type="text"
+    class="roster-player-name"
+    maxlength="20"
+    placeholder="Player name"
+/>
+
+    <input
+    type="number"
+    class="roster-player-number"
+    min="0"
+    max="99"
+    placeholder="10"
+/>
+
+            <select
+                class="roster-player-size"
+            >
+
+                <option value="">
+                    Size
+                </option>
+
+                <option value="XS">
+                    XS
+                </option>
+
+                <option value="S">
+                    S
+                </option>
+
+                <option value="M">
+                    M
+                </option>
+
+                <option value="L">
+                    L
+                </option>
+
+                <option value="XL">
+                    XL
+                </option>
+
+                <option value="XXL">
+                    XXL
+                </option>
+
+            </select>
+
+            <button
+                type="button"
+                class="roster-remove-button"
+                aria-label="Remove player"
+            >
+                ×
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <button
+        type="button"
+        id="addPlayerButton"
+        class="kitlab-add-player-button"
+    >
+        + Add Player
+    </button>
+
+
+    <div class="roster-summary">
+
+        <span>
+            Team Quantity
+        </span>
+
+        <strong id="teamQuantity">
+            1
+        </strong>
+
+    </div>
+
+
+    <!-- Temporary compatibility fields.
+    These keep the current JavaScript working
+    until we replace custom-kit.js next. -->
+
+   <input
+    type="hidden"
+    id="kitSize"
+    value="M"
+/>
+
+   <input
+    type="hidden"
+    id="kitQuantity"
+    value="1"
+/>
+
+</div>
+
+        </section>
+
+
+        <!-- RIGHT: LIVE KIT PREVIEW -->
+
+        <aside class="kitlab-preview-section">
+
+            <div class="kitlab-preview-sticky">
+
+                <div class="kitlab-preview-header">
+
+                    <div>
+                        <p>LIVE PREVIEW</p>
+
+                        <h2 id="previewTemplateName">
+                            Velocity
+                        </h2>
+                    </div>
+
+                    <span class="kitlab-live-badge">
+                        LIVE
+                    </span>
+
+                </div>
+
+
+                <!-- JERSEY AND SHORTS -->
+
+                <div class="kitlab-view-controls">
+
+    <button
+        type="button"
+        id="frontViewButton"
+        class="kitlab-view-button selected"
+    >
+        Front
+    </button>
+
+    <button
+        type="button"
+        id="backViewButton"
+        class="kitlab-view-button"
+    >
+        Back
+    </button>
+
+</div>
+
+                <div
+    class="kit-preview-stage"
+    id="kitPreviewStage"
+>
+
+    <img
+        id="kitPreviewImage"
+        src="images/custom-kit/soccer/soccer-front.png"
+        alt="Soccer custom kit preview"
+    />
+
+    <div
+        id="kitColourOverlay"
+        class="kit-colour-overlay kit-primary-overlay"
+    ></div>
+
+    <div
+        id="kitSecondaryOverlay"
+        class="kit-colour-overlay kit-secondary-overlay"
+    ></div>
+
+    <div
+        id="kitAccentOverlay"
+        class="kit-colour-overlay kit-accent-overlay"
+    ></div>
+
+    <div
+        id="crestPlaceholder"
+        class="real-kit-crest-placeholder"
+    >
+        SX
+    </div>
+
+    <img
+        id="crestPreview"
+        class="real-kit-crest-image"
+        src=""
+        alt="Team Crest"
+    />
+
+    <div
+        id="previewTeamName"
+        class="real-kit-team-name"
+    >
+        YOUR TEAM
+    </div>
+
+    <div
+        id="previewPlayerName"
+        class="real-kit-player-name"
+    >
+        PLAYER
+    </div>
+
+    <div
+        id="previewNumber"
+        class="real-kit-player-number"
+    >
+        10
+    </div>
+
+</div>
+
+
+                <!-- DESIGN SUMMARY -->
+
+                <div class="kitlab-summary">
+
+                    <h3>Your Design</h3>
+
+                    <div class="kitlab-summary-row">
+
+                        <span>Sport</span>
+
+                        <strong id="summarySport">
+                            Soccer
+                        </strong>
+
+                    </div>
+
+                    <div class="kitlab-summary-row">
+
+                        <span>Template</span>
+
+                        <strong id="summaryTemplate">
+                            Velocity
+                        </strong>
+
+                    </div>
+
+                    <div class="kitlab-summary-row">
+
+                        <span>Size</span>
+
+                        <strong id="summarySize">
+                            M
+                        </strong>
+
+                    </div>
+
+                    <div class="kitlab-summary-row">
+
+                        <span>Quantity</span>
+
+                        <strong id="summaryQuantity">
+                            11
+                        </strong>
+
+                    </div>
+
+                    <div class="kitlab-summary-divider">
+                    </div>
+
+                    <div class="kitlab-price-row">
+
+                        <div>
+                            <span>
+                                Estimated Total
+                            </span>
+
+                            <small>
+                                Custom team order estimate
+                            </small>
+                        </div>
+
+                        <strong id="estimatedPrice">
+                            R10 999.89
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <!-- SAVE AND REQUEST -->
+
+                <button
+                    type="button"
+                    class="kitlab-save-button"
+                    id="saveKitButton"
+                >
+                    Save My Design
+                </button>
+
+                <button
+                    type="button"
+                    class="kitlab-request-button"
+                    id="requestKitButton"
+                >
+                    Request Team Kit
+                </button>
+
+                <p class="kitlab-note">
+                    Final pricing may change depending
+                    on customisation and order requirements.
+                </p>
+
+            </div>
+
+        </aside>
+
+    </main>
+
+
+    <!-- KITLAB BENEFITS -->
+
+    <section class="kitlab-benefits">
+
+        <div class="kitlab-benefit">
+
+            <strong>Custom Identity</strong>
+
+            <p>
+                Build a kit that represents your team.
+            </p>
+
+        </div>
+
+        <div class="kitlab-benefit">
+
+            <strong>Live Design</strong>
+
+            <p>
+                See your changes instantly while
+                customising.
+            </p>
+
+        </div>
+
+        <div class="kitlab-benefit">
+
+            <strong>Team Ordering</strong>
+
+            <p>
+                Create one design for your entire squad.
+            </p>
+
+        </div>
+
+        <div class="kitlab-benefit">
+
+            <strong>StrideX Made</strong>
+
+            <p>
+                Custom performance kits designed by StrideX.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- KIT REVIEW WINDOW -->
+
+    <div
+        class="kit-review-modal"
+        id="kitReviewModal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="kitReviewTitle"
+    >
+
+        <div class="kit-review-window">
+
+            <div class="kit-review-heading">
+
+                <div>
+                    <p class="kit-review-label">
+                        STRIDEX KITLAB
+                    </p>
+
+                    <h2 id="kitReviewTitle">
+                        Review Your Team Kit
+                    </h2>
+
+                    <p>
+                        Check your design details before
+                        submitting your request.
+                    </p>
+                </div>
+
+                <button
+                    type="button"
+                    id="closeKitReview"
+                    class="kit-review-close"
+                    aria-label="Close review"
+                >
+                    &#215;
+                </button>
+
+            </div>
+
+
+            <div class="kit-review-details">
+
+                <div class="kit-review-row">
+                    <span>Sport</span>
+                    <strong id="reviewSport">Soccer</strong>
+                </div>
+
+                <div class="kit-review-row">
+                    <span>Template</span>
+                    <strong id="reviewTemplate">Velocity</strong>
+                </div>
+
+                <div class="kit-review-row">
+                    <span>Team</span>
+                    <strong id="reviewTeam">-</strong>
+                </div>
+
+                <div class="kit-review-row">
+                    <span>Player</span>
+                    <strong id="reviewPlayer">-</strong>
+                </div>
+
+                <div class="kit-review-row">
+                    <span>Number</span>
+                    <strong id="reviewNumber">10</strong>
+                </div>
+
+                <div class="kit-review-row">
+                    <span>Size</span>
+                    <strong id="reviewSize">M</strong>
+                </div>
+
+                <div class="kit-review-row">
+                    <span>Quantity</span>
+                    <strong id="reviewQuantity">11</strong>
+                </div>
+
+                <div class="kit-review-row">
+                    <span>Primary Colour</span>
+                    <span
+                        class="kit-review-swatch"
+                        id="reviewPrimaryColour"
+                    ></span>
+                </div>
+
+                <div class="kit-review-row">
+                    <span>Secondary Colour</span>
+                    <span
+                        class="kit-review-swatch"
+                        id="reviewSecondaryColour"
+                    ></span>
+                </div>
+
+                <div class="kit-review-row">
+                    <span>Accent Colour</span>
+                    <span
+                        class="kit-review-swatch"
+                        id="reviewAccentColour"
+                    ></span>
+                </div>
+
+                <div class="kit-review-row kit-review-total">
+                    <span>Estimated Total</span>
+                    <strong id="reviewTotal">
+                        R0.00
+                    </strong>
+                </div>
+
+            </div>
+
+
+            <div class="kit-review-actions">
+
+                <button
+                    type="button"
+                    id="editKitButton"
+                    class="kit-review-edit"
+                >
+                    Back to Edit
+                </button>
+
+                <button
+                    type="button"
+                    id="confirmKitRequest"
+                    class="kit-review-confirm"
+                >
+                    Confirm Request
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- FOOTER -->
+
+    <footer class="site-footer">
+
+        <div class="footer-grid">
+
+            <div class="footer-brand">
+
+                <img
+                    src="images/stridex-logo.jpeg"
+                    alt="StrideX Sports Logo"
+                />
+
+                <p>
+                    Your destination for StrideX products
+                    and selected sports brands across
+                    Soccer, Rugby, Tennis and Cycling.
+                </p>
+
+            </div>
+
+            <div class="footer-column">
+
+                <h3>Quick Links</h3>
+
+                <a href="index.html">Home</a>
+
+                <a href="shop.xhtml">Shop</a>
+
+                <a href="custom-kit.xhtml">
+                    Custom Kit
+                </a>
+
+            </div>
+
+            <div class="footer-column">
+
+                <h3>Shop By Sport</h3>
+
+                <a href="shop.xhtml?sport=soccer">
+                    Soccer
+                </a>
+
+                <a href="shop.xhtml?sport=rugby">
+                    Rugby
+                </a>
+
+                <a href="shop.xhtml?sport=tennis">
+                    Tennis
+                </a>
+
+                <a href="shop.xhtml?sport=cycling">
+                    Cycling
+                </a>
+
+            </div>
+
+            <div class="footer-column">
+
+                <h3>Contact</h3>
+
+                <p>
+                    Email: info@stridexsports.co.za
+                </p>
+
+                <p>
+                    Phone: 012 555 0147
+                </p>
+
+                <p>
+                    South Africa
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="footer-bottom">
+
+            <p>
+                &#169; 2026 StrideX Sports.
+                Every Move Matters.
+            </p>
+
+        </div>
+
+    </footer>
+
+
+    <!-- KITLAB JAVASCRIPT -->
+
+    <script
+        type="text/javascript"
+        src="js/custom-kit.js"
+    ></script>
+
+</body>
+
+</html>

@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+
+    <meta charset="UTF-8" />
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    />
+
+    <title>
+        Product | StrideX Sports
+    </title>
+
+    <link
+        rel="stylesheet"
+        type="text/css"
+        href="css/style.css"
+    />
+
+</head>
+
+<body>
+
+
+    <!-- =====================================================
+         HEADER
+         ===================================================== -->
+
+    <header class="site-header">
+
+        <div class="header-top">
+
+            <div class="logo">
+
+                <a href="index.html">
+
+                    <img
+                        src="images/stridex-logo.jpeg"
+                        alt="StrideX Sports Logo"
+                    />
+
+                </a>
+
+            </div>
+
+
+            <form
+                class="header-search"
+                action="shop.xhtml"
+                method="get"
+            >
+
+                <input
+                    type="text"
+                    name="search"
+                    placeholder="Search products, brands or sports..."
+                />
+
+                <button type="submit">
+                    Search
+                </button>
+
+            </form>
+
+
+            <div class="header-actions">
+
+                <a
+                    href="account.html"
+                    class="header-action"
+                >
+
+                    <span class="action-icon">
+                        &#128100;
+                    </span>
+
+                    <span>
+                        Account
+                    </span>
+
+                </a>
+                <a href="orders.html" class="header-action">
+    <span class="action-icon">&#128230;</span>
+    <span>My Orders</span>
+</a>
+
+
+                <a
+                    href="cart.html"
+                    class="header-action cart-action"
+                >
+
+                    <span class="action-icon">
+                        &#128722;
+                    </span>
+
+                    <span>
+                        Cart
+                    </span>
+
+                    <span
+                        class="cart-count"
+                        id="cartCount"
+                    >
+                        0
+                    </span>
+
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             MAIN NAVIGATION
+             ================================================= -->
+
+        <nav class="main-nav">
+
+            <a href="index.html">
+                Home
+            </a>
+
+            <a
+                href="shop.xhtml"
+                class="active-nav"
+            >
+                Shop
+            </a>
+
+            <a href="shop.xhtml?sport=soccer">
+                Soccer
+            </a>
+
+            <a href="shop.xhtml?sport=rugby">
+                Rugby
+            </a>
+
+            <a href="shop.xhtml?sport=cycling">
+                Cycling
+            </a>
+
+            <a href="shop.xhtml?sport=tennis">
+                Tennis
+            </a>
+
+            <a href="#">
+                Custom Kit
+            </a>
+
+        </nav>
+
+    </header>
+
+
+    <!-- =====================================================
+         BREADCRUMB
+         ===================================================== -->
+
+    <section class="product-breadcrumb">
+
+        <a href="index.html">
+            Home
+        </a>
+
+        <span>
+            /
+        </span>
+
+        <a href="shop.xhtml">
+            Shop
+        </a>
+
+        <span>
+            /
+        </span>
+
+        <!--
+            JavaScript changes this automatically:
+            Soccer / Tennis / Rugby / Cycling
+        -->
+
+        <a
+            href="shop.xhtml"
+            id="breadcrumbSport"
+        >
+            Sport
+        </a>
+
+        <span>
+            /
+        </span>
+
+        <strong id="breadcrumbProduct">
+            Product
+        </strong>
+
+    </section>
+
+
+    <!-- =====================================================
+         PRODUCT DETAILS
+         ===================================================== -->
+
+    <main class="product-page">
+
+
+        <!-- =================================================
+             LEFT SIDE: PRODUCT IMAGE GALLERY
+             ================================================= -->
+
+        <section class="product-gallery">
+
+
+            <!-- THUMBNAILS -->
+
+            <div
+                class="product-thumbnails"
+                id="productThumbnails"
+            >
+
+                <!--
+                    JavaScript automatically adds
+                    the product image thumbnails here.
+                -->
+
+            </div>
+
+
+            <!-- MAIN IMAGE -->
+
+            <div class="product-main-area">
+
+                <div
+                    class="product-main-image-box"
+                    id="zoomContainer"
+                >
+
+                    <img
+                        id="mainProductImage"
+                        src="images/featured-soccer.png"
+                        alt="StrideX Product"
+                    />
+
+                </div>
+
+
+                <p class="zoom-hint">
+                    Move your mouse over the image to zoom
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             RIGHT SIDE: PRODUCT INFORMATION
+             ================================================= -->
+
+        <section class="product-information">
+
+
+            <!-- BRAND -->
+
+            <p
+                class="product-detail-brand"
+                id="productBrand"
+            >
+                STRIDEX
+            </p>
+
+
+            <!-- PRODUCT NAME -->
+
+            <h1 id="productName">
+                StrideX Product
+            </h1>
+
+
+            <!-- RATING -->
+
+            <div class="product-rating">
+
+                <span>
+                    &#9733;
+                </span>
+
+                <span>
+                    &#9733;
+                </span>
+
+                <span>
+                    &#9733;
+                </span>
+
+                <span>
+                    &#9733;
+                </span>
+
+                <span>
+                    &#9733;
+                </span>
+
+                <!--
+                    This will now change depending
+                    on the product category.
+                -->
+
+                <small id="productPerformanceLabel">
+                    Performance Product
+                </small>
+
+            </div>
+
+
+            <!-- PRICE -->
+
+            <p
+                class="product-detail-price"
+                id="productPrice"
+            >
+                R0.00
+            </p>
+
+
+            <!-- DESCRIPTION -->
+
+            <p
+                class="product-detail-description"
+                id="productDescription"
+            >
+                StrideX performance product.
+            </p>
+
+
+            <!-- =================================================
+                 PRODUCT INFORMATION ROWS
+                 ================================================= -->
+
+            <div class="product-info-row">
+
+                <strong>
+                    Sport:
+                </strong>
+
+                <span id="productSport">
+                    Sport
+                </span>
+
+            </div>
+
+
+            <div class="product-info-row">
+
+                <strong>
+                    Category:
+                </strong>
+
+                <span id="productCategory">
+                    Category
+                </span>
+
+            </div>
+
+
+            <div class="product-info-row">
+
+                <strong>
+                    Colour:
+                </strong>
+
+                <span id="productColour">
+                    Colour
+                </span>
+
+            </div>
+
+
+            <!-- =================================================
+                 SIZE
+                 ================================================= -->
+
+            <div class="product-option-section">
+
+                <div class="option-heading">
+
+                    <h3>
+                        Select Size
+                    </h3>
+
+                    <a href="#">
+                        Size Guide
+                    </a>
+
+                </div>
+
+
+                <div
+                    class="size-options"
+                    id="sizeOptions"
+                >
+
+                    <!--
+                        product.js changes these button labels.
+
+                        Soccer shoes:
+                        6 7 8 9 10 11
+
+                        Tennis apparel:
+                        XS S M L XL XXL
+
+                        Accessories:
+                        S M L etc.
+
+                        One-size products:
+                        One Size
+                    -->
+
+                    <button
+                        type="button"
+                        class="size-button"
+                    >
+                        6
+                    </button>
+
+                    <button
+                        type="button"
+                        class="size-button"
+                    >
+                        7
+                    </button>
+
+                    <button
+                        type="button"
+                        class="size-button"
+                    >
+                        8
+                    </button>
+
+                    <button
+                        type="button"
+                        class="size-button"
+                    >
+                        9
+                    </button>
+
+                    <button
+                        type="button"
+                        class="size-button"
+                    >
+                        10
+                    </button>
+
+                    <button
+                        type="button"
+                        class="size-button"
+                    >
+                        11
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 QUANTITY
+                 ================================================= -->
+
+            <div class="product-option-section">
+
+                <h3>
+                    Quantity
+                </h3>
+
+                <div class="quantity-control">
+
+                    <button
+                        type="button"
+                        id="decreaseQuantity"
+                    >
+                        -
+                    </button>
+
+                    <span id="quantityValue">
+                        1
+                    </span>
+
+                    <button
+                        type="button"
+                        id="increaseQuantity"
+                    >
+                        +
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 ADD TO CART
+                 ================================================= -->
+
+            <button
+                type="button"
+                class="product-add-cart"
+                id="addToCartButton"
+            >
+                Add to Cart
+            </button>
+
+
+            <!-- =================================================
+                 BUY NOW
+                 ================================================= -->
+
+            <button
+                type="button"
+                class="product-buy-now"
+                id="buyNowButton"
+            >
+                Buy Now
+            </button>
+
+
+            <!-- =================================================
+                 PRODUCT BENEFITS
+                 ================================================= -->
+
+            <div class="product-benefits">
+
+
+                <div class="product-benefit">
+
+                    <strong>
+                        &#10003; Performance Ready
+                    </strong>
+
+                    <span>
+                        Designed for training and match-day use.
+                    </span>
+
+                </div>
+
+
+                <div class="product-benefit">
+
+                    <strong>
+                        &#10003; Secure Checkout
+                    </strong>
+
+                    <span>
+                        Safe and convenient online shopping.
+                    </span>
+
+                </div>
+
+
+                <div class="product-benefit">
+
+                    <strong>
+                        &#10003; Store Collection
+                    </strong>
+
+                    <span>
+                        Online shopping with physical-store support.
+                    </span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =====================================================
+         PRODUCT EXTRA DETAILS
+         ===================================================== -->
+
+    <section class="product-extra">
+
+        <div class="product-extra-grid">
+
+
+            <!-- PRODUCT DETAILS -->
+
+            <div class="product-extra-card">
+
+                <h3>
+                    Product Details
+                </h3>
+
+                <p id="fullProductDescription">
+                    StrideX performance product designed for athletes.
+                </p>
+
+            </div>
+
+
+            <!-- DELIVERY -->
+
+            <div class="product-extra-card">
+
+                <h3>
+                    Delivery
+                </h3>
+
+                <p>
+                    Delivery options and collection availability
+                    will be confirmed during checkout.
+                </p>
+
+            </div>
+
+
+            <!-- RETURNS -->
+
+            <div class="product-extra-card">
+
+                <h3>
+                    Returns
+                </h3>
+
+                <p>
+                    Products can be returned according to the
+                    StrideX return policy and product condition
+                    requirements.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         FOOTER
+         ===================================================== -->
+
+    <footer class="site-footer">
+
+        <div class="footer-grid">
+
+
+            <!-- FOOTER BRAND -->
+
+            <div class="footer-brand">
+
+                <img
+                    src="images/stridex-logo.jpeg"
+                    alt="StrideX Sports Logo"
+                />
+
+                <p>
+                    Your destination for StrideX products and selected
+                    sports brands across Soccer, Rugby, Cycling and Tennis.
+                </p>
+
+            </div>
+
+
+            <!-- QUICK LINKS -->
+
+            <div class="footer-column">
+
+                <h3>
+                    Quick Links
+                </h3>
+
+                <a href="index.html">
+                    Home
+                </a>
+
+                <a href="shop.xhtml">
+                    Shop
+                </a>
+
+                <a href="#">
+                    Custom Kit
+                </a>
+
+                <a href="#">
+                    About
+                </a>
+
+                <a href="#">
+                    Contact
+                </a>
+
+            </div>
+
+
+            <!-- SHOP BY SPORT -->
+
+            <div class="footer-column">
+
+                <h3>
+                    Shop By Sport
+                </h3>
+
+                <a href="shop.xhtml?sport=soccer">
+                    Soccer
+                </a>
+
+                <a href="shop.xhtml?sport=rugby">
+                    Rugby
+                </a>
+
+                <a href="shop.xhtml?sport=cycling">
+                    Cycling
+                </a>
+
+                <a href="shop.xhtml?sport=tennis">
+                    Tennis
+                </a>
+
+            </div>
+
+
+            <!-- CONTACT -->
+
+            <div class="footer-column">
+
+                <h3>
+                    Contact
+                </h3>
+
+                <p>
+                    Email: info@stridexsports.co.za
+                </p>
+
+                <p>
+                    Phone: 012 555 0147
+                </p>
+
+                <p>
+                    South Africa
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="footer-bottom">
+
+            <p>
+                &#169; 2026 StrideX Sports. Every Move Matters.
+            </p>
+
+        </div>
+
+    </footer>
+
+
+    <!-- =====================================================
+         MAIN PRODUCT JAVASCRIPT
+         ===================================================== -->
+
+    <script
+        type="text/javascript"
+        src="js/product.js"
+    ></script>
+
+
+    <!-- =====================================================
+         DYNAMIC PRODUCT PAGE LABELS
+         ===================================================== -->
+
+    <script type="text/javascript">
+
+        function updateProductPageLabels() {
+
+            var sportElement =
+                document.getElementById(
+                    "productSport"
+                );
+
+
+            var categoryElement =
+                document.getElementById(
+                    "productCategory"
+                );
+
+
+            var breadcrumbSport =
+                document.getElementById(
+                    "breadcrumbSport"
+                );
+
+
+            var performanceLabel =
+                document.getElementById(
+                    "productPerformanceLabel"
+                );
+
+
+            if (!sportElement) {
+                return;
+            }
+
+
+            var sport =
+                sportElement.textContent
+                    .trim();
+
+
+            var category =
+                "";
+
+
+            if (categoryElement) {
+
+                category =
+                    categoryElement.textContent
+                        .trim();
+
+            }
+
+
+            /* =============================================
+               BREADCRUMB SPORT
+               ============================================= */
+
+            if (breadcrumbSport) {
+
+                breadcrumbSport.textContent =
+                    sport;
+
+
+                breadcrumbSport.href =
+
+                    "shop.xhtml?sport=" +
+                    sport.toLowerCase();
+
+            }
+
+
+            /* =============================================
+               PERFORMANCE LABEL
+               ============================================= */
+
+            if (!performanceLabel) {
+                return;
+            }
+
+
+            /* SOCCER */
+
+            if (
+                sport.toLowerCase() ===
+                "soccer"
+            ) {
+
+                if (
+                    category
+                        .toLowerCase()
+                        .indexOf(
+                            "footwear"
+                        ) !== -1
+                ) {
+
+                    performanceLabel.textContent =
+                        "Performance Footwear";
+
+                } else if (
+                    category
+                        .toLowerCase()
+                        .indexOf(
+                            "apparel"
+                        ) !== -1
+                ) {
+
+                    performanceLabel.textContent =
+                        "Performance Soccer Apparel";
+
+                } else if (
+                    category
+                        .toLowerCase()
+                        .indexOf(
+                            "goalkeeper"
+                        ) !== -1
+                ) {
+
+                    performanceLabel.textContent =
+                        "Goalkeeper Equipment";
+
+                } else {
+
+                    performanceLabel.textContent =
+                        "Soccer Equipment";
+
+                }
+
+            }
+
+
+            /* TENNIS */
+
+            else if (
+                sport.toLowerCase() ===
+                "tennis"
+            ) {
+
+                if (
+                    category
+                        .toLowerCase()
+                        .indexOf(
+                            "apparel"
+                        ) !== -1
+                ) {
+
+                    performanceLabel.textContent =
+                        "Performance Tennis Apparel";
+
+                } else if (
+                    category
+                        .toLowerCase()
+                        .indexOf(
+                            "accessories"
+                        ) !== -1
+                ) {
+
+                    performanceLabel.textContent =
+                        "Tennis Accessories";
+
+                } else if (
+                    category
+                        .toLowerCase()
+                        .indexOf(
+                            "equipment"
+                        ) !== -1
+                ) {
+
+                    performanceLabel.textContent =
+                        "Tennis Equipment";
+
+                } else {
+
+                    performanceLabel.textContent =
+                        "Performance Tennis";
+
+                }
+
+            }
+
+
+            /* RUGBY */
+
+            else if (
+                sport.toLowerCase() ===
+                "rugby"
+            ) {
+
+                performanceLabel.textContent =
+                    "Performance Rugby";
+
+            }
+
+
+            /* CYCLING */
+
+            else if (
+                sport.toLowerCase() ===
+                "cycling"
+            ) {
+
+                performanceLabel.textContent =
+                    "Performance Cycling";
+
+            }
+
+
+            /* OTHER */
+
+            else {
+
+                performanceLabel.textContent =
+                    "Performance Product";
+
+            }
+
+        }
+
+
+        updateProductPageLabels();
+
+    </script>
+
+</body>
+
+</html>

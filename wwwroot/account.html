@@ -1,0 +1,1817 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Account | StrideX</title>
+
+    <!-- MAIN STRIDEX STYLESHEET -->
+    <link
+        rel="stylesheet"
+        type="text/css"
+        href="css/style.css"
+    >
+
+    <!-- ACCOUNT PAGE ONLY -->
+    <style>
+        .account-page {
+            min-height: 650px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 70px 20px;
+            background: #f7f7f7;
+            color: #111111;
+        }
+
+        .account-card {
+            width: 100%;
+            max-width: 470px;
+            padding: 38px;
+
+            background: #ffffff;
+
+            border: 1px solid #e4e4e4;
+            border-radius: 16px;
+
+            box-shadow:
+                0 14px 35px rgba(0, 0, 0, 0.08);
+        }
+
+        .account-card .eyebrow {
+            color: #7c3aed;
+
+            font-size: 12px;
+            font-weight: 700;
+
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .account-card h1 {
+            margin: 12px 0;
+
+            color: #111111;
+
+            font-size: 30px;
+        }
+
+        .account-card .subtitle {
+            margin-bottom: 27px;
+
+            color: #666666;
+
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .account-card label {
+            display: block;
+
+            margin: 17px 0 8px;
+
+            color: #222222;
+
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .account-card input {
+            display: block;
+
+            width: 100%;
+
+            padding: 14px;
+
+            color: #111111;
+            background: #ffffff;
+
+            border: 1px solid #d5d5d5;
+            border-radius: 9px;
+
+            font: inherit;
+        }
+
+        .account-card input:focus {
+            outline: 2px solid #7c3aed;
+            outline-offset: 1px;
+
+            border-color: transparent;
+        }
+
+        .password-help {
+            margin-top: 8px;
+
+            color: #777777;
+
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .account-card button {
+            cursor: pointer;
+            font: inherit;
+        }
+
+        .account-card .primary-button {
+            display: block;
+
+            width: 100%;
+
+            margin-top: 24px;
+            padding: 14px;
+
+            color: #ffffff;
+            background: #7c3aed;
+
+            border: none;
+            border-radius: 7px;
+
+            font-weight: 700;
+
+            text-align: center;
+            text-decoration: none;
+
+            transition: 0.2s;
+        }
+
+        .account-card .primary-button:hover {
+            background: #5b21b6;
+        }
+
+        .account-card .primary-button:disabled {
+            opacity: 0.6;
+            cursor: wait;
+        }
+
+        .switch-line {
+            margin: 23px 0 0;
+
+            text-align: center;
+
+            color: #666666;
+
+            font-size: 14px;
+        }
+
+        .text-button {
+            padding: 0;
+
+            color: #7c3aed;
+            background: none;
+
+            border: none;
+
+            font-weight: 700;
+        }
+
+        .text-button:hover {
+            color: #5b21b6;
+        }
+
+        .message {
+            margin-top: 17px;
+            padding: 12px;
+
+            border-radius: 8px;
+
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .message:empty {
+            display: none;
+        }
+
+        .message.error {
+            color: #a12638;
+            background: #fde9ec;
+        }
+
+        .message.success {
+            color: #176b38;
+            background: #e5f7eb;
+        }
+
+        .profile-detail {
+            margin: 15px 0;
+            padding: 15px;
+
+            background: #f7f7f7;
+
+            border: 1px solid #eeeeee;
+            border-radius: 9px;
+        }
+
+        .profile-detail span {
+            display: block;
+
+            margin-bottom: 7px;
+
+            color: #777777;
+
+            font-size: 12px;
+        }
+
+        .profile-detail strong {
+            color: #111111;
+
+            overflow-wrap: anywhere;
+        }
+
+        #logoutButton {
+            background: #111111;
+        }
+
+        #logoutButton:hover {
+            background: #333333;
+        }
+
+        [hidden] {
+            display: none !important;
+        }
+
+        @media screen and (max-width: 750px) {
+            .account-page {
+                padding: 45px 18px;
+            }
+
+            .account-card {
+                padding: 28px;
+            }
+        }
+
+        @media screen and (max-width: 500px) {
+            .account-card {
+                padding: 24px;
+            }
+        }
+        /* =========================================================
+   MY ACCOUNT DASHBOARD
+   ========================================================= */
+
+.account-dashboard-section {
+    margin-top: 24px;
+    padding: 22px;
+    background: #ffffff;
+    border: 1px solid #e5e5e5;
+    border-radius: 12px;
+}
+
+.account-dashboard-section h2 {
+    margin-bottom: 8px;
+    font-size: 20px;
+    color: #111111;
+}
+
+.account-section-text {
+    margin-bottom: 18px;
+    color: #666666;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+#changePasswordForm {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#changePasswordForm label {
+    margin-top: 6px;
+    font-size: 13px;
+    font-weight: bold;
+    color: #222222;
+}
+
+#changePasswordForm input {
+    width: 100%;
+    padding: 13px 14px;
+    border: 1px solid #d8d8d8;
+    border-radius: 8px;
+    outline: none;
+    font-size: 15px;
+}
+
+#changePasswordForm input:focus {
+    border-color: #7c3aed;
+}
+
+#changePasswordForm .primary-button {
+    margin-top: 10px;
+}
+
+.delete-account-button {
+    width: 100%;
+    margin-top: 12px;
+    padding: 14px 18px;
+    border: 1px solid #dc2626;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #dc2626;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.delete-account-button:hover {
+    background: #dc2626;
+    color: #ffffff;
+}
+    </style>
+</head>
+
+
+<body>
+
+    <!-- =====================================================
+         STRIDEX HEADER
+         ===================================================== -->
+
+    <header class="site-header">
+
+        <div class="header-top">
+
+            <!-- LOGO -->
+
+            <div class="logo">
+                <a href="index.html">
+                    <img
+                        src="images/stridex-logo.jpeg"
+                        alt="StrideX Sports Logo"
+                    >
+                </a>
+            </div>
+
+
+            <!-- SEARCH -->
+
+            <form
+                class="header-search"
+                action="shop.xhtml"
+                method="get"
+            >
+                <input
+                    type="text"
+                    name="search"
+                    placeholder="Search products, brands or sports..."
+                >
+
+                <button type="submit">
+                    Search
+                </button>
+            </form>
+
+
+            <!-- HEADER ACTIONS -->
+
+            <div class="header-actions">
+
+                <a
+                    href="account.html"
+                    class="header-action"
+                >
+                    <span class="action-icon">
+                        &#128100;
+                    </span>
+
+                    <span>
+                        Account
+                    </span>
+                </a>
+                <a
+    href="orders.html"
+    class="header-action"
+>
+    <span class="action-icon">
+        &#128230;
+    </span>
+
+    <span>
+        My Orders
+    </span>
+</a>
+
+
+                <a
+                    href="cart.html"
+                    class="header-action cart-action"
+                >
+                    <span class="action-icon">
+                        &#128722;
+                    </span>
+
+                    <span>
+                        Cart
+                    </span>
+
+                    <span
+                        class="cart-count"
+                        id="cartCount"
+                    >
+                        0
+                    </span>
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- MAIN NAVIGATION -->
+
+        <nav class="main-nav">
+
+            <a href="index.html">
+                Home
+            </a>
+
+            <a href="shop.xhtml">
+                Shop
+            </a>
+
+            <a href="shop.xhtml?sport=soccer">
+                Soccer
+            </a>
+
+            <a href="shop.xhtml?sport=rugby">
+                Rugby
+            </a>
+
+            <a href="shop.xhtml?sport=tennis">
+                Tennis
+            </a>
+
+            <a href="shop.xhtml?sport=cycling">
+                Cycling
+            </a>
+
+            <a href="custom-kit.xhtml">
+                Custom Kit
+            </a>
+
+        </nav>
+
+    </header>
+
+
+    <!-- =====================================================
+         ACCOUNT PAGE
+         ===================================================== -->
+
+    <main class="account-page">
+
+        <section class="account-card">
+
+
+            <!-- =================================================
+                 REGISTER
+                 ================================================= -->
+
+            <div
+                id="registerSection"
+                hidden
+            >
+
+                <div class="eyebrow">
+                    Every Move Matters
+                </div>
+
+                <h1>
+                    Create your account
+                </h1>
+
+                <p class="subtitle">
+                    Join StrideX and make every move yours.
+                </p>
+
+
+                <form id="registerForm">
+
+                    <label for="registerName">
+                        Full name
+                    </label>
+
+                    <input
+                        id="registerName"
+                        type="text"
+                        autocomplete="name"
+                        maxlength="100"
+                        required
+                    >
+
+
+                    <label for="registerEmail">
+                        Email address
+                    </label>
+
+                    <input
+                        id="registerEmail"
+                        type="email"
+                        autocomplete="email"
+                        required
+                    >
+
+
+                    <label for="registerPassword">
+                        Password
+                    </label>
+
+                    <input
+                        id="registerPassword"
+                        type="password"
+                        autocomplete="new-password"
+                        minlength="8"
+                        required
+                    >
+
+
+                    <p class="password-help">
+                        At least 8 characters, including a number.
+                    </p>
+
+
+                    <button
+                        class="primary-button"
+                        type="submit"
+                    >
+                        Create Account
+                    </button>
+
+                </form>
+
+
+                <p class="switch-line">
+
+                    Already have an account?
+
+                    <button
+                        class="text-button"
+                        id="showLogin"
+                        type="button"
+                    >
+                        Log in
+                    </button>
+
+                </p>
+
+            </div>
+
+
+            <!-- =================================================
+                 LOGIN
+                 ================================================= -->
+
+            <div
+                id="loginSection"
+                hidden
+            >
+
+                <div class="eyebrow">
+                    Welcome Back
+                </div>
+
+                <h1>
+                    Log in to StrideX
+                </h1>
+
+                <p class="subtitle">
+                    Enter your details to access your account.
+                </p>
+
+
+                <form id="loginForm">
+
+                    <label for="loginEmail">
+                        Email address
+                    </label>
+
+                    <input
+                        id="loginEmail"
+                        type="email"
+                        autocomplete="email"
+                        required
+                    >
+
+
+                    <label for="loginPassword">
+                        Password
+                    </label>
+
+                    <input
+                        id="loginPassword"
+                        type="password"
+                        autocomplete="current-password"
+                        required
+                    >
+
+
+                    <button
+                        class="primary-button"
+                        type="submit"
+                    >
+                        Log In
+                    </button>
+
+                </form>
+
+
+                <p class="switch-line">
+
+                    New to StrideX?
+
+                    <button
+                        class="text-button"
+                        id="showRegister"
+                        type="button"
+                    >
+                        Create an account
+                    </button>
+
+                </p>
+
+            </div>
+
+
+            <!-- =================================================
+                 LOGGED-IN PROFILE
+                 ================================================= -->
+
+           <div
+    id="profileSection"
+    hidden
+>
+
+    <div class="eyebrow">
+        StrideX Member
+    </div>
+
+    <h1>
+        My Account
+    </h1>
+
+    <p class="subtitle">
+        Manage your StrideX account.
+    </p>
+
+
+    <!-- ACCOUNT INFORMATION -->
+
+    <div class="account-dashboard-section">
+
+        <h2>
+            Account Information
+        </h2>
+
+        <div class="profile-detail">
+
+            <span>
+                FULL NAME
+            </span>
+
+            <strong id="profileName"></strong>
+
+        </div>
+
+
+        <div class="profile-detail">
+
+            <span>
+                EMAIL ADDRESS
+            </span>
+
+            <strong id="profileEmail"></strong>
+
+        </div>
+        <button
+    class="primary-button"
+    id="editAccountButton"
+    type="button"
+>
+    Edit Account Information
+</button>
+
+
+<form
+    id="updateAccountForm"
+    hidden
+>
+
+    <label for="updateFullName">
+        Full name
+    </label>
+
+    <input
+        id="updateFullName"
+        type="text"
+        maxlength="100"
+        autocomplete="name"
+        required
+    >
+
+
+    <label for="updateEmail">
+        Email address
+    </label>
+
+    <input
+        id="updateEmail"
+        type="email"
+        autocomplete="email"
+        required
+    >
+
+
+    <button
+        class="primary-button"
+        type="submit"
+    >
+        Save Changes
+    </button>
+
+
+    <button
+        class="primary-button"
+        id="cancelAccountEditButton"
+        type="button"
+    >
+        Cancel
+    </button>
+
+</form>
+
+    </div>
+
+
+
+    <!-- SECURITY -->
+
+    <div class="account-dashboard-section">
+
+        <h2>
+            Security
+        </h2>
+
+        <p class="account-section-text">
+            Change your account password.
+        </p>
+
+
+        <form id="changePasswordForm">
+
+            <label for="currentPassword">
+                Current password
+            </label>
+
+            <input
+                id="currentPassword"
+                type="password"
+                autocomplete="current-password"
+                required
+            >
+
+
+            <label for="newPassword">
+                New password
+            </label>
+
+            <input
+                id="newPassword"
+                type="password"
+                autocomplete="new-password"
+                minlength="8"
+                required
+            >
+
+
+            <label for="confirmNewPassword">
+                Confirm new password
+            </label>
+
+            <input
+                id="confirmNewPassword"
+                type="password"
+                autocomplete="new-password"
+                minlength="8"
+                required
+            >
+
+
+            <button
+                class="primary-button"
+                type="submit"
+            >
+                Change Password
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <!-- SETTINGS -->
+
+
+
+
+    <!-- ACCOUNT ACTIONS -->
+
+    <div class="account-dashboard-section">
+
+        <h2>
+            Account Actions
+        </h2>
+
+        <button
+            class="primary-button"
+            id="logoutButton"
+            type="button"
+        >
+            Log Out
+        </button>
+
+
+         <button
+    class="delete-account-button"
+    id="deleteAccountButton"
+    type="button"
+>
+    Delete Account
+</button>
+
+
+<div
+    id="deleteAccountPanel"
+    hidden
+>
+
+    <p class="account-section-text">
+        Deleting your account is permanent.
+        Enter your current password to continue.
+    </p>
+
+
+    <label for="deleteAccountPassword">
+        Current password
+    </label>
+
+    <input
+        id="deleteAccountPassword"
+        type="password"
+        autocomplete="current-password"
+    >
+
+
+    <button
+        class="delete-account-button"
+        id="confirmDeleteAccountButton"
+        type="button"
+    >
+        Permanently Delete Account
+    </button>
+
+
+    <button
+        class="primary-button"
+        id="cancelDeleteAccountButton"
+        type="button"
+    >
+        Cancel
+    </button>
+
+</div>
+
+    </div>
+
+</div>
+
+
+            <!-- MESSAGE -->
+
+            <div
+                id="message"
+                class="message"
+                role="status"
+                aria-live="polite"
+            ></div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =====================================================
+         ACCOUNT / BACKEND JAVASCRIPT
+         ===================================================== -->
+
+    <script>
+
+        const API_BASE = "";
+        const returnPage =
+    new URLSearchParams(
+        window.location.search
+    ).get("return");
+
+        const registerSection =
+            document.getElementById(
+                "registerSection"
+            );
+
+        const loginSection =
+            document.getElementById(
+                "loginSection"
+            );
+
+        const profileSection =
+            document.getElementById(
+                "profileSection"
+            );
+
+        const message =
+            document.getElementById(
+                "message"
+            );
+
+        const cartCount =
+            document.getElementById(
+                "cartCount"
+            );
+
+
+        // =====================================================
+        // MESSAGE
+        // =====================================================
+
+        function showMessage(
+            text,
+            isError = false
+        ) {
+
+            message.textContent = text;
+
+            message.className =
+                "message " +
+                (
+                    isError
+                        ? "error"
+                        : "success"
+                );
+        }
+
+
+        function clearMessage() {
+
+            message.textContent = "";
+
+            message.className =
+                "message";
+        }
+
+
+        // =====================================================
+        // ACCOUNT SECTIONS
+        // =====================================================
+
+        function showSection(section) {
+
+            registerSection.hidden =
+                section !== "register";
+
+            loginSection.hidden =
+                section !== "login";
+
+            profileSection.hidden =
+                section !== "profile";
+
+            clearMessage();
+        }
+
+
+        // =====================================================
+        // API REQUEST
+        // =====================================================
+
+        async function apiRequest(
+            path,
+            options = {}
+        ) {
+
+            const response =
+                await fetch(
+                    API_BASE + path,
+                    {
+                        ...options,
+
+                        credentials:
+                            "include",
+
+                        headers: {
+
+                            "Content-Type":
+                                "application/json",
+
+                            ...(
+                                options.headers ||
+                                {}
+                            )
+                        }
+                    }
+                );
+
+
+            const data =
+                await response
+                    .json()
+                    .catch(
+                        () => ({})
+                    );
+
+
+            if (!response.ok) {
+
+                const validationMessages =
+                    data.errors
+                        ? Object
+                            .values(
+                                data.errors
+                            )
+                            .flat()
+                        : [];
+
+
+                const errorText =
+                    validationMessages
+                        .join(" ") ||
+
+                    data.message ||
+
+                    data.detail ||
+
+                    (
+                        response.status === 401
+
+                            ? "Incorrect email or password."
+
+                            : "Something went wrong."
+                    );
+
+
+                throw new Error(
+                    errorText
+                );
+            }
+
+
+            return data;
+        }
+
+
+        // =====================================================
+        // CART COUNT
+        // =====================================================
+
+        async function updateCartCount() {
+
+            if (!cartCount) {
+                return;
+            }
+
+            try {
+
+                const response =
+                    await fetch(
+                        API_BASE +
+                        "/api/cart",
+                        {
+                            credentials:
+                                "include"
+                        }
+                    );
+
+
+                if (!response.ok) {
+
+                    cartCount.textContent =
+                        "0";
+
+                    return;
+                }
+
+
+                const cart =
+                    await response.json();
+
+
+                cartCount.textContent =
+                    cart.itemCount || 0;
+
+            } catch {
+
+                cartCount.textContent =
+                    "0";
+            }
+        }
+
+
+        // =====================================================
+        // DISPLAY PROFILE
+        // =====================================================
+
+        function displayProfile(user) {
+
+            document.getElementById(
+                "profileName"
+            ).textContent =
+                user.fullName || "";
+
+
+            document.getElementById(
+                "profileEmail"
+            ).textContent =
+                user.email || "";
+
+
+            showSection(
+                "profile"
+            );
+        }
+
+
+        // =====================================================
+        // LOAD ACCOUNT
+        // =====================================================
+
+        async function loadAccount() {
+
+            try {
+
+                const user =
+                    await apiRequest(
+                        "/api/auth/me"
+                    );
+
+
+                displayProfile(
+                    user
+                );
+
+            } catch {
+
+                showSection(
+                    "login"
+                );
+            }
+        }
+
+
+        // =====================================================
+        // SWITCH LOGIN / REGISTER
+        // =====================================================
+
+        document.getElementById(
+            "showLogin"
+        ).addEventListener(
+            "click",
+            () => {
+
+                showSection(
+                    "login"
+                );
+            }
+        );
+
+
+        document.getElementById(
+            "showRegister"
+        ).addEventListener(
+            "click",
+            () => {
+
+                showSection(
+                    "register"
+                );
+            }
+        );
+
+
+        // =====================================================
+        // REGISTER
+        // =====================================================
+
+        document.getElementById(
+            "registerForm"
+        ).addEventListener(
+            "submit",
+            async event => {
+
+                event.preventDefault();
+
+                clearMessage();
+
+
+                const form =
+                    event.currentTarget;
+
+
+                const button =
+                    form.querySelector(
+                        "button[type='submit']"
+                    );
+
+
+                button.disabled =
+                    true;
+
+
+                try {
+
+                    const data =
+                        await apiRequest(
+                            "/api/auth/register",
+                            {
+                                method:
+                                    "POST",
+
+                                body:
+                                    JSON.stringify(
+                                        {
+                                            fullName:
+                                                document
+                                                    .getElementById(
+                                                        "registerName"
+                                                    )
+                                                    .value
+                                                    .trim(),
+
+                                            email:
+                                                document
+                                                    .getElementById(
+                                                        "registerEmail"
+                                                    )
+                                                    .value
+                                                    .trim(),
+
+                                            password:
+                                                document
+                                                    .getElementById(
+                                                        "registerPassword"
+                                                    )
+                                                    .value
+                                        }
+                                    )
+                            }
+                        );
+
+
+                    form.reset();
+displayProfile(data.user);
+
+if (
+    returnPage ===
+    "orders.html"
+) {
+
+    window.location.href =
+        "orders.html";
+
+    return;
+
+}
+
+showMessage(
+    "Welcome back to StrideX!"
+);
+
+
+                    await updateCartCount();
+
+                } catch (error) {
+
+                    showMessage(
+                        error.message,
+                        true
+                    );
+
+                } finally {
+
+                    button.disabled =
+                        false;
+                }
+            }
+        );
+
+
+        // =====================================================
+        // LOGIN
+        // =====================================================
+
+        document.getElementById(
+            "loginForm"
+        ).addEventListener(
+            "submit",
+            async event => {
+
+                event.preventDefault();
+
+                clearMessage();
+
+
+                const form =
+                    event.currentTarget;
+
+
+                const button =
+                    form.querySelector(
+                        "button[type='submit']"
+                    );
+
+
+                button.disabled =
+                    true;
+
+
+                try {
+
+                    const data =
+                        await apiRequest(
+                            "/api/auth/login",
+                            {
+                                method:
+                                    "POST",
+
+                                body:
+                                    JSON.stringify(
+                                        {
+                                            email:
+                                                document
+                                                    .getElementById(
+                                                        "loginEmail"
+                                                    )
+                                                    .value
+                                                    .trim(),
+
+                                            password:
+                                                document
+                                                    .getElementById(
+                                                        "loginPassword"
+                                                    )
+                                                    .value
+                                        }
+                                    )
+                            }
+                        );
+
+
+                    form.reset();
+
+
+                    displayProfile(
+                        data.user
+                    );
+
+
+                    showMessage(
+                        "Welcome back to StrideX!"
+                    );
+
+
+                    await updateCartCount();
+
+                } catch (error) {
+
+                    showMessage(
+                        error.message,
+                        true
+                    );
+
+                } finally {
+
+                    button.disabled =
+                        false;
+                }
+            }
+        );
+
+
+        // =====================================================
+        // LOGOUT
+        // =====================================================
+        const editAccountButton =
+    document.getElementById(
+        "editAccountButton"
+    );
+
+const updateAccountForm =
+    document.getElementById(
+        "updateAccountForm"
+    );
+
+const updateFullName =
+    document.getElementById(
+        "updateFullName"
+    );
+
+const updateEmail =
+    document.getElementById(
+        "updateEmail"
+    );
+
+const cancelAccountEditButton =
+    document.getElementById(
+        "cancelAccountEditButton"
+    );
+
+
+editAccountButton.addEventListener(
+    "click",
+    () => {
+
+        clearMessage();
+
+        updateFullName.value =
+            document.getElementById(
+                "profileName"
+            ).textContent.trim();
+
+        updateEmail.value =
+            document.getElementById(
+                "profileEmail"
+            ).textContent.trim();
+
+        updateAccountForm.hidden =
+            false;
+
+        editAccountButton.hidden =
+            true;
+    }
+);
+
+
+cancelAccountEditButton.addEventListener(
+    "click",
+    () => {
+
+        updateAccountForm.reset();
+
+        updateAccountForm.hidden =
+            true;
+
+        editAccountButton.hidden =
+            false;
+
+        clearMessage();
+    }
+);
+updateAccountForm.addEventListener(
+    "submit",
+    async event => {
+
+        event.preventDefault();
+        clearMessage();
+
+        const button =
+            updateAccountForm.querySelector(
+                "button[type='submit']"
+            );
+
+        button.disabled = true;
+
+
+        try {
+
+            const data =
+                await apiRequest(
+                    "/api/auth/account",
+                    {
+                        method: "PUT",
+
+                        body: JSON.stringify({
+                            fullName:
+                                updateFullName.value.trim(),
+
+                            email:
+                                updateEmail.value.trim()
+                        })
+                    }
+                );
+
+
+            document.getElementById(
+                "profileName"
+            ).textContent =
+                data.user.fullName;
+
+
+            document.getElementById(
+                "profileEmail"
+            ).textContent =
+                data.user.email;
+
+
+            updateAccountForm.reset();
+
+            updateAccountForm.hidden =
+                true;
+
+            editAccountButton.hidden =
+                false;
+
+
+            showMessage(
+                "Account information updated successfully."
+            );
+
+
+        } catch (error) {
+
+            showMessage(
+                error.message,
+                true
+            );
+
+        } finally {
+
+            button.disabled = false;
+
+        }
+
+    }
+);
+
+        document.getElementById(
+    "changePasswordForm"
+).addEventListener("submit", async event => {
+
+    event.preventDefault();
+    clearMessage();
+
+    const form = event.currentTarget;
+
+    const currentPassword =
+        document.getElementById(
+            "currentPassword"
+        ).value;
+
+    const newPassword =
+        document.getElementById(
+            "newPassword"
+        ).value;
+
+    const confirmNewPassword =
+        document.getElementById(
+            "confirmNewPassword"
+        ).value;
+
+
+    if (
+        newPassword !==
+        confirmNewPassword
+    ) {
+
+        showMessage(
+            "The new passwords do not match.",
+            true
+        );
+
+        return;
+    }
+
+
+    const button =
+        form.querySelector(
+            "button[type='submit']"
+        );
+
+    button.disabled = true;
+
+
+    try {
+
+        await apiRequest(
+            "/api/auth/change-password",
+            {
+                method: "POST",
+
+                body: JSON.stringify({
+                    currentPassword:
+                        currentPassword,
+
+                    newPassword:
+                        newPassword
+                })
+            }
+        );
+
+
+        form.reset();
+
+        showMessage(
+            "Password changed successfully."
+        );
+
+
+    } catch (error) {
+
+        showMessage(
+            error.message,
+            true
+        );
+
+    } finally {
+
+        button.disabled = false;
+
+    }
+
+});
+const deleteAccountButton =
+    document.getElementById(
+        "deleteAccountButton"
+    );
+
+const deleteAccountPanel =
+    document.getElementById(
+        "deleteAccountPanel"
+    );
+
+const deleteAccountPassword =
+    document.getElementById(
+        "deleteAccountPassword"
+    );
+
+const confirmDeleteAccountButton =
+    document.getElementById(
+        "confirmDeleteAccountButton"
+    );
+
+const cancelDeleteAccountButton =
+    document.getElementById(
+        "cancelDeleteAccountButton"
+    );
+
+
+deleteAccountButton.addEventListener(
+    "click",
+    () => {
+
+        clearMessage();
+
+        deleteAccountPanel.hidden =
+            false;
+
+        deleteAccountPassword.focus();
+
+    }
+);
+
+
+cancelDeleteAccountButton.addEventListener(
+    "click",
+    () => {
+
+        deleteAccountPassword.value =
+            "";
+
+        deleteAccountPanel.hidden =
+            true;
+
+        clearMessage();
+
+    }
+);
+
+
+confirmDeleteAccountButton.addEventListener(
+    "click",
+    async () => {
+
+        clearMessage();
+
+        const currentPassword =
+            deleteAccountPassword.value;
+
+        if (
+            !currentPassword.trim()
+        ) {
+
+            showMessage(
+                "Enter your current password.",
+                true
+            );
+
+            return;
+        }
+
+
+        confirmDeleteAccountButton.disabled =
+            true;
+
+
+        try {
+
+            await apiRequest(
+                "/api/auth/delete-account",
+                {
+                    method: "POST",
+
+                    body: JSON.stringify({
+                        currentPassword:
+                            currentPassword
+                    })
+                }
+            );
+
+
+            deleteAccountPassword.value =
+                "";
+
+            deleteAccountPanel.hidden =
+                true;
+
+
+            showSection(
+                "login"
+            );
+
+
+            showMessage(
+                "Your StrideX account has been deleted."
+            );
+
+
+        } catch (error) {
+
+            showMessage(
+                error.message,
+                true
+            );
+
+        } finally {
+
+            confirmDeleteAccountButton.disabled =
+                false;
+
+        }
+
+    }
+);
+
+        document.getElementById(
+            "logoutButton"
+        ).addEventListener(
+            "click",
+            async () => {
+
+                clearMessage();
+
+
+                try {
+
+                    await apiRequest(
+                        "/api/auth/logout",
+                        {
+                            method:
+                                "POST"
+                        }
+                    );
+
+
+                    showSection(
+                        "login"
+                    );
+
+
+                    showMessage(
+                        "You have logged out successfully."
+                    );
+
+
+                    cartCount.textContent =
+                        "0";
+
+                } catch (error) {
+
+                    showMessage(
+                        error.message,
+                        true
+                    );
+                }
+            }
+        );
+
+
+        // =====================================================
+        // START PAGE
+        // =====================================================
+
+        loadAccount();
+
+        updateCartCount();
+
+    </script>
+
+</body>
+
+</html>

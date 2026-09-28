@@ -1,0 +1,2553 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Checkout | StrideX Sports</title>
+
+
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+            margin: 0;
+
+            background: #f5f5f7;
+
+            color: #111111;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+        }
+
+
+        .checkout-page {
+
+            width: min(
+                1180px,
+                calc(100% - 40px)
+            );
+
+            margin: 45px auto 70px;
+        }
+
+
+        .checkout-heading {
+
+            margin-bottom: 30px;
+        }
+
+
+        .checkout-heading h1 {
+
+            margin: 0 0 8px;
+
+            font-size: 38px;
+        }
+
+
+        .checkout-heading p {
+
+            margin: 0;
+
+            color: #666666;
+
+            line-height: 1.6;
+        }
+
+
+        .checkout-layout {
+
+            display: grid;
+
+            grid-template-columns:
+                minmax(0, 1fr)
+                370px;
+
+            gap: 28px;
+
+            align-items: start;
+        }
+
+
+        .checkout-card {
+
+            padding: 28px;
+
+            background: #ffffff;
+
+            border: 1px solid #e5e5e5;
+
+            border-radius: 16px;
+
+            box-shadow:
+                0 8px 25px
+                rgba(0, 0, 0, 0.05);
+        }
+
+
+        .checkout-card + .checkout-card {
+
+            margin-top: 24px;
+        }
+
+
+        .checkout-card h2 {
+
+            margin:
+                0
+                0
+                22px;
+
+            font-size: 24px;
+        }
+
+
+        .form-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    2,
+                    minmax(0, 1fr)
+                );
+
+            gap: 18px;
+        }
+
+
+        .form-group {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 8px;
+        }
+
+
+        .form-group.full-width {
+
+            grid-column:
+                1 / -1;
+        }
+
+
+        .form-group label {
+
+            color: #333333;
+
+            font-size: 14px;
+
+            font-weight: bold;
+        }
+
+
+        .form-group input,
+        .form-group select {
+
+            width: 100%;
+
+            padding: 13px 14px;
+
+            border:
+                1px solid
+                #d5d5d5;
+
+            border-radius: 8px;
+
+            background: #ffffff;
+
+            color: #111111;
+
+            font: inherit;
+        }
+
+
+        .form-group input:focus,
+        .form-group select:focus {
+
+            outline: none;
+
+            border-color: #7c3aed;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(
+                    124,
+                    58,
+                    237,
+                    0.12
+                );
+        }
+
+
+        .field-error {
+
+            min-height: 16px;
+
+            color: #b42338;
+
+            font-size: 12px;
+        }
+
+
+        .input-error {
+
+            border-color:
+                #b42338 !important;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(
+                    180,
+                    35,
+                    56,
+                    0.10
+                ) !important;
+        }
+
+
+        .summary {
+
+            position: sticky;
+
+            top: 20px;
+
+            padding: 27px;
+
+            background: #ffffff;
+
+            border: 1px solid #e3e3e3;
+
+            border-radius: 16px;
+
+            box-shadow:
+                0 8px 25px
+                rgba(0, 0, 0, 0.05);
+        }
+
+
+        .summary h2 {
+
+            margin:
+                0
+                0
+                22px;
+
+            font-size: 24px;
+        }
+
+
+        .summary-items {
+
+            display: grid;
+
+            gap: 16px;
+
+            margin-bottom: 22px;
+        }
+
+
+        .summary-item {
+
+            display: grid;
+
+            grid-template-columns:
+                65px
+                1fr;
+
+            gap: 13px;
+
+            padding-bottom: 15px;
+
+            border-bottom:
+                1px solid
+                #eeeeee;
+        }
+
+
+        .summary-item img {
+
+            width: 65px;
+
+            height: 65px;
+
+            object-fit: contain;
+
+            padding: 4px;
+
+            background: #ffffff;
+
+            border:
+                1px solid
+                #eeeeee;
+
+            border-radius: 8px;
+        }
+
+
+        .summary-item h3 {
+
+            margin:
+                0
+                0
+                6px;
+
+            font-size: 14px;
+        }
+
+
+        .summary-item p {
+
+            margin: 3px 0;
+
+            color: #666666;
+
+            font-size: 12px;
+        }
+
+
+        .summary-row {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            gap: 20px;
+
+            margin: 17px 0;
+
+            color: #555555;
+        }
+
+
+        .summary-total {
+
+            padding-top: 19px;
+
+            border-top:
+                1px solid
+                #dddddd;
+
+            color: #111111;
+
+            font-size: 22px;
+
+            font-weight: bold;
+        }
+
+
+        .summary-total strong {
+
+            color: #7c3aed;
+        }
+
+
+        .checkout-button {
+
+            width: 100%;
+
+            margin-top: 22px;
+
+            padding: 15px;
+
+            border: none;
+
+            border-radius: 8px;
+
+            background: #7c3aed;
+
+            color: #ffffff;
+
+            font: inherit;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+
+        .checkout-button:hover {
+
+            background: #5b21b6;
+        }
+
+
+        .checkout-button:disabled {
+
+            opacity: 0.55;
+
+            cursor: wait;
+        }
+
+
+        .back-link {
+
+            display: block;
+
+            margin-top: 13px;
+
+            color: #7c3aed;
+
+            text-align: center;
+
+            text-decoration: none;
+
+            font-size: 14px;
+
+            font-weight: bold;
+        }
+
+
+        .back-link:hover {
+
+            text-decoration: underline;
+        }
+
+
+        #checkoutStatus {
+
+            margin-bottom: 25px;
+
+            padding: 14px 16px;
+
+            border-radius: 9px;
+
+            background: #f2f2f2;
+
+            color: #555555;
+
+            line-height: 1.6;
+        }
+
+
+        #checkoutStatus.error {
+
+            border:
+                1px solid
+                #f1b6bd;
+
+            background: #fff0f2;
+
+            color: #9d2638;
+        }
+
+
+        .order-success {
+
+            padding: 38px;
+
+            text-align: center;
+
+            background: #ffffff;
+
+            border:
+                1px solid
+                #d8c4f8;
+
+            border-radius: 16px;
+
+            box-shadow:
+                0 8px 25px
+                rgba(0, 0, 0, 0.05);
+        }
+
+
+        .order-success h2 {
+
+            margin-top: 0;
+
+            color: #5b21b6;
+
+            font-size: 30px;
+        }
+
+
+        .order-success p {
+
+            color: #555555;
+
+            line-height: 1.7;
+        }
+
+
+        .order-number {
+
+            margin:
+                22px
+                0;
+
+            color: #111111;
+
+            font-size: 23px;
+
+            font-weight: bold;
+        }
+
+
+        .success-button {
+
+            display: inline-block;
+
+            margin-top: 15px;
+
+            padding:
+                13px
+                24px;
+
+            border-radius: 8px;
+
+            background: #7c3aed;
+
+            color: #ffffff;
+
+            text-decoration: none;
+
+            font-weight: bold;
+        }
+
+
+        [hidden] {
+
+            display:
+                none !important;
+        }
+
+
+        @media screen and (max-width: 850px) {
+
+            .checkout-layout {
+
+                grid-template-columns:
+                    1fr;
+            }
+
+
+            .summary {
+
+                position: static;
+            }
+
+        }
+
+
+        @media screen and (max-width: 600px) {
+
+            .checkout-page {
+
+                width:
+                    calc(100% - 24px);
+
+                margin-top: 25px;
+            }
+
+
+            .form-grid {
+
+                grid-template-columns:
+                    1fr;
+            }
+
+
+            .form-group.full-width {
+
+                grid-column: auto;
+            }
+
+
+            .checkout-card {
+
+                padding: 20px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         HEADER
+         ===================================================== -->
+
+    <header class="site-header">
+
+
+        <div class="header-top">
+
+
+            <div class="logo">
+
+                <a href="index.html">
+
+                    <img
+                        src="images/stridex-logo.jpeg"
+                        alt="StrideX Sports Logo"
+                    >
+
+                </a>
+
+            </div>
+
+
+            <form
+                class="header-search"
+                action="shop.xhtml"
+                method="get"
+            >
+
+                <input
+                    type="text"
+                    name="search"
+                    placeholder="Search products, brands or sports..."
+                >
+
+                <button type="submit">
+                    Search
+                </button>
+
+            </form>
+
+
+            <div class="header-actions">
+
+
+                <a
+                    href="account.html"
+                    class="header-action"
+                >
+
+                    <span class="action-icon">
+                        &#128100;
+                    </span>
+
+                    <span>
+                        Account
+                    </span>
+
+                </a>
+                <a
+    href="orders.html"
+    class="header-action"
+>
+    <span class="action-icon">
+        &#128230;
+    </span>
+
+    <span>
+        My Orders
+    </span>
+</a>
+
+
+                <a
+                    href="cart.html"
+                    class="header-action cart-action"
+                >
+
+                    <span class="action-icon">
+                        &#128722;
+                    </span>
+
+                    <span>
+                        Cart
+                    </span>
+
+                    <span
+                        class="cart-count"
+                        id="headerCartCount"
+                    >
+                        0
+                    </span>
+
+                </a>
+
+
+            </div>
+
+
+        </div>
+
+
+        <nav class="main-nav">
+
+            <a href="index.html">
+                Home
+            </a>
+
+            <a href="shop.xhtml">
+                Shop
+            </a>
+
+            <a href="shop.xhtml?sport=soccer">
+                Soccer
+            </a>
+
+            <a href="shop.xhtml?sport=rugby">
+                Rugby
+            </a>
+
+            <a href="shop.xhtml?sport=tennis">
+                Tennis
+            </a>
+
+            <a href="shop.xhtml?sport=cycling">
+                Cycling
+            </a>
+
+            <a href="custom-kit.xhtml">
+                Custom Kit
+            </a>
+
+        </nav>
+
+
+    </header>
+
+
+
+    <!-- =====================================================
+         CHECKOUT
+         ===================================================== -->
+
+    <main class="checkout-page">
+
+
+        <div class="checkout-heading">
+
+            <h1>
+                Checkout
+            </h1>
+
+            <p>
+                Complete your delivery and payment
+                information to place your order.
+            </p>
+
+        </div>
+
+
+        <div id="checkoutStatus">
+
+            Loading your checkout...
+
+        </div>
+
+
+
+        <form
+            id="checkoutForm"
+            hidden
+            novalidate
+        >
+
+
+            <div class="checkout-layout">
+
+
+                <div>
+
+
+                    <!-- =========================================
+                         DELIVERY DETAILS
+                         ========================================= -->
+
+                    <section class="checkout-card">
+
+
+                        <h2>
+                            Delivery Details
+                        </h2>
+
+
+                        <div class="form-grid">
+
+
+                            <div class="form-group">
+
+                                <label for="fullName">
+                                    Full Name
+                                </label>
+
+                                <input
+                                    id="fullName"
+                                    type="text"
+                                    required
+                                >
+
+                                <span
+                                    class="field-error"
+                                    id="fullNameError"
+                                ></span>
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label for="email">
+                                    Email Address
+                                </label>
+
+                                <input
+                                    id="email"
+                                    type="email"
+                                    required
+                                    readonly
+                                >
+
+                                <span
+                                    class="field-error"
+                                    id="emailError"
+                                ></span>
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label for="phone">
+                                    Phone Number
+                                </label>
+
+                                <input
+                                    id="phone"
+                                    type="tel"
+                                    inputmode="tel"
+                                    maxlength="15"
+                                    placeholder="071 234 5678"
+                                    required
+                                >
+
+                                <span
+                                    class="field-error"
+                                    id="phoneError"
+                                ></span>
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label for="province">
+                                    Province
+                                </label>
+
+                                <select
+                                    id="province"
+                                    required
+                                >
+
+                                    <option value="">
+                                        Select province
+                                    </option>
+
+                                    <option>
+                                        Eastern Cape
+                                    </option>
+
+                                    <option>
+                                        Free State
+                                    </option>
+
+                                    <option>
+                                        Gauteng
+                                    </option>
+
+                                    <option>
+                                        KwaZulu-Natal
+                                    </option>
+
+                                    <option>
+                                        Limpopo
+                                    </option>
+
+                                    <option>
+                                        Mpumalanga
+                                    </option>
+
+                                    <option>
+                                        North West
+                                    </option>
+
+                                    <option>
+                                        Northern Cape
+                                    </option>
+
+                                    <option>
+                                        Western Cape
+                                    </option>
+
+                                </select>
+
+                                <span
+                                    class="field-error"
+                                    id="provinceError"
+                                ></span>
+
+                            </div>
+
+
+                            <div class="form-group full-width">
+
+                                <label for="address">
+                                    Street Address
+                                </label>
+
+                                <input
+                                    id="address"
+                                    type="text"
+                                    placeholder="Street name and number"
+                                    required
+                                >
+
+                                <span
+                                    class="field-error"
+                                    id="addressError"
+                                ></span>
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label for="city">
+                                    City / Town
+                                </label>
+
+                                <input
+                                    id="city"
+                                    type="text"
+                                    required
+                                >
+
+                                <span
+                                    class="field-error"
+                                    id="cityError"
+                                ></span>
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label for="postalCode">
+                                    Postal Code
+                                </label>
+
+                                <input
+                                    id="postalCode"
+                                    type="text"
+                                    inputmode="numeric"
+                                    maxlength="4"
+                                    required
+                                >
+
+                                <span
+                                    class="field-error"
+                                    id="postalCodeError"
+                                ></span>
+
+                            </div>
+
+
+                        </div>
+
+
+                    </section>
+
+
+
+                    <!-- =========================================
+                         PAYMENT DETAILS
+                         ========================================= -->
+
+                    <section class="checkout-card">
+
+
+                        <h2>
+                            Payment Details
+                        </h2>
+
+
+                        <div class="form-grid">
+
+
+                            <div class="form-group full-width">
+
+                                <label for="cardName">
+                                    Cardholder Name
+                                </label>
+
+                                <input
+                                    id="cardName"
+                                    type="text"
+                                    autocomplete="cc-name"
+                                    required
+                                >
+
+                                <span
+                                    class="field-error"
+                                    id="cardNameError"
+                                ></span>
+
+                            </div>
+
+
+                            <div class="form-group full-width">
+
+                                <label for="cardNumber">
+                                    Card Number
+                                </label>
+
+                                <input
+                                    id="cardNumber"
+                                    type="text"
+                                    inputmode="numeric"
+                                    autocomplete="cc-number"
+                                    maxlength="23"
+                                    placeholder="1234 5678 9012 3456"
+                                    required
+                                >
+
+                                <span
+                                    class="field-error"
+                                    id="cardNumberError"
+                                ></span>
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label for="expiry">
+                                    Expiry Date
+                                </label>
+
+                                <input
+                                    id="expiry"
+                                    type="text"
+                                    inputmode="numeric"
+                                    autocomplete="cc-exp"
+                                    maxlength="5"
+                                    placeholder="MM/YY"
+                                    required
+                                >
+
+                                <span
+                                    class="field-error"
+                                    id="expiryError"
+                                ></span>
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label for="cvv">
+                                    CVV
+                                </label>
+
+                                <input
+                                    id="cvv"
+                                    type="password"
+                                    inputmode="numeric"
+                                    autocomplete="cc-csc"
+                                    maxlength="4"
+                                    placeholder="CVV"
+                                    required
+                                >
+
+                                <span
+                                    class="field-error"
+                                    id="cvvError"
+                                ></span>
+
+                            </div>
+
+
+                        </div>
+
+
+                    </section>
+
+
+                </div>
+
+
+
+                <!-- =============================================
+                     ORDER SUMMARY
+                     ============================================= -->
+
+                <aside class="summary">
+
+
+                    <h2>
+                        Order Summary
+                    </h2>
+
+
+                    <div
+                        id="summaryItems"
+                        class="summary-items"
+                    ></div>
+
+
+                    <div class="summary-row">
+
+                        <span>
+                            Items
+                        </span>
+
+                        <strong
+                            id="summaryItemCount"
+                        >
+                            0
+                        </strong>
+
+                    </div>
+
+
+                    <div
+                        class="
+                            summary-row
+                            summary-total
+                        "
+                    >
+
+                        <span>
+                            Total
+                        </span>
+
+                        <strong
+                            id="summaryTotal"
+                        >
+                            R0.00
+                        </strong>
+
+                    </div>
+
+
+                    <button
+                        class="checkout-button"
+                        id="payButton"
+                        type="submit"
+                    >
+                        Pay &amp; Place Order
+                    </button>
+
+
+                    <a
+                        href="cart.html"
+                        class="back-link"
+                    >
+                        ← Back to Cart
+                    </a>
+
+
+                </aside>
+
+
+            </div>
+
+
+        </form>
+
+
+
+        <!-- =================================================
+             SUCCESS
+             ================================================= -->
+
+        <section
+            id="orderSuccess"
+            class="order-success"
+            hidden
+        >
+
+
+            <h2>
+                Order Confirmed!
+            </h2>
+
+
+            <p>
+                Thank you for shopping with StrideX.
+                Your order has been placed successfully.
+            </p>
+
+
+            <div
+                class="order-number"
+                id="successOrderNumber"
+            ></div>
+
+
+            <p
+                id="successDetails"
+            ></p>
+
+
+            <a
+                href="index.html"
+                class="success-button"
+            >
+                Return Home
+            </a>
+
+
+        </section>
+
+
+    </main>
+
+
+
+    <script>
+
+        // =====================================================
+        // BACKEND
+        // =====================================================
+
+        const API_BASE = "";
+
+
+        let currentCart = null;
+
+
+
+        // =====================================================
+        // ELEMENTS
+        // =====================================================
+
+        const checkoutStatus =
+            document.getElementById(
+                "checkoutStatus"
+            );
+
+
+        const checkoutForm =
+            document.getElementById(
+                "checkoutForm"
+            );
+
+
+        const summaryItems =
+            document.getElementById(
+                "summaryItems"
+            );
+
+
+        const summaryItemCount =
+            document.getElementById(
+                "summaryItemCount"
+            );
+
+
+        const summaryTotal =
+            document.getElementById(
+                "summaryTotal"
+            );
+
+
+        const headerCartCount =
+            document.getElementById(
+                "headerCartCount"
+            );
+
+
+        const payButton =
+            document.getElementById(
+                "payButton"
+            );
+
+
+        const orderSuccess =
+            document.getElementById(
+                "orderSuccess"
+            );
+
+
+
+        // =====================================================
+        // FORMAT PRICE
+        // =====================================================
+
+        function formatPrice(amount) {
+
+            return (
+                "R" +
+                Number(amount)
+                    .toLocaleString(
+                        "en-ZA",
+                        {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        }
+                    )
+            );
+
+        }
+
+
+
+        // =====================================================
+        // ERROR HELPERS
+        // =====================================================
+
+        function clearFieldError(
+            inputId
+        ) {
+
+            const input =
+                document.getElementById(
+                    inputId
+                );
+
+
+            const error =
+                document.getElementById(
+                    inputId +
+                    "Error"
+                );
+
+
+            if (input) {
+
+                input.classList.remove(
+                    "input-error"
+                );
+
+            }
+
+
+            if (error) {
+
+                error.textContent = "";
+
+            }
+
+        }
+
+
+        function showFieldError(
+            inputId,
+            message
+        ) {
+
+            const input =
+                document.getElementById(
+                    inputId
+                );
+
+
+            const error =
+                document.getElementById(
+                    inputId +
+                    "Error"
+                );
+
+
+            if (input) {
+
+                input.classList.add(
+                    "input-error"
+                );
+
+            }
+
+
+            if (error) {
+
+                error.textContent =
+                    message;
+
+            }
+
+        }
+
+
+        function clearAllErrors() {
+
+            [
+                "fullName",
+                "email",
+                "phone",
+                "province",
+                "address",
+                "city",
+                "postalCode",
+                "cardName",
+                "cardNumber",
+                "expiry",
+                "cvv"
+
+            ].forEach(
+                clearFieldError
+            );
+
+
+            checkoutStatus.classList.remove(
+                "error"
+            );
+
+        }
+
+
+
+        // =====================================================
+        // CUSTOMER
+        // =====================================================
+
+        async function loadCustomer() {
+
+            const response =
+                await fetch(
+                    API_BASE +
+                    "/api/auth/me",
+                    {
+                        credentials:
+                            "include"
+                    }
+                );
+
+
+            if (
+                response.status ===
+                401
+            ) {
+
+                window.location.href =
+                    "account.html";
+
+                return false;
+
+            }
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Could not load your account."
+                );
+
+            }
+
+
+            const user =
+                await response.json();
+
+
+            document.getElementById(
+                "fullName"
+            ).value =
+                user.fullName || "";
+
+
+            document.getElementById(
+                "email"
+            ).value =
+                user.email || "";
+
+
+            return true;
+
+        }
+
+
+
+        // =====================================================
+        // CART SUMMARY
+        // =====================================================
+
+        function createSummaryItem(
+            item
+        ) {
+
+            const card =
+                document.createElement(
+                    "div"
+                );
+
+
+            card.className =
+                "summary-item";
+
+
+            const image =
+                document.createElement(
+                    "img"
+                );
+
+
+            image.src =
+                item.image || "";
+
+
+            image.alt =
+                item.name || "Product";
+
+
+            const details =
+                document.createElement(
+                    "div"
+                );
+
+
+            const name =
+                document.createElement(
+                    "h3"
+                );
+
+
+            name.textContent =
+                item.name;
+
+
+            const size =
+                document.createElement(
+                    "p"
+                );
+
+
+            size.textContent =
+                "Size: " +
+                item.size;
+
+
+            const quantity =
+                document.createElement(
+                    "p"
+                );
+
+
+            quantity.textContent =
+                "Quantity: " +
+                item.quantity;
+
+
+            const total =
+                document.createElement(
+                    "p"
+                );
+
+
+            total.textContent =
+                formatPrice(
+                    item.lineTotal
+                );
+
+
+            details.appendChild(
+                name
+            );
+
+
+            details.appendChild(
+                size
+            );
+
+
+            details.appendChild(
+                quantity
+            );
+
+
+            details.appendChild(
+                total
+            );
+
+
+            card.appendChild(
+                image
+            );
+
+
+            card.appendChild(
+                details
+            );
+
+
+            return card;
+
+        }
+
+
+
+        async function loadCart() {
+
+            const response =
+                await fetch(
+                    API_BASE +
+                    "/api/cart",
+                    {
+                        credentials:
+                            "include"
+                    }
+                );
+
+
+            if (
+                response.status ===
+                401
+            ) {
+
+                window.location.href =
+                    "account.html";
+
+                return false;
+
+            }
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Could not load your cart."
+                );
+
+            }
+
+
+            const cart =
+                await response.json();
+
+
+            if (
+                !cart.items ||
+                cart.items.length === 0
+            ) {
+
+                window.location.href =
+                    "cart.html";
+
+                return false;
+
+            }
+
+
+            currentCart =
+                cart;
+
+
+            summaryItems.replaceChildren();
+
+
+            cart.items.forEach(
+                function (item) {
+
+                    summaryItems.appendChild(
+                        createSummaryItem(
+                            item
+                        )
+                    );
+
+                }
+            );
+
+
+            summaryItemCount.textContent =
+                cart.itemCount;
+
+
+            summaryTotal.textContent =
+                formatPrice(
+                    cart.total
+                );
+
+
+            headerCartCount.textContent =
+                cart.itemCount;
+
+
+            return true;
+
+        }
+
+
+
+        // =====================================================
+        // INPUT FORMATTING
+        // =====================================================
+
+        const cardNumberInput =
+            document.getElementById(
+                "cardNumber"
+            );
+
+
+        cardNumberInput.addEventListener(
+            "input",
+            function () {
+
+                let digits =
+                    cardNumberInput.value
+                        .replace(
+                            /\D/g,
+                            ""
+                        )
+                        .slice(
+                            0,
+                            19
+                        );
+
+
+                cardNumberInput.value =
+                    digits.replace(
+                        /(.{4})/g,
+                        "$1 "
+                    ).trim();
+
+
+                clearFieldError(
+                    "cardNumber"
+                );
+
+            }
+        );
+
+
+
+        const expiryInput =
+            document.getElementById(
+                "expiry"
+            );
+
+
+        expiryInput.addEventListener(
+            "input",
+            function () {
+
+                let digits =
+                    expiryInput.value
+                        .replace(
+                            /\D/g,
+                            ""
+                        )
+                        .slice(
+                            0,
+                            4
+                        );
+
+
+                if (
+                    digits.length >
+                    2
+                ) {
+
+                    digits =
+                        digits.slice(
+                            0,
+                            2
+                        ) +
+                        "/" +
+                        digits.slice(
+                            2
+                        );
+
+                }
+
+
+                expiryInput.value =
+                    digits;
+
+
+                clearFieldError(
+                    "expiry"
+                );
+
+            }
+        );
+
+
+
+        const cvvInput =
+            document.getElementById(
+                "cvv"
+            );
+
+
+        cvvInput.addEventListener(
+            "input",
+            function () {
+
+                cvvInput.value =
+                    cvvInput.value
+                        .replace(
+                            /\D/g,
+                            ""
+                        )
+                        .slice(
+                            0,
+                            4
+                        );
+
+
+                clearFieldError(
+                    "cvv"
+                );
+
+            }
+        );
+
+
+
+        const postalCodeInput =
+            document.getElementById(
+                "postalCode"
+            );
+
+
+        postalCodeInput.addEventListener(
+            "input",
+            function () {
+
+                postalCodeInput.value =
+                    postalCodeInput.value
+                        .replace(
+                            /\D/g,
+                            ""
+                        )
+                        .slice(
+                            0,
+                            4
+                        );
+
+            }
+        );
+
+
+
+        // =====================================================
+        // LUHN CARD CHECK
+        // =====================================================
+
+        function passesLuhn(
+            cardNumber
+        ) {
+
+            let sum = 0;
+
+            let shouldDouble =
+                false;
+
+
+            for (
+                let i =
+                    cardNumber.length - 1;
+
+                i >= 0;
+
+                i--
+            ) {
+
+                let digit =
+                    Number(
+                        cardNumber.charAt(
+                            i
+                        )
+                    );
+
+
+                if (
+                    shouldDouble
+                ) {
+
+                    digit *= 2;
+
+
+                    if (
+                        digit > 9
+                    ) {
+
+                        digit -= 9;
+
+                    }
+
+                }
+
+
+                sum += digit;
+
+
+                shouldDouble =
+                    !shouldDouble;
+
+            }
+
+
+            return (
+                sum % 10 === 0
+            );
+
+        }
+
+
+
+        // =====================================================
+        // EXPIRY CHECK
+        // =====================================================
+
+        function expiryIsValid(
+            value
+        ) {
+
+            const match =
+                value.match(
+                    /^(\d{2})\/(\d{2})$/
+                );
+
+
+            if (!match) {
+
+                return false;
+
+            }
+
+
+            const month =
+                Number(
+                    match[1]
+                );
+
+
+            const year =
+                Number(
+                    match[2]
+                );
+
+
+            if (
+                month < 1 ||
+                month > 12
+            ) {
+
+                return false;
+
+            }
+
+
+            const fullYear =
+                2000 + year;
+
+
+            const expiryDate =
+                new Date(
+                    fullYear,
+                    month,
+                    0,
+                    23,
+                    59,
+                    59
+                );
+
+
+            const now =
+                new Date();
+
+
+            return (
+                expiryDate >= now
+            );
+
+        }
+
+
+
+        // =====================================================
+        // VALIDATE CHECKOUT
+        // =====================================================
+
+        function validateCheckout() {
+
+            clearAllErrors();
+
+
+            let valid =
+                true;
+
+
+            const fullName =
+                document.getElementById(
+                    "fullName"
+                )
+                .value
+                .trim();
+
+
+            const email =
+                document.getElementById(
+                    "email"
+                )
+                .value
+                .trim();
+
+
+            const phone =
+                document.getElementById(
+                    "phone"
+                )
+                .value
+                .replace(
+                    /\D/g,
+                    ""
+                );
+
+
+            const province =
+                document.getElementById(
+                    "province"
+                ).value;
+
+
+            const address =
+                document.getElementById(
+                    "address"
+                )
+                .value
+                .trim();
+
+
+            const city =
+                document.getElementById(
+                    "city"
+                )
+                .value
+                .trim();
+
+
+            const postalCode =
+                document.getElementById(
+                    "postalCode"
+                ).value;
+
+
+            const cardName =
+                document.getElementById(
+                    "cardName"
+                )
+                .value
+                .trim();
+
+
+            const cardNumber =
+                document.getElementById(
+                    "cardNumber"
+                )
+                .value
+                .replace(
+                    /\D/g,
+                    ""
+                );
+
+
+            const expiry =
+                document.getElementById(
+                    "expiry"
+                ).value;
+
+
+            const cvv =
+                document.getElementById(
+                    "cvv"
+                ).value;
+
+
+
+            if (
+                fullName.length <
+                2
+            ) {
+
+                showFieldError(
+                    "fullName",
+                    "Enter your full name."
+                );
+
+                valid =
+                    false;
+
+            }
+
+
+            if (
+                !email.includes("@")
+            ) {
+
+                showFieldError(
+                    "email",
+                    "Enter a valid email address."
+                );
+
+                valid =
+                    false;
+
+            }
+
+
+            if (
+                phone.length <
+                9 ||
+                phone.length >
+                12
+            ) {
+
+                showFieldError(
+                    "phone",
+                    "Enter a valid phone number."
+                );
+
+                valid =
+                    false;
+
+            }
+
+
+            if (!province) {
+
+                showFieldError(
+                    "province",
+                    "Select your province."
+                );
+
+                valid =
+                    false;
+
+            }
+
+
+            if (
+                address.length <
+                4
+            ) {
+
+                showFieldError(
+                    "address",
+                    "Enter your street address."
+                );
+
+                valid =
+                    false;
+
+            }
+
+
+            if (
+                city.length <
+                2
+            ) {
+
+                showFieldError(
+                    "city",
+                    "Enter your city or town."
+                );
+
+                valid =
+                    false;
+
+            }
+
+
+            if (
+                !/^\d{4}$/.test(
+                    postalCode
+                )
+            ) {
+
+                showFieldError(
+                    "postalCode",
+                    "Postal code must contain 4 digits."
+                );
+
+                valid =
+                    false;
+
+            }
+
+
+            if (
+                cardName.length <
+                2
+            ) {
+
+                showFieldError(
+                    "cardName",
+                    "Enter the cardholder name."
+                );
+
+                valid =
+                    false;
+
+            }
+
+
+            if (
+                cardNumber.length <
+                13 ||
+                cardNumber.length >
+                19
+            ) {
+
+                showFieldError(
+                    "cardNumber",
+                    "Card number must contain 13 to 19 digits."
+                );
+
+                valid =
+                    false;
+
+            } else if (
+                !passesLuhn(
+                    cardNumber
+                )
+            ) {
+
+                showFieldError(
+                    "cardNumber",
+                    "Enter a valid card number."
+                );
+
+                valid =
+                    false;
+
+            }
+
+
+            if (
+                !expiryIsValid(
+                    expiry
+                )
+            ) {
+
+                showFieldError(
+                    "expiry",
+                    "Enter a valid future expiry date."
+                );
+
+                valid =
+                    false;
+
+            }
+
+
+            if (
+                !/^\d{3,4}$/.test(
+                    cvv
+                )
+            ) {
+
+                showFieldError(
+                    "cvv",
+                    "CVV must contain 3 or 4 digits."
+                );
+
+                valid =
+                    false;
+
+            }
+
+
+            return valid;
+
+        }
+
+
+
+        // =====================================================
+        // FINAL CHECKOUT
+        // =====================================================
+
+        checkoutForm.addEventListener(
+            "submit",
+            async function (event) {
+
+                event.preventDefault();
+
+
+                if (
+                    !validateCheckout()
+                ) {
+
+                    checkoutStatus.hidden =
+                        false;
+
+
+                    checkoutStatus.classList.add(
+                        "error"
+                    );
+
+
+                    checkoutStatus.textContent =
+                        "Please correct the highlighted payment or delivery details.";
+
+
+                    return;
+
+                }
+
+
+                checkoutStatus.hidden =
+                    false;
+
+
+                checkoutStatus.classList.remove(
+                    "error"
+                );
+
+
+                checkoutStatus.textContent =
+                    "Processing your order...";
+
+
+                payButton.disabled =
+                    true;
+
+
+                payButton.textContent =
+                    "Processing...";
+
+
+                try {
+
+
+                    const response =
+                        await fetch(
+                            API_BASE +
+                            "/api/orders/checkout",
+                            {
+
+                                method:
+                                    "POST",
+
+                                credentials:
+                                    "include"
+
+                            }
+                        );
+
+
+                    const result =
+                        await response
+                            .json()
+                            .catch(
+                                () => ({})
+                            );
+
+
+                    if (
+                        response.status ===
+                        401
+                    ) {
+
+                        window.location.href =
+                            "account.html";
+
+                        return;
+
+                    }
+
+
+                    if (
+                        !response.ok
+                    ) {
+
+                        throw new Error(
+                            result.message ||
+                            result.detail ||
+                            "The order could not be placed."
+                        );
+
+                    }
+
+
+                    /*
+                        Clear sensitive payment
+                        fields immediately.
+                    */
+
+                    cardNumberInput.value =
+                        "";
+
+
+                    expiryInput.value =
+                        "";
+
+
+                    cvvInput.value =
+                        "";
+
+
+                    checkoutForm.hidden =
+                        true;
+
+
+                    checkoutStatus.hidden =
+                        true;
+
+
+                    headerCartCount.textContent =
+                        "0";
+
+
+                    document.getElementById(
+                        "successOrderNumber"
+                    ).textContent =
+                        "Order #" +
+                        result.orderId;
+
+
+                    document.getElementById(
+                        "successDetails"
+                    ).textContent =
+                        result.itemCount +
+                        " item(s) • " +
+                        formatPrice(
+                            result.total
+                        ) +
+                        " • " +
+                        result.status;
+
+
+                    orderSuccess.hidden =
+                        false;
+
+
+                    window.scrollTo({
+                        top: 0,
+                        behavior: "smooth"
+                    });
+
+
+                } catch (error) {
+
+
+                    checkoutStatus.hidden =
+                        false;
+
+
+                    checkoutStatus.classList.add(
+                        "error"
+                    );
+
+
+                    checkoutStatus.textContent =
+                        error.message ||
+                        "Checkout failed. Please try again.";
+
+
+                    payButton.disabled =
+                        false;
+
+
+                    payButton.textContent =
+                        "Pay & Place Order";
+
+
+                }
+
+            }
+        );
+
+
+
+        // =====================================================
+        // START
+        // =====================================================
+
+        async function startCheckout() {
+
+            try {
+
+
+                const customerLoaded =
+                    await loadCustomer();
+
+
+                if (
+                    !customerLoaded
+                ) {
+
+                    return;
+
+                }
+
+
+                const cartLoaded =
+                    await loadCart();
+
+
+                if (
+                    !cartLoaded
+                ) {
+
+                    return;
+
+                }
+
+
+                checkoutStatus.hidden =
+                    true;
+
+
+                checkoutForm.hidden =
+                    false;
+
+
+            } catch (error) {
+
+
+                checkoutStatus.hidden =
+                    false;
+
+
+                checkoutStatus.classList.add(
+                    "error"
+                );
+
+
+                checkoutStatus.textContent =
+                    error.message ||
+                    "Could not load checkout.";
+
+
+            }
+
+        }
+
+
+        startCheckout();
+
+    </script>
+
+
+</body>
+
+</html>
