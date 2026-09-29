@@ -6,6 +6,11 @@
     New Rugby, Tennis and Cycling prices are provisional.
     Keep your existing image folders and filenames.
 */
+const STRIDEX_API =
+    window.location.protocol === "file:" ||
+    window.location.port === "5500"
+        ? "http://localhost:5103"
+        : window.location.origin;
 
 const products = Object.create(null);
 
