@@ -1274,18 +1274,70 @@
 
 
             footer.appendChild(
-                count
-            );
+    count
+);
 
 
-            footer.appendChild(
-                total
-            );
+const footerRight =
+    document.createElement(
+        "div"
+    );
 
 
-            card.appendChild(
-                footer
-            );
+footerRight.style.display =
+    "flex";
+
+footerRight.style.alignItems =
+    "center";
+
+footerRight.style.gap =
+    "14px";
+
+footerRight.style.flexWrap =
+    "wrap";
+
+
+footerRight.appendChild(
+    total
+);
+
+
+const receiptButton =
+    document.createElement(
+        "a"
+    );
+
+
+receiptButton.href =
+    "receipt.html?orderId=" +
+    order.orderId;
+
+
+receiptButton.textContent =
+    "View Receipt";
+
+
+receiptButton.className =
+    "orders-button";
+
+
+receiptButton.style.marginTop =
+    "0";
+
+
+footerRight.appendChild(
+    receiptButton
+);
+
+
+footer.appendChild(
+    footerRight
+);
+
+
+card.appendChild(
+    footer
+);
 
 
             return card;

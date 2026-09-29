@@ -1049,12 +1049,15 @@ app.MapDelete("/api/cart/items/{cartItemId:int}", async (
 // =====================================
 
 app.MapPost("/api/orders/checkout", async (
+    CheckoutRequest request,
     HttpContext httpContext,
     UserManager<ApplicationUser> userManager,
     StrideXDbContext db) =>
 {
     var user =
-        await userManager.GetUserAsync(httpContext.User);
+        await userManager.GetUserAsync(
+            httpContext.User
+        );
 
     if (user is null)
     {
@@ -1062,16 +1065,139 @@ app.MapPost("/api/orders/checkout", async (
     }
 
 
-    // Load the logged-in customer's cart.
-    var cart = await db.Carts
-        .Include(c => c.Items)
-        .SingleOrDefaultAsync(
-            c => c.CartToken == user.Id
+    // =====================================
+    // VALIDATE RECEIPT / DELIVERY DETAILS
+    // =====================================
+
+    var customerName =
+        request.FullName?.Trim() ?? "";
+
+    var phoneNumber =
+        request.PhoneNumber?.Trim() ?? "";
+
+    var streetAddress =
+        request.StreetAddress?.Trim() ?? "";
+
+    var city =
+        request.City?.Trim() ?? "";
+
+    var province =
+        request.Province?.Trim() ?? "";
+
+    var postalCode =
+        request.PostalCode?.Trim() ?? "";
+
+    var paymentLast4 =
+        new string(
+            (request.PaymentLast4 ?? "")
+                .Where(char.IsDigit)
+                .ToArray()
         );
 
 
-    if (cart is null ||
-        cart.Items.Count == 0)
+    if (
+        string.IsNullOrWhiteSpace(customerName) ||
+        string.IsNullOrWhiteSpace(phoneNumber) ||
+        string.IsNullOrWhiteSpace(streetAddress) ||
+        string.IsNullOrWhiteSpace(city) ||
+        string.IsNullOrWhiteSpace(province) ||
+        string.IsNullOrWhiteSpace(postalCode)
+    )
+    {
+        return Results.BadRequest(new
+        {
+            message =
+                "Complete all delivery details before placing your order."
+        });
+    }
+
+
+    if (customerName.Length > 100)
+    {
+        return Results.BadRequest(new
+        {
+            message =
+                "Customer name is too long."
+        });
+    }
+
+
+    if (phoneNumber.Length > 20)
+    {
+        return Results.BadRequest(new
+        {
+            message =
+                "Phone number is too long."
+        });
+    }
+
+
+    if (streetAddress.Length > 200)
+    {
+        return Results.BadRequest(new
+        {
+            message =
+                "Street address is too long."
+        });
+    }
+
+
+    if (city.Length > 100)
+    {
+        return Results.BadRequest(new
+        {
+            message =
+                "City name is too long."
+        });
+    }
+
+
+    if (province.Length > 100)
+    {
+        return Results.BadRequest(new
+        {
+            message =
+                "Province name is too long."
+        });
+    }
+
+
+    if (postalCode.Length > 10)
+    {
+        return Results.BadRequest(new
+        {
+            message =
+                "Postal code is invalid."
+        });
+    }
+
+
+    if (paymentLast4.Length != 4)
+    {
+        return Results.BadRequest(new
+        {
+            message =
+                "Payment information is invalid."
+        });
+    }
+
+
+    // =====================================
+    // LOAD CUSTOMER CART
+    // =====================================
+
+    var cart =
+        await db.Carts
+            .Include(c => c.Items)
+            .SingleOrDefaultAsync(
+                c => c.CartToken == user.Id
+            );
+
+
+    if (
+        cart is null ||
+        cart.Items.Count == 0
+    )
     {
         return Results.BadRequest(new
         {
@@ -1080,34 +1206,40 @@ app.MapPost("/api/orders/checkout", async (
     }
 
 
-    // Get the real products from MySQL.
-    // Prices sent by the browser are never trusted.
+    // =====================================
+    // LOAD REAL PRODUCT INFORMATION
+    // =====================================
+
     var productIds =
         cart.Items
-            .Select(item => item.ProductId)
+            .Select(
+                item => item.ProductId
+            )
             .Distinct()
             .ToList();
 
 
     var products =
         await db.Products
-            .Where(product =>
-                productIds.Contains(
-                    product.ProductId
-                )
+            .Where(
+                product =>
+                    productIds.Contains(
+                        product.ProductId
+                    )
             )
             .ToDictionaryAsync(
-                product => product.ProductId
+                product =>
+                    product.ProductId
             );
 
 
-    // Make sure every cart item still
-    // refers to a real product.
     foreach (var cartItem in cart.Items)
     {
-        if (!products.ContainsKey(
-            cartItem.ProductId
-        ))
+        if (
+            !products.ContainsKey(
+                cartItem.ProductId
+            )
+        )
         {
             return Results.BadRequest(new
             {
@@ -1118,8 +1250,10 @@ app.MapPost("/api/orders/checkout", async (
     }
 
 
-    // Use a database transaction so that
-    // the order and cart update succeed together.
+    // =====================================
+    // CREATE ORDER
+    // =====================================
+
     await using var transaction =
         await db.Database
             .BeginTransactionAsync();
@@ -1127,18 +1261,56 @@ app.MapPost("/api/orders/checkout", async (
 
     try
     {
-      var order = new Order
-{
-    UserId = user.Id,
-    OrderDate = DateTime.UtcNow,
-    Status = "Confirmed"
-};
+        var order =
+            new Order
+            {
+                UserId =
+                    user.Id,
+
+                OrderDate =
+                    DateTime.UtcNow,
+
+                Status =
+                    "Confirmed",
+
+                CustomerName =
+                    customerName,
+
+                CustomerEmail =
+                    user.Email ?? "",
+
+                PhoneNumber =
+                    phoneNumber,
+
+                StreetAddress =
+                    streetAddress,
+
+                City =
+                    city,
+
+                Province =
+                    province,
+
+                PostalCode =
+                    postalCode,
+
+                PaymentMethod =
+                    "Card",
+
+                PaymentLast4 =
+                    paymentLast4,
+
+                PaymentStatus =
+                    "Paid"
+            };
 
 
         decimal orderTotal = 0;
 
 
-        foreach (var cartItem in cart.Items)
+        foreach (
+            var cartItem in cart.Items
+        )
         {
             var product =
                 products[
@@ -1189,8 +1361,7 @@ app.MapPost("/api/orders/checkout", async (
         );
 
 
-        // Save the order first so EF creates
-        // its OrderID and OrderItem records.
+        // Save first so EF creates OrderId.
         await db.SaveChangesAsync();
 
 
@@ -1229,25 +1400,28 @@ app.MapPost("/api/orders/checkout", async (
 
             itemCount =
                 order.Items.Sum(
-                    item => item.Quantity
+                    item =>
+                        item.Quantity
                 )
         });
     }
     catch (Exception ex)
-{
-    await transaction.RollbackAsync();
+    {
+        await transaction.RollbackAsync();
 
-    Console.WriteLine(
-        "Checkout failed: " + ex.Message
-    );
+        Console.WriteLine(
+            "Checkout failed: " +
+            ex.Message
+        );
 
-    return Results.Problem(
-        detail:
-            "The order could not be placed. Please try again.",
-        statusCode:
-            StatusCodes.Status500InternalServerError
-    );
-}
+        return Results.Problem(
+            detail:
+                "The order could not be placed. Please try again.",
+
+            statusCode:
+                StatusCodes.Status500InternalServerError
+        );
+    }
 })
 .RequireAuthorization();
 
@@ -1385,6 +1559,198 @@ app.MapGet("/api/orders", async (
                     )
             }
         );
+
+
+    return Results.Ok(
+        result
+    );
+})
+.RequireAuthorization();
+// =====================================
+// STRIDEX — ORDER RECEIPT
+// =====================================
+
+app.MapGet(
+    "/api/orders/{orderId:int}/receipt",
+    async (
+        int orderId,
+        HttpContext httpContext,
+        UserManager<ApplicationUser> userManager,
+        StrideXDbContext db) =>
+{
+    var user =
+        await userManager.GetUserAsync(
+            httpContext.User
+        );
+
+
+    if (user is null)
+    {
+        return Results.Unauthorized();
+    }
+
+
+    // Only load an order that belongs
+    // to the currently logged-in customer.
+    var order =
+        await db.Orders
+            .AsNoTracking()
+            .Include(
+                order => order.Items
+            )
+            .SingleOrDefaultAsync(
+                order =>
+                    order.OrderId == orderId &&
+                    order.UserId == user.Id
+            );
+
+
+    if (order is null)
+    {
+        return Results.NotFound(new
+        {
+            message =
+                "Receipt not found."
+        });
+    }
+
+
+    // Load current product images for
+    // the items shown on the receipt.
+    var productIds =
+        order.Items
+            .Select(
+                item => item.ProductId
+            )
+            .Distinct()
+            .ToList();
+
+
+    var productImages =
+        await db.Products
+            .AsNoTracking()
+            .Where(
+                product =>
+                    productIds.Contains(
+                        product.ProductId
+                    )
+            )
+            .ToDictionaryAsync(
+                product =>
+                    product.ProductId,
+
+                product =>
+                    product.ImagePath
+            );
+
+
+    var result = new
+    {
+        receiptNumber =
+            "SXR-" +
+            order.OrderId
+                .ToString()
+                .PadLeft(
+                    6,
+                    '0'
+                ),
+
+        orderId =
+            order.OrderId,
+
+        orderDate =
+            order.OrderDate,
+
+        status =
+            order.Status,
+
+        customer = new
+        {
+            name =
+                order.CustomerName,
+
+            email =
+                order.CustomerEmail,
+
+            phone =
+                order.PhoneNumber
+        },
+
+        delivery = new
+        {
+            streetAddress =
+                order.StreetAddress,
+
+            city =
+                order.City,
+
+            province =
+                order.Province,
+
+            postalCode =
+                order.PostalCode
+        },
+
+        payment = new
+        {
+            method =
+                order.PaymentMethod,
+
+            last4 =
+                order.PaymentLast4,
+
+            status =
+                order.PaymentStatus
+        },
+
+        items =
+            order.Items.Select(
+                item => new
+                {
+                    orderItemId =
+                        item.OrderItemId,
+
+                    productId =
+                        item.ProductId,
+
+                    name =
+                        item.ProductName,
+
+                    size =
+                        item.SelectedSize,
+
+                    quantity =
+                        item.Quantity,
+
+                    unitPrice =
+                        item.UnitPrice,
+
+                    lineTotal =
+                        item.LineTotal,
+
+                    image =
+                        productImages
+                            .TryGetValue(
+                                item.ProductId,
+                                out var imagePath
+                            )
+                                ? imagePath
+                                : ""
+                }
+            ),
+
+        itemCount =
+            order.Items.Sum(
+                item =>
+                    item.Quantity
+            ),
+
+        subtotal =
+            order.TotalAmount,
+
+        total =
+            order.TotalAmount
+    };
 
 
     return Results.Ok(
@@ -1846,6 +2212,15 @@ record DeleteAccountRequest(
 record UpdateAccountRequest(
     string FullName,
     string Email
+);
+record CheckoutRequest(
+    string FullName,
+    string PhoneNumber,
+    string StreetAddress,
+    string City,
+    string Province,
+    string PostalCode,
+    string PaymentLast4
 );
 record CustomKitRequest(
     string Sport,

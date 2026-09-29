@@ -1,0 +1,1959 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Receipt | StrideX Sports</title>
+
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+            margin: 0;
+            background: #f5f5f7;
+            color: #111111;
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+        }
+
+
+        .receipt-page {
+            width: min(
+                1050px,
+                calc(100% - 40px)
+            );
+
+            margin:
+                45px
+                auto
+                70px;
+        }
+
+
+        .receipt-loading {
+            padding: 25px;
+
+            background: #ffffff;
+
+            border:
+                1px solid
+                #e3e3e3;
+
+            border-radius: 14px;
+
+            color: #555555;
+
+            text-align: center;
+        }
+
+
+        .receipt-loading.error {
+            border-color: #f1b6bd;
+            background: #fff0f2;
+            color: #9d2638;
+        }
+
+
+        .receipt {
+            overflow: hidden;
+
+            background: #ffffff;
+
+            border:
+                1px solid
+                #dddddd;
+
+            border-radius: 20px;
+
+            box-shadow:
+                0 12px 35px
+                rgba(
+                    0,
+                    0,
+                    0,
+                    0.08
+                );
+        }
+
+
+        .receipt-top {
+            display: flex;
+
+            justify-content:
+                space-between;
+
+            gap: 30px;
+
+            align-items:
+                flex-start;
+
+            padding:
+                34px
+                38px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #090909,
+                    #1d0a33
+                );
+
+            color: #ffffff;
+        }
+
+
+        .receipt-brand {
+            display: flex;
+
+            gap: 18px;
+
+            align-items: center;
+        }
+
+
+        .receipt-brand img {
+            width: 90px;
+            height: 90px;
+
+            object-fit: contain;
+
+            background: #000000;
+
+            border-radius: 8px;
+        }
+
+
+        .receipt-brand h1 {
+            margin:
+                0
+                0
+                7px;
+
+            font-size: 31px;
+        }
+
+
+        .receipt-brand p {
+            margin: 0;
+
+            color: #d7c6f6;
+
+            line-height: 1.5;
+        }
+
+
+        .receipt-number-area {
+            text-align: right;
+        }
+
+
+        .receipt-label {
+            margin-bottom: 7px;
+
+            color: #c4a5ff;
+
+            font-size: 13px;
+
+            font-weight: bold;
+
+            letter-spacing: 2px;
+
+            text-transform: uppercase;
+        }
+
+
+        .receipt-number {
+            margin-bottom: 10px;
+
+            font-size: 23px;
+
+            font-weight: bold;
+        }
+
+
+        .receipt-status {
+            display: inline-block;
+
+            padding:
+                7px
+                13px;
+
+            border:
+                1px solid
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.28
+                );
+
+            border-radius: 999px;
+
+            background:
+                rgba(
+                    124,
+                    58,
+                    237,
+                    0.30
+                );
+
+            font-size: 13px;
+
+            font-weight: bold;
+        }
+
+
+        .receipt-body {
+            padding:
+                36px
+                38px;
+        }
+
+
+        .receipt-meta {
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    3,
+                    minmax(
+                        0,
+                        1fr
+                    )
+                );
+
+            gap: 20px;
+
+            margin-bottom: 35px;
+        }
+
+
+        .info-card {
+            padding: 21px;
+
+            background: #fafafa;
+
+            border:
+                1px solid
+                #e8e8e8;
+
+            border-radius: 13px;
+        }
+
+
+        .info-card h2 {
+            margin:
+                0
+                0
+                15px;
+
+            font-size: 17px;
+        }
+
+
+        .info-row {
+    margin:
+        8px
+        0;
+
+    color: #555555;
+
+    font-size: 14px;
+
+    line-height: 1.5;
+
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+
+        .info-row strong {
+            color: #111111;
+        }
+
+
+        .receipt-section-title {
+            margin:
+                0
+                0
+                17px;
+
+            font-size: 23px;
+        }
+
+
+        .receipt-items {
+            overflow-x: auto;
+
+            margin-bottom: 30px;
+
+            border:
+                1px solid
+                #e6e6e6;
+
+            border-radius: 13px;
+        }
+
+
+        .receipt-table {
+            width: 100%;
+
+            border-collapse: collapse;
+        }
+
+
+        .receipt-table th {
+            padding:
+                14px
+                15px;
+
+            background: #f4f1fa;
+
+            color: #4c3a69;
+
+            text-align: left;
+
+            font-size: 13px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.5px;
+        }
+
+
+        .receipt-table td {
+            padding:
+                17px
+                15px;
+
+            border-top:
+                1px solid
+                #eeeeee;
+
+            vertical-align: middle;
+        }
+
+
+        .receipt-product {
+            display: grid;
+
+            grid-template-columns:
+                70px
+                minmax(
+                    150px,
+                    1fr
+                );
+
+            gap: 14px;
+
+            align-items: center;
+        }
+
+
+        .receipt-product img {
+            width: 70px;
+            height: 70px;
+
+            object-fit: contain;
+
+            padding: 5px;
+
+            background: #ffffff;
+
+            border:
+                1px solid
+                #eeeeee;
+
+            border-radius: 8px;
+        }
+
+
+        .receipt-product-name {
+            margin-bottom: 6px;
+
+            font-weight: bold;
+        }
+
+
+        .receipt-product-id {
+            color: #777777;
+
+            font-size: 12px;
+        }
+
+
+        .money {
+            white-space: nowrap;
+
+            font-weight: bold;
+        }
+
+
+        .receipt-summary-area {
+            display: flex;
+
+            justify-content:
+                flex-end;
+        }
+
+
+        .receipt-summary {
+            width: min(
+                100%,
+                410px
+            );
+
+            padding: 22px;
+
+            background: #fafafa;
+
+            border:
+                1px solid
+                #e5e5e5;
+
+            border-radius: 13px;
+        }
+
+
+        .summary-line {
+            display: flex;
+
+            justify-content:
+                space-between;
+
+            gap: 20px;
+
+            margin:
+                10px
+                0;
+
+            color: #555555;
+        }
+
+
+        .summary-line strong {
+            color: #111111;
+        }
+
+
+        .summary-total {
+            margin-top: 18px;
+
+            padding-top: 18px;
+
+            border-top:
+                1px solid
+                #dddddd;
+
+            color: #111111;
+
+            font-size: 21px;
+
+            font-weight: bold;
+        }
+
+
+        .summary-total strong {
+            color: #7c3aed;
+        }
+
+
+        .receipt-thank-you {
+            margin-top: 35px;
+
+            padding: 24px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #f8f3ff,
+                    #ffffff
+                );
+
+            border:
+                1px solid
+                #e2d4fa;
+
+            border-radius: 13px;
+
+            text-align: center;
+        }
+
+
+        .receipt-thank-you h2 {
+            margin:
+                0
+                0
+                8px;
+
+            color: #5b21b6;
+
+            font-size: 23px;
+        }
+
+
+        .receipt-thank-you p {
+            margin: 0;
+
+            color: #666666;
+
+            line-height: 1.6;
+        }
+
+
+        .receipt-actions {
+            display: flex;
+
+            justify-content: center;
+
+            gap: 13px;
+
+            flex-wrap: wrap;
+
+            margin-top: 28px;
+        }
+
+
+        .receipt-button {
+            display: inline-block;
+
+            min-width: 170px;
+
+            padding:
+                13px
+                20px;
+
+            border: none;
+
+            border-radius: 8px;
+
+            background: #7c3aed;
+
+            color: #ffffff;
+
+            font: inherit;
+
+            font-weight: bold;
+
+            text-align: center;
+
+            text-decoration: none;
+
+            cursor: pointer;
+        }
+
+
+        .receipt-button:hover {
+            background: #5b21b6;
+        }
+
+
+        .receipt-button.secondary {
+            background: #111111;
+        }
+
+
+        .receipt-button.secondary:hover {
+            background: #292929;
+        }
+
+
+        .receipt-button.light {
+            border:
+                1px solid
+                #cccccc;
+
+            background: #ffffff;
+
+            color: #111111;
+        }
+
+
+        .receipt-button.light:hover {
+            background: #f2f2f2;
+        }
+
+
+        .receipt-footer-note {
+            margin-top: 25px;
+
+            color: #888888;
+
+            text-align: center;
+
+            font-size: 12px;
+
+            line-height: 1.6;
+        }
+
+
+        [hidden] {
+            display:
+                none !important;
+        }
+
+
+        @media screen and (max-width: 800px) {
+
+            .receipt-top {
+                flex-direction:
+                    column;
+            }
+
+
+            .receipt-number-area {
+                text-align: left;
+            }
+
+
+            .receipt-meta {
+                grid-template-columns:
+                    1fr;
+            }
+
+        }
+
+
+        @media screen and (max-width: 600px) {
+
+            .receipt-page {
+                width:
+                    calc(
+                        100% - 20px
+                    );
+
+                margin-top: 20px;
+            }
+
+
+            .receipt-top,
+            .receipt-body {
+                padding: 23px;
+            }
+
+
+            .receipt-brand {
+                align-items:
+                    flex-start;
+
+                flex-direction:
+                    column;
+            }
+
+
+            .receipt-table th,
+            .receipt-table td {
+                padding:
+                    12px
+                    10px;
+            }
+
+
+            .receipt-product {
+                grid-template-columns:
+                    55px
+                    minmax(
+                        130px,
+                        1fr
+                    );
+            }
+
+
+            .receipt-product img {
+                width: 55px;
+                height: 55px;
+            }
+
+        }
+
+
+        @media print {
+
+            body {
+                background: #ffffff;
+            }
+
+
+            .site-header,
+            .receipt-actions {
+                display: none !important;
+            }
+
+
+            .receipt-page {
+                width: 100%;
+
+                margin: 0;
+            }
+
+
+            .receipt {
+                border: none;
+
+                border-radius: 0;
+
+                box-shadow: none;
+            }
+
+
+            .receipt-top {
+                print-color-adjust: exact;
+
+                -webkit-print-color-adjust:
+                    exact;
+            }
+
+
+            .receipt-thank-you,
+            .info-card,
+            .receipt-table th {
+                print-color-adjust: exact;
+
+                -webkit-print-color-adjust:
+                    exact;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         HEADER
+         ===================================================== -->
+
+    <header class="site-header">
+
+        <div class="header-top">
+
+            <div class="logo">
+
+                <a href="index.html">
+
+                    <img
+                        src="images/stridex-logo.jpeg"
+                        alt="StrideX Sports Logo"
+                    >
+
+                </a>
+
+            </div>
+
+
+            <form
+                class="header-search"
+                action="shop.xhtml"
+                method="get"
+            >
+
+                <input
+                    type="text"
+                    name="search"
+                    placeholder="Search products, brands or sports..."
+                >
+
+                <button type="submit">
+                    Search
+                </button>
+
+            </form>
+
+
+            <div class="header-actions">
+
+                <a
+                    href="account.html"
+                    class="header-action"
+                >
+
+                    <span class="action-icon">
+                        &#128100;
+                    </span>
+
+                    <span>
+                        Account
+                    </span>
+
+                </a>
+
+
+                <a
+                    href="orders.html"
+                    class="header-action"
+                >
+
+                    <span class="action-icon">
+                        &#128230;
+                    </span>
+
+                    <span>
+                        My Orders
+                    </span>
+
+                </a>
+
+
+                <a
+                    href="cart.html"
+                    class="header-action cart-action"
+                >
+
+                    <span class="action-icon">
+                        &#128722;
+                    </span>
+
+                    <span>
+                        Cart
+                    </span>
+
+                    <span
+                        class="cart-count"
+                        id="headerCartCount"
+                    >
+                        0
+                    </span>
+
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <nav class="main-nav">
+
+            <a href="index.html">
+                Home
+            </a>
+
+            <a href="shop.xhtml">
+                Shop
+            </a>
+
+            <a href="shop.xhtml?sport=soccer">
+                Soccer
+            </a>
+
+            <a href="shop.xhtml?sport=rugby">
+                Rugby
+            </a>
+
+            <a href="shop.xhtml?sport=cycling">
+                Cycling
+            </a>
+
+            <a href="shop.xhtml?sport=tennis">
+                Tennis
+            </a>
+
+            <a href="custom-kit.xhtml">
+                Custom Kit
+            </a>
+
+        </nav>
+
+    </header>
+
+
+
+    <!-- =====================================================
+         RECEIPT
+         ===================================================== -->
+
+    <main class="receipt-page">
+
+
+        <div
+            id="receiptStatus"
+            class="receipt-loading"
+        >
+            Loading your receipt...
+        </div>
+
+
+        <article
+            id="receipt"
+            class="receipt"
+            hidden
+        >
+
+
+            <!-- RECEIPT HEADER -->
+
+            <section class="receipt-top">
+
+                <div class="receipt-brand">
+
+                    <img
+                        src="images/stridex-logo.jpeg"
+                        alt="StrideX Sports Logo"
+                    >
+
+                    <div>
+
+                        <h1>
+                            StrideX Sports
+                        </h1>
+
+                        <p>
+                            Every Move Matters.
+                        </p>
+
+                        <p>
+                            Official purchase receipt
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="receipt-number-area">
+
+                    <div class="receipt-label">
+                        Receipt
+                    </div>
+
+                    <div
+                        class="receipt-number"
+                        id="receiptNumber"
+                    >
+                        -
+                    </div>
+
+                    <div
+                        class="receipt-status"
+                        id="receiptStatusBadge"
+                    >
+                        Confirmed
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <div class="receipt-body">
+
+
+                <!-- ORDER INFORMATION -->
+
+                <section class="receipt-meta">
+
+
+                    <div class="info-card">
+
+                        <h2>
+                            Order Details
+                        </h2>
+
+                        <div class="info-row">
+
+                            <strong>
+                                Order Number:
+                            </strong>
+
+                            <span id="orderNumber">
+                                -
+                            </span>
+
+                        </div>
+
+                        <div class="info-row">
+
+                            <strong>
+                                Date:
+                            </strong>
+
+                            <span id="orderDate">
+                                -
+                            </span>
+
+                        </div>
+
+                        <div class="info-row">
+
+                            <strong>
+                                Items:
+                            </strong>
+
+                            <span id="itemCount">
+                                -
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="info-card">
+
+                        <h2>
+                            Customer
+                        </h2>
+
+                        <div
+                            class="info-row"
+                            id="customerName"
+                        >
+                            -
+                        </div>
+
+                        <div
+                            class="info-row"
+                            id="customerEmail"
+                        >
+                            -
+                        </div>
+
+                        <div
+                            class="info-row"
+                            id="customerPhone"
+                        >
+                            -
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="info-card">
+
+                        <h2>
+                            Payment
+                        </h2>
+
+                        <div class="info-row">
+
+                            <strong>
+                                Method:
+                            </strong>
+
+                            <span id="paymentMethod">
+                                -
+                            </span>
+
+                        </div>
+
+                        <div class="info-row">
+
+                            <strong>
+                                Card:
+                            </strong>
+
+                            <span id="paymentCard">
+                                -
+                            </span>
+
+                        </div>
+
+                        <div class="info-row">
+
+                            <strong>
+                                Status:
+                            </strong>
+
+                            <span id="paymentStatus">
+                                -
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+
+                <!-- DELIVERY -->
+
+                <section>
+
+                    <h2 class="receipt-section-title">
+                        Delivery Details
+                    </h2>
+
+                    <div class="info-card">
+
+                        <div
+                            class="info-row"
+                            id="deliveryAddress"
+                        >
+                            -
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+
+                <br>
+
+
+                <!-- ITEMS -->
+
+                <section>
+
+                    <h2 class="receipt-section-title">
+                        Items Purchased
+                    </h2>
+
+
+                    <div class="receipt-items">
+
+                        <table class="receipt-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        Product
+                                    </th>
+
+                                    <th>
+                                        Size
+                                    </th>
+
+                                    <th>
+                                        Qty
+                                    </th>
+
+                                    <th>
+                                        Unit Price
+                                    </th>
+
+                                    <th>
+                                        Total
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody id="receiptItems">
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </section>
+
+
+
+                <!-- TOTAL -->
+
+                <section class="receipt-summary-area">
+
+                    <div class="receipt-summary">
+
+                        <div class="summary-line">
+
+                            <span>
+                                Number of Items
+                            </span>
+
+                            <strong id="summaryItemCount">
+                                0
+                            </strong>
+
+                        </div>
+
+
+                        <div class="summary-line">
+
+                            <span>
+                                Subtotal
+                            </span>
+
+                            <strong id="summarySubtotal">
+                                R0.00
+                            </strong>
+
+                        </div>
+
+
+                        <div
+                            class="
+                                summary-line
+                                summary-total
+                            "
+                        >
+
+                            <span>
+                                Total Paid
+                            </span>
+
+                            <strong id="summaryTotal">
+                                R0.00
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+
+                <!-- THANK YOU -->
+
+                <section class="receipt-thank-you">
+
+                    <h2>
+                        Thank you for shopping with StrideX!
+                    </h2>
+
+                    <p>
+                        Your order has been received and confirmed.
+                        Keep this receipt for your records.
+                    </p>
+
+                </section>
+
+
+
+                <!-- BUTTONS -->
+
+                <div class="receipt-actions">
+
+                    <button
+                        type="button"
+                        class="receipt-button"
+                        id="printReceiptButton"
+                    >
+                        Print / Save as PDF
+                    </button>
+
+
+                    <a
+                        href="orders.html"
+                        class="
+                            receipt-button
+                            secondary
+                        "
+                    >
+                        My Orders
+                    </a>
+
+
+                    <a
+                        href="shop.xhtml"
+                        class="
+                            receipt-button
+                            light
+                        "
+                    >
+                        Continue Shopping
+                    </a>
+
+                </div>
+
+
+
+                <p class="receipt-footer-note">
+                    StrideX Sports • Every Move Matters
+                    <br>
+                    This electronic receipt confirms the order
+                    recorded on your StrideX account.
+                </p>
+
+
+            </div>
+
+        </article>
+
+    </main>
+
+
+
+    <script>
+
+        // =====================================================
+        // BACKEND
+        // =====================================================
+
+        const API_BASE = "";
+
+
+
+        // =====================================================
+        // ELEMENTS
+        // =====================================================
+
+        const receiptStatus =
+            document.getElementById(
+                "receiptStatus"
+            );
+
+
+        const receipt =
+            document.getElementById(
+                "receipt"
+            );
+
+
+        const receiptItems =
+            document.getElementById(
+                "receiptItems"
+            );
+
+
+        const headerCartCount =
+            document.getElementById(
+                "headerCartCount"
+            );
+
+
+
+        // =====================================================
+        // FORMAT PRICE
+        // =====================================================
+
+        function formatPrice(amount) {
+
+            return (
+                "R" +
+                Number(amount)
+                    .toLocaleString(
+                        "en-ZA",
+                        {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        }
+                    )
+            );
+
+        }
+
+
+
+        // =====================================================
+        // FORMAT DATE
+        // =====================================================
+
+        function formatDate(value) {
+
+            const date =
+                new Date(value);
+
+
+            return date.toLocaleString(
+                "en-ZA",
+                {
+                    day:
+                        "2-digit",
+
+                    month:
+                        "long",
+
+                    year:
+                        "numeric",
+
+                    hour:
+                        "2-digit",
+
+                    minute:
+                        "2-digit"
+                }
+            );
+
+        }
+
+
+
+        // =====================================================
+        // CREATE PRODUCT ROW
+        // =====================================================
+
+        function createReceiptItem(item) {
+
+            const row =
+                document.createElement(
+                    "tr"
+                );
+
+
+            // PRODUCT
+            const productCell =
+                document.createElement(
+                    "td"
+                );
+
+
+            const product =
+                document.createElement(
+                    "div"
+                );
+
+
+            product.className =
+                "receipt-product";
+
+
+            const image =
+                document.createElement(
+                    "img"
+                );
+
+
+            image.src =
+                item.image || "";
+
+
+            image.alt =
+                item.name || "Product";
+
+
+            const productText =
+                document.createElement(
+                    "div"
+                );
+
+
+            const productName =
+                document.createElement(
+                    "div"
+                );
+
+
+            productName.className =
+                "receipt-product-name";
+
+
+            productName.textContent =
+                item.name ||
+                "Product";
+
+
+            const productId =
+                document.createElement(
+                    "div"
+                );
+
+
+            productId.className =
+                "receipt-product-id";
+
+
+            productId.textContent =
+                "Product ID: " +
+                item.productId;
+
+
+            productText.appendChild(
+                productName
+            );
+
+
+            productText.appendChild(
+                productId
+            );
+
+
+            product.appendChild(
+                image
+            );
+
+
+            product.appendChild(
+                productText
+            );
+
+
+            productCell.appendChild(
+                product
+            );
+
+
+
+            // SIZE
+            const sizeCell =
+                document.createElement(
+                    "td"
+                );
+
+
+            sizeCell.textContent =
+                item.size || "-";
+
+
+
+            // QUANTITY
+            const quantityCell =
+                document.createElement(
+                    "td"
+                );
+
+
+            quantityCell.textContent =
+                item.quantity;
+
+
+
+            // UNIT PRICE
+            const priceCell =
+                document.createElement(
+                    "td"
+                );
+
+
+            priceCell.className =
+                "money";
+
+
+            priceCell.textContent =
+                formatPrice(
+                    item.unitPrice
+                );
+
+
+
+            // LINE TOTAL
+            const totalCell =
+                document.createElement(
+                    "td"
+                );
+
+
+            totalCell.className =
+                "money";
+
+
+            totalCell.textContent =
+                formatPrice(
+                    item.lineTotal
+                );
+
+
+
+            row.appendChild(
+                productCell
+            );
+
+
+            row.appendChild(
+                sizeCell
+            );
+
+
+            row.appendChild(
+                quantityCell
+            );
+
+
+            row.appendChild(
+                priceCell
+            );
+
+
+            row.appendChild(
+                totalCell
+            );
+
+
+            return row;
+
+        }
+
+
+
+        // =====================================================
+        // CART COUNT
+        // =====================================================
+
+        async function loadCartCount() {
+
+            try {
+
+                const response =
+                    await fetch(
+                        API_BASE +
+                        "/api/cart",
+                        {
+                            credentials:
+                                "include"
+                        }
+                    );
+
+
+                if (!response.ok) {
+
+                    headerCartCount
+                        .textContent =
+                        "0";
+
+                    return;
+
+                }
+
+
+                const cart =
+                    await response.json();
+
+
+                headerCartCount
+                    .textContent =
+                    cart.itemCount || 0;
+
+
+            } catch {
+
+                headerCartCount
+                    .textContent =
+                    "0";
+
+            }
+
+        }
+
+
+
+        // =====================================================
+        // LOAD RECEIPT
+        // =====================================================
+
+        async function loadReceipt() {
+
+            const parameters =
+                new URLSearchParams(
+                    window.location.search
+                );
+
+
+            const orderId =
+                parameters.get(
+                    "orderId"
+                );
+
+
+            if (
+                !orderId ||
+                !/^\d+$/.test(orderId)
+            ) {
+
+                receiptStatus.classList.add(
+                    "error"
+                );
+
+
+                receiptStatus.textContent =
+                    "A valid order number was not provided.";
+
+
+                return;
+
+            }
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        API_BASE +
+                        "/api/orders/" +
+                        orderId +
+                        "/receipt",
+                        {
+                            credentials:
+                                "include"
+                        }
+                    );
+
+
+                if (
+                    response.status ===
+                    401
+                ) {
+
+                    window.location.href =
+                        "account.html?return=" +
+                        encodeURIComponent(
+                            "receipt.html?orderId=" +
+                            orderId
+                        );
+
+
+                    return;
+
+                }
+
+
+                const result =
+                    await response
+                        .json()
+                        .catch(
+                            () => ({})
+                        );
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        result.message ||
+                        result.detail ||
+                        "Could not load this receipt."
+                    );
+
+                }
+
+
+
+                // RECEIPT NUMBER
+
+                document.getElementById(
+                    "receiptNumber"
+                ).textContent =
+                    result.receiptNumber;
+
+
+                document.getElementById(
+                    "receiptStatusBadge"
+                ).textContent =
+                    result.status;
+
+
+
+                // ORDER
+
+                document.getElementById(
+                    "orderNumber"
+                ).textContent =
+                    "#" +
+                    result.orderId;
+
+
+                document.getElementById(
+                    "orderDate"
+                ).textContent =
+                    formatDate(
+                        result.orderDate
+                    );
+
+
+                document.getElementById(
+                    "itemCount"
+                ).textContent =
+                    result.itemCount;
+
+
+
+                // CUSTOMER
+
+                document.getElementById(
+                    "customerName"
+                ).textContent =
+                    result.customer.name ||
+                    "-";
+
+
+                document.getElementById(
+                    "customerEmail"
+                ).textContent =
+                    result.customer.email ||
+                    "-";
+
+
+                document.getElementById(
+                    "customerPhone"
+                ).textContent =
+                    result.customer.phone ||
+                    "-";
+
+
+
+                // DELIVERY
+
+                const deliveryParts = [
+
+                    result.delivery
+                        .streetAddress,
+
+                    result.delivery
+                        .city,
+
+                    result.delivery
+                        .province,
+
+                    result.delivery
+                        .postalCode
+
+                ].filter(
+                    value =>
+                        value &&
+                        String(value)
+                            .trim()
+                );
+
+
+                document.getElementById(
+                    "deliveryAddress"
+                ).textContent =
+                    deliveryParts.length > 0
+                        ? deliveryParts.join(
+                            ", "
+                        )
+                        : "-";
+
+
+
+                // PAYMENT
+
+                document.getElementById(
+                    "paymentMethod"
+                ).textContent =
+                    result.payment.method ||
+                    "-";
+
+
+                document.getElementById(
+                    "paymentCard"
+                ).textContent =
+                    result.payment.last4
+                        ? "•••• •••• •••• " +
+                          result.payment.last4
+                        : "-";
+
+
+                document.getElementById(
+                    "paymentStatus"
+                ).textContent =
+                    result.payment.status ||
+                    "-";
+
+
+
+                // ITEMS
+
+                receiptItems.replaceChildren();
+
+
+                result.items.forEach(
+                    function (item) {
+
+                        receiptItems
+                            .appendChild(
+                                createReceiptItem(
+                                    item
+                                )
+                            );
+
+                    }
+                );
+
+
+
+                // TOTALS
+
+                document.getElementById(
+                    "summaryItemCount"
+                ).textContent =
+                    result.itemCount;
+
+
+                document.getElementById(
+                    "summarySubtotal"
+                ).textContent =
+                    formatPrice(
+                        result.subtotal
+                    );
+
+
+                document.getElementById(
+                    "summaryTotal"
+                ).textContent =
+                    formatPrice(
+                        result.total
+                    );
+
+
+
+                receiptStatus.hidden =
+                    true;
+
+
+                receipt.hidden =
+                    false;
+
+
+            } catch (error) {
+
+                receiptStatus.hidden =
+                    false;
+
+
+                receiptStatus.classList.add(
+                    "error"
+                );
+
+
+                receiptStatus.textContent =
+                    error.message;
+
+            }
+
+        }
+
+
+
+        // =====================================================
+        // PRINT RECEIPT
+        // =====================================================
+
+        document.getElementById(
+            "printReceiptButton"
+        ).addEventListener(
+            "click",
+            function () {
+
+                window.print();
+
+            }
+        );
+
+
+
+        // =====================================================
+        // START
+        // =====================================================
+
+        loadCartCount();
+
+        loadReceipt();
+
+    </script>
+
+
+</body>
+
+</html>

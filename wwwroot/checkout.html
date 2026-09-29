@@ -1217,11 +1217,28 @@
 
 
             <a
-                href="index.html"
-                class="success-button"
-            >
-                Return Home
-            </a>
+    href="#"
+    class="success-button"
+    id="viewReceiptButton"
+>
+    View Receipt
+</a>
+
+<a
+    href="orders.html"
+    class="success-button"
+>
+    My Orders
+</a>
+
+<a
+    href="index.html"
+    class="success-button"
+>
+    Return Home
+</a>
+
+
 
 
         </section>
@@ -2338,20 +2355,74 @@
                 try {
 
 
-                    const response =
-                        await fetch(
-                            API_BASE +
-                            "/api/orders/checkout",
-                            {
+                    const cardDigits =
+    cardNumberInput.value
+        .replace(
+            /\D/g,
+            ""
+        );
 
-                                method:
-                                    "POST",
 
-                                credentials:
-                                    "include"
+const checkoutData = {
 
-                            }
-                        );
+    fullName:
+        document.getElementById(
+            "fullName"
+        ).value.trim(),
+
+    phoneNumber:
+        document.getElementById(
+            "phone"
+        ).value.trim(),
+
+    streetAddress:
+        document.getElementById(
+            "address"
+        ).value.trim(),
+
+    city:
+        document.getElementById(
+            "city"
+        ).value.trim(),
+
+    province:
+        document.getElementById(
+            "province"
+        ).value,
+
+    postalCode:
+        document.getElementById(
+            "postalCode"
+        ).value.trim(),
+
+    paymentLast4:
+        cardDigits.slice(-4)
+
+};
+
+
+const response =
+    await fetch(
+        API_BASE +
+        "/api/orders/checkout",
+        {
+            method:
+                "POST",
+
+            credentials:
+                "include",
+
+            headers: {
+                "Content-Type":
+                    "application/json"
+            },
+
+            body:
+                JSON.stringify(
+                    checkoutData
+                )
+        }
+    );
 
 
                     const result =
@@ -2422,6 +2493,11 @@
                     ).textContent =
                         "Order #" +
                         result.orderId;
+                        document.getElementById(
+    "viewReceiptButton"
+).href =
+    "receipt.html?orderId=" +
+    result.orderId;
 
 
                     document.getElementById(
