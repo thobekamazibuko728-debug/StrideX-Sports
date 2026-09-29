@@ -122,6 +122,18 @@ builder.Services.ConfigureApplicationCookie(options =>
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
+// =====================================
+// APPLY DATABASE MIGRATIONS
+// =====================================
+
+using (var scope = app.Services.CreateScope())
+{
+    var db =
+        scope.ServiceProvider
+            .GetRequiredService<StrideXDbContext>();
+
+    await db.Database.MigrateAsync();
+}
 
 // HTTP PIPELINE
 
