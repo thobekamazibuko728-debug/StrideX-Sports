@@ -784,7 +784,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     product.badge +
                 '</span>' +
 
-                '<img src="' +
+                '<img loading="lazy" decoding="async" src="' +
                     product.image +
                     '" alt="' +
                     product.name +
