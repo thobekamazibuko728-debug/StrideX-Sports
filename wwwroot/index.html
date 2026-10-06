@@ -7,6 +7,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>StrideX Sports</title>
     <link rel="stylesheet" type="text/css" href="css/style.css" />
+
+    <style>
+        .locker-home-section{
+            width:min(1180px,calc(100% - 40px));
+            margin:70px auto;
+            padding:42px;
+            border-radius:24px;
+            color:#fff;
+            background:linear-gradient(135deg,#111116 0%,#251534 55%,#5b21b6 140%);
+            display:grid;
+            grid-template-columns:1.25fr .75fr;
+            gap:30px;
+            align-items:center;
+            box-shadow:0 24px 60px rgba(36,17,57,.18);
+        }
+        .locker-home-label{font-size:12px;font-weight:900;letter-spacing:.16em;color:#c6a7ff;margin:0 0 10px}
+        .locker-home-section h2{font-size:clamp(30px,4vw,48px);line-height:1.05;margin:0 0 14px}
+        .locker-home-section p{color:#d6d0dc;line-height:1.7;max-width:650px}
+        .locker-home-tags{display:flex;gap:9px;flex-wrap:wrap;margin:20px 0}
+        .locker-home-tags span{border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.07);padding:8px 11px;border-radius:999px;font-size:12px}
+        .locker-home-button{display:inline-block;text-decoration:none;background:#fff;color:#5b21b6;padding:14px 20px;border-radius:10px;font-weight:900}
+        .locker-home-score{min-height:220px;border-radius:20px;background:rgba(7,7,10,.45);border:1px solid rgba(255,255,255,.12);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px}
+        .locker-home-score strong{font-size:68px;color:#c3a1ff;line-height:1}
+        .locker-home-score span{font-size:13px;color:#ddd;margin-top:8px}
+        @media(max-width:760px){.locker-home-section{grid-template-columns:1fr;padding:26px}.locker-home-score{min-height:160px}}
+    </style>
 </head>
 
 <body>
@@ -90,6 +116,10 @@
 
             <a href="shop.xhtml?sport=cycling">
                 Cycling
+            </a>
+
+            <a href="matchday-locker.html">
+                Matchday Locker
             </a>
 
             <a href="custom-kit.xhtml">
@@ -824,6 +854,33 @@
 
     </section>
 
+
+
+    <!-- MATCHDAY LOCKER -->
+    <section class="locker-home-section">
+        <div>
+            <p class="locker-home-label">NEW: STRIDEX SMART GEAR FINDER</p>
+            <h2>Build Your Matchday Locker</h2>
+            <p>
+                Choose your sport, goal, budget and sizes. StrideX will build a personalised
+                gear locker from real products in the catalogue, then add the whole selection
+                to your cart in one click.
+            </p>
+            <div class="locker-home-tags">
+                <span>Personalised Picks</span>
+                <span>Budget Aware</span>
+                <span>Real Catalogue Products</span>
+                <span>One-Click Cart</span>
+            </div>
+            <a href="matchday-locker.html" class="locker-home-button">
+                Build My Locker
+            </a>
+        </div>
+        <div class="locker-home-score">
+            <strong>94%</strong>
+            <span>Example StrideX Fit Score</span>
+        </div>
+    </section>
 
     <!-- CUSTOM TEAM KIT -->
 
