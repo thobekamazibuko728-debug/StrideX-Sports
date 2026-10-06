@@ -1,16 +1,999 @@
 <!DOCTYPE html>
+
 <html lang="en">
+
+
+
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
-  <meta http-equiv="Pragma" content="no-cache">
-  <meta http-equiv="Expires" content="0">
-  <meta http-equiv="refresh" content="0; url=my-orders.html">
-  <title>My Orders | StrideX Sports</title>
-  <script>window.location.replace("my-orders.html");</script>
-</head>
-<body>
-  <p>Opening My Orders...</p>
-  <p><a href="my-orders.html">Continue to My Orders</a></p>
-</body>
-</html>
+
+
+
+    <meta charset="UTF-8">
+
+
+
+    <meta
+
+        name="viewport"
+
+        content="width=device-width, initial-scale=1.0"
+
+    >
+
+
+
+    <title>My Orders | StrideX Sports</title>
+
+
+
+    <link
+
+        rel="stylesheet"
+
+        href="css/style.css"
+
+    >
+
+
+
+    <style>
+
+
+
+        * {
+
+            box-sizing: border-box;
+
+        }
+
+
+
+
+
+        body {
+
+            margin: 0;
+
+
+
+            background: #f5f5f7;
+
+
+
+            color: #111111;
+
+
+
+            font-family:
+
+                Arial,
+
+                Helvetica,
+
+                sans-serif;
+
+        }
+
+
+
+
+
+        .orders-page {
+
+
+
+            width: min(
+
+                1180px,
+
+                calc(100% - 40px)
+
+            );
+
+
+
+            margin:
+
+                45px
+
+                auto
+
+                70px;
+
+        }
+
+
+
+
+
+        .orders-heading {
+
+
+
+            margin-bottom: 32px;
+
+        }
+
+
+
+
+
+        .orders-heading h1 {
+
+
+
+            margin:
+
+                0
+
+                0
+
+                8px;
+
+
+
+            font-size: 38px;
+
+        }
+
+
+
+
+
+        .orders-heading p {
+
+
+
+            margin: 0;
+
+
+
+            color: #666666;
+
+
+
+            line-height: 1.6;
+
+        }
+
+
+
+
+
+        .orders-section {
+
+
+
+            margin-top: 38px;
+
+        }
+
+
+
+
+
+        .orders-section h2 {
+
+
+
+            margin-bottom: 20px;
+
+
+
+            font-size: 27px;
+
+        }
+
+
+
+
+
+        .orders-list {
+
+
+
+            display: grid;
+
+
+
+            gap: 22px;
+
+        }
+
+
+
+
+
+        .order-card {
+
+
+
+            overflow: hidden;
+
+
+
+            background: #ffffff;
+
+
+
+            border:
+
+                1px solid
+
+                #e3e3e3;
+
+
+
+            border-radius: 16px;
+
+
+
+            box-shadow:
+
+                0 8px 25px
+
+                rgba(
+
+                    0,
+
+                    0,
+
+                    0,
+
+                    0.05
+
+                );
+
+        }
+
+
+
+
+
+        .order-header {
+
+
+
+            display: flex;
+
+
+
+            justify-content:
+
+                space-between;
+
+
+
+            gap: 20px;
+
+
+
+            align-items: center;
+
+
+
+            padding: 22px 25px;
+
+
+
+            background: #fafafa;
+
+
+
+            border-bottom:
+
+                1px solid
+
+                #ececec;
+
+        }
+
+
+
+
+
+        .order-header-left h3 {
+
+
+
+            margin:
+
+                0
+
+                0
+
+                6px;
+
+
+
+            font-size: 21px;
+
+        }
+
+
+
+
+
+        .order-date {
+
+
+
+            margin: 0;
+
+
+
+            color: #666666;
+
+
+
+            font-size: 14px;
+
+        }
+
+
+
+
+
+        .order-status {
+
+
+
+            display: inline-block;
+
+
+
+            padding:
+
+                8px
+
+                13px;
+
+
+
+            border-radius: 999px;
+
+
+
+            font-size: 13px;
+
+
+
+            font-weight: bold;
+
+
+
+            white-space: nowrap;
+
+        }
+
+
+
+
+
+        .status-confirmed {
+
+
+
+            background: #ede4ff;
+
+
+
+            color: #6d28d9;
+
+        }
+
+
+
+
+
+        .status-processing {
+
+
+
+            background: #fff4d8;
+
+
+
+            color: #8a5a00;
+
+        }
+
+
+
+
+
+        .status-shipped {
+
+
+
+            background: #e3f2fd;
+
+
+
+            color: #1565c0;
+
+        }
+
+
+
+
+
+        .status-delivered {
+
+
+
+            background: #e4f8ea;
+
+
+
+            color: #22763c;
+
+        }
+
+
+
+
+
+        .status-cancelled {
+
+
+
+            background: #fde8eb;
+
+
+
+            color: #a12638;
+
+        }
+
+
+
+
+
+        .status-pending {
+
+
+
+            background: #eeeeee;
+
+
+
+            color: #555555;
+
+        }
+
+
+
+
+
+        .order-items {
+
+
+
+            padding:
+
+                8px
+
+                25px;
+
+        }
+
+
+
+
+
+        .order-item {
+
+
+
+            display: grid;
+
+
+
+            grid-template-columns:
+
+                90px
+
+                minmax(0, 1fr)
+
+                auto;
+
+
+
+            gap: 18px;
+
+
+
+            align-items: center;
+
+
+
+            padding:
+
+                18px
+
+                0;
+
+
+
+            border-bottom:
+
+                1px solid
+
+                #eeeeee;
+
+        }
+
+
+
+
+
+        .order-item:last-child {
+
+
+
+            border-bottom: none;
+
+        }
+
+
+
+
+
+        .order-item img {
+
+
+
+            width: 90px;
+
+
+
+            height: 90px;
+
+
+
+            object-fit: contain;
+
+
+
+            padding: 7px;
+
+
+
+            background: #ffffff;
+
+
+
+            border:
+
+                1px solid
+
+                #eeeeee;
+
+
+
+            border-radius: 10px;
+
+        }
+
+
+
+
+
+        .order-item-details h4 {
+
+
+
+            margin:
+
+                0
+
+                0
+
+                8px;
+
+
+
+            font-size: 17px;
+
+        }
+
+
+
+
+
+        .order-item-details p {
+
+
+
+            margin: 4px 0;
+
+
+
+            color: #666666;
+
+
+
+            font-size: 14px;
+
+        }
+
+
+
+
+
+        .order-item-total {
+
+
+
+            color: #7c3aed;
+
+
+
+            font-size: 17px;
+
+
+
+            font-weight: bold;
+
+
+
+            white-space: nowrap;
+
+        }
+
+
+
+
+
+        .order-footer {
+
+
+
+            display: flex;
+
+
+
+            justify-content:
+
+                space-between;
+
+
+
+            gap: 20px;
+
+
+
+            align-items: center;
+
+
+
+            padding: 20px 25px;
+
+
+
+            background: #fafafa;
+
+
+
+            border-top:
+
+                1px solid
+
+                #ececec;
+
+        }
+
+
+
+
+
+        .order-count {
+
+
+
+            color: #666666;
+
+
+
+            font-size: 14px;
+
+        }
+
+
+
+
+
+        .order-total {
+
+
+
+            font-size: 20px;
+
+
+
+            font-weight: bold;
+
+        }
+
+
+
+
+
+        .order-total strong {
+
+
+
+            color: #7c3aed;
+
+        }
+
+
+
+
+
+        .empty-orders {
+
+
+
+            padding: 55px 30px;
+
+
+
+            text-align: center;
+
+
+
+            background: #ffffff;
+
+
+
+            border:
+
+                1px solid
+
+                #e3e3e3;
+
+
+
+            border-radius: 16px;
+
+
+
+            box-shadow:
+
+                0 8px 25px
+
+                rgba(
+
+                    0,
+
+                    0,
+
+                    0,
+
+                    0.05
+
+                );
+
+        }
+
+
+
+
+
+        .empty-orders h3 {
+
+
+
+            margin:
+
+                0
+
+                0
+
+                10px;
+
+
+
+            font-size: 24px;
+
+        }
+
+
+
+
+
+        .empty-orders p {
+
+
+
+            color: #666666;
+
+        }
+
+
+
+
+
+        .orders-button {
+
+
+
+            display: inline-block;
+
+
+
+            margin-top: 20px;
+
+
+
+            padding:
+
+                13px
+
+                22px;
+
+
+
+            border-radius: 8px;
+
+
+
+            background: #7c3aed;
+
+
+
+            color: #ffffff;
+
+
+
+            text-decoration: none;
+
+
+
+            font-weight: bold;
+
+        }
+
+
+
+
+
+        #ordersStatus {
+
+
+
+            margin-bottom: 25px;
+
+
+
+            padding: 14px 16px;
+
+
+
+            border-radius: 9px;
+
+
+
+            background: #f0f0f0;
+
+
+
+            color: #555555;
+
+        }
+
+
+
+
+
+        #ordersStatus.error {
+
+
+
+            background: #fff0f2;
+
+
+
+            border:
+
+                1px solid
+
+                #f1b6bd;
+
+
+
+            color: #9d2638;
+
+        }
+
+
+
+
+
+
+        .custom-kit-card { background:#fff; border:1px solid #e3e3e3; border-radius:16px; overflow:hidden; box-shadow:0 8px 25px rgba(0,0,0,.05); }
+        .custom-kit-summary { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; padding:22px 25px; }
+        .custom-kit-summary div { padding:14px; border:1px solid #ececec; border-radius:10px; background:#fafafa; }
+        .custom-kit-summary span { display:block; margin-bottom:6px; color:#777; font-size:12px; text-transform:uppercase; }
+        .custom-kit-actions { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+        .orders-button.secondary { background:#111; }
+        .orders-button.danger { border:0; cursor:pointer; background:#b42318; font:inherit; }
+        @media screen and (max-width:750px){ .custom-kit-summary{grid-template-columns:1fr;} }
+
+        [hidden] {
+
+
+
+            display:
+
+                none !important;
+
+        }
+
+
+
+
+
+        @media screen and (max-width: 650px) {
+
+
+
+            .orders-page {
+
+
+
+                width:
+
+                    calc(
+
+                        100% - 24px
+
+                    );
+
+
+
+                margin-top: 28px;
+
+            }
+
+
+
+
+
+            .order-header {
+
+
+
+                align-items:
+
+                    flex-start;
+
+
+
+                flex-direction:
+
+                    column;
+
+            }
+
+
+
+
+
+            .order-item {
+
+
+
+                grid-template-columns:
+
+                    80px
+
+                    1fr;
+
+            }
+
+
+
+
