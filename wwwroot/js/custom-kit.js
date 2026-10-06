@@ -5213,15 +5213,17 @@ if (
 
                         await fetch(
 
-                            API_BASE +
+                            editOrderId
 
-                            "/api/custom-kits",
+                                ? API_BASE + "/api/custom-kits/" + editOrderId
+
+                                : API_BASE + "/api/custom-kits",
 
                             {
 
                                 method:
 
-                                    "POST",
+                                    editOrderId ? "PUT" : "POST",
 
 
 
