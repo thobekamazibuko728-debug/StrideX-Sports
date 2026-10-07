@@ -75,6 +75,11 @@ body {
     display: flex;
     justify-content: flex-end;
     gap: 14px;
+    visibility: hidden;
+}
+
+.header-actions.stridex-auth-ready {
+    visibility: visible;
 }
 
 .header-action {

@@ -1,6 +1,12 @@
 (function () {
     "use strict";
 
+    if (window.__STRIDEX_SITE_AUTH_LOADED__) {
+        return;
+    }
+
+    window.__STRIDEX_SITE_AUTH_LOADED__ = true;
+
     const API_BASE = "";
     let currentUser = null;
 
@@ -288,6 +294,34 @@
                 font-size:13px;
             }
 
+            .stridex-notification-item.read{
+                opacity:.58;
+            }
+
+            .stridex-notification-item.read strong{
+                color:#666;
+            }
+
+            .stridex-mark-read{
+                display:block;
+                width:calc(100% - 12px);
+                margin:0 6px 6px;
+                padding:8px 10px;
+                border:0;
+                border-radius:8px;
+                background:#f5f0ff;
+                color:#5b21b6;
+                font:inherit;
+                font-size:12px;
+                font-weight:800;
+                text-align:left;
+                cursor:pointer;
+            }
+
+            .stridex-mark-read:hover{
+                background:#ece3ff;
+            }
+
             @media(max-width:760px){
                 .stridex-account-name{
                     display:none;
@@ -335,6 +369,87 @@
             return null;
         }
     }
+
+    function notificationStorageKey() {
+        const userId =
+            currentUser &&
+            (
+                currentUser.id ||
+                currentUser.Id
+            );
+
+        return (
+            "stridex-read-notifications:" +
+            (userId || "guest")
+        );
+    }
+
+    function getReadNotificationKeys() {
+        try {
+            const stored =
+                JSON.parse(
+                    localStorage.getItem(
+                        notificationStorageKey()
+                    ) ||
+                    "[]"
+                );
+
+            return new Set(
+                Array.isArray(stored)
+                    ? stored
+                    : []
+            );
+        } catch {
+            return new Set();
+        }
+    }
+
+    function saveReadNotificationKeys(keys) {
+        try {
+            localStorage.setItem(
+                notificationStorageKey(),
+                JSON.stringify(
+                    Array.from(keys)
+                )
+            );
+        } catch {
+            // Browsers can block local storage; notifications still work.
+        }
+    }
+
+    function markNotificationRead(key) {
+        const keys =
+            getReadNotificationKeys();
+
+        keys.add(key);
+
+        // Prevent this small browser preference store
+        // from growing forever.
+        const trimmed =
+            Array.from(keys)
+                .slice(-100);
+
+        saveReadNotificationKeys(
+            new Set(trimmed)
+        );
+    }
+
+    function markNotificationsRead(keys) {
+        const read =
+            getReadNotificationKeys();
+
+        keys.forEach(
+            key => read.add(key)
+        );
+
+        saveReadNotificationKeys(
+            new Set(
+                Array.from(read)
+                    .slice(-100)
+            )
+        );
+    }
+
 
     async function getNotifications() {
         if (!currentUser) {
@@ -409,6 +524,11 @@
                         }
 
                         notifications.push({
+                            key:
+                                "order:" +
+                                order.orderId +
+                                ":" +
+                                status.toLowerCase(),
                             title:
                                 "Order #" +
                                 order.orderId,
@@ -475,6 +595,11 @@
                         }
 
                         notifications.push({
+                            key:
+                                "custom:" +
+                                order.customKitOrderId +
+                                ":" +
+                                normalized,
                             title:
                                 "Custom Kit #" +
                                 order.customKitOrderId,
@@ -822,6 +947,17 @@
     function createNotificationControl(
         notifications
     ) {
+        const readKeys =
+            getReadNotificationKeys();
+
+        const unread =
+            notifications.filter(
+                notification =>
+                    !readKeys.has(
+                        notification.key
+                    )
+            );
+
         const wrap =
             document.createElement(
                 "div"
@@ -857,7 +993,7 @@
         );
 
         if (
-            notifications.length > 0
+            unread.length > 0
         ) {
             const badge =
                 document.createElement(
@@ -869,7 +1005,7 @@
 
             badge.textContent =
                 String(
-                    notifications.length
+                    unread.length
                 );
 
             button.appendChild(
@@ -900,6 +1036,61 @@
         );
 
         if (
+            unread.length > 0
+        ) {
+            const markAll =
+                document.createElement(
+                    "button"
+                );
+
+            markAll.type = "button";
+            markAll.className =
+                "stridex-mark-read";
+
+            markAll.textContent =
+                "Mark all as read";
+
+            markAll.addEventListener(
+                "click",
+                function (event) {
+                    event.stopPropagation();
+
+                    markNotificationsRead(
+                        notifications.map(
+                            item => item.key
+                        )
+                    );
+
+                    const badge =
+                        button.querySelector(
+                            ".stridex-notification-badge"
+                        );
+
+                    if (badge) {
+                        badge.remove();
+                    }
+
+                    panel
+                        .querySelectorAll(
+                            ".stridex-notification-item"
+                        )
+                        .forEach(
+                            item =>
+                                item.classList.add(
+                                    "read"
+                                )
+                        );
+
+                    markAll.remove();
+                }
+            );
+
+            panel.appendChild(
+                markAll
+            );
+        }
+
+        if (
             notifications.length === 0
         ) {
             const empty =
@@ -927,6 +1118,16 @@
                     link.className =
                         "stridex-notification-item";
 
+                    if (
+                        readKeys.has(
+                            notification.key
+                        )
+                    ) {
+                        link.classList.add(
+                            "read"
+                        );
+                    }
+
                     link.href =
                         notification.href;
 
@@ -949,6 +1150,54 @@
                     link.append(
                         title,
                         text
+                    );
+
+                    link.addEventListener(
+                        "click",
+                        function () {
+                            if (
+                                !readKeys.has(
+                                    notification.key
+                                )
+                            ) {
+                                markNotificationRead(
+                                    notification.key
+                                );
+
+                                readKeys.add(
+                                    notification.key
+                                );
+
+                                link.classList.add(
+                                    "read"
+                                );
+
+                                const badge =
+                                    button.querySelector(
+                                        ".stridex-notification-badge"
+                                    );
+
+                                if (badge) {
+                                    const current =
+                                        Number(
+                                            badge.textContent
+                                        ) || 0;
+
+                                    const next =
+                                        Math.max(
+                                            0,
+                                            current - 1
+                                        );
+
+                                    if (next === 0) {
+                                        badge.remove();
+                                    } else {
+                                        badge.textContent =
+                                            String(next);
+                                    }
+                                }
+                            }
+                        }
                     );
 
                     panel.appendChild(

@@ -201,6 +201,6 @@
         cancelButton.addEventListener("click",async function(){if(!window.confirm("Cancel this custom kit request?"))return;cancelButton.disabled=true;try{const response=await fetch(API_BASE+"/api/custom-kits/"+orderId+"/cancel",{method:"POST",credentials:"include"});const data=await response.json().catch(()=>({}));if(!response.ok)throw new Error(data.message||"Could not cancel this request.");await loadOrder();}catch(error){alert(error.message||"Could not cancel this request.");cancelButton.disabled=false;}});
         loadCartCount();loadOrder();
     </script>
-    <script src="js/site-auth.js?v=auth-automation-20261007"></script>
+    <script src="js/site-auth.js?v=header-read-fix-20261007"></script>
 </body>
 </html>
