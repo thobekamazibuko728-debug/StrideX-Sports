@@ -5214,14 +5214,13 @@ if (
                         await fetch(
 
                             API_BASE +
-
-                            "/api/custom-kits",
+                            "/api/custom-kits" +
+                            (editOrderId ? "/" + editOrderId : ""),
 
                             {
 
                                 method:
-
-                                    "POST",
+                                    editOrderId ? "PUT" : "POST",
 
 
 
@@ -5529,8 +5528,11 @@ if (
                             : "Custom kit request #" + data.customKitOrderId + " submitted successfully."
                     );
 
+                    const destinationOrderId =
+                        editOrderId || data.customKitOrderId;
+
                     window.location.href =
-                        "custom-kit-order.html?id=" + data.customKitOrderId;
+                        "custom-kit-order.html?id=" + destinationOrderId;
 
 
 
