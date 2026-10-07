@@ -3251,6 +3251,7 @@ card.appendChild(
         const c=document.createElement("span");c.className="order-count";c.textContent=(o.quantity||0)+" kits";
         const acts=document.createElement("div");acts.className="custom-kit-actions";
         const view=document.createElement("a");view.href="custom-kit-order.html?id="+o.customKitOrderId;view.className="orders-button";view.style.marginTop="0";view.textContent="View Details";acts.append(view);
+        const receipt=document.createElement("a");receipt.href="custom-kit-receipt.html?id="+o.customKitOrderId;receipt.className="orders-button secondary";receipt.style.marginTop="0";receipt.textContent="View Receipt";acts.append(receipt);
         if(o.canEdit){const edit=document.createElement("a");edit.href="custom-kit.xhtml?editId="+o.customKitOrderId;edit.className="orders-button secondary";edit.style.marginTop="0";edit.textContent="Edit Request";acts.append(edit);}
         if(o.canCancel){const cancel=document.createElement("button");cancel.type="button";cancel.className="orders-button danger";cancel.style.marginTop="0";cancel.textContent="Cancel Request";cancel.onclick=async()=>{if(!confirm("Cancel this custom kit request?"))return;cancel.disabled=true;try{const r=await fetch("/api/custom-kits/"+o.customKitOrderId+"/cancel",{method:"POST",credentials:"include"});const x=await r.json().catch(()=>({}));if(!r.ok)throw new Error(x.message||"Could not cancel this request.");await loadCustomKits();}catch(e){alert(e.message);cancel.disabled=false;}};acts.append(cancel);}
         f.append(c,acts);a.append(h,g,f);return a;
