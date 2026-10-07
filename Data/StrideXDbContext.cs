@@ -430,6 +430,19 @@ public DbSet<CustomKitPlayer> CustomKitPlayers
             .HasMaxLength(30)
             .IsRequired();
 
+            entity.Property(
+                o => o.FulfilmentMethod
+            )
+            .HasColumnName("FulfilmentMethod")
+            .HasMaxLength(20)
+            .IsRequired();
+
+            entity.Property(
+                o => o.FulfilmentFee
+            )
+            .HasColumnName("FulfilmentFee")
+            .HasPrecision(10, 2);
+
 
             // Makes it quicker to find
             // all orders belonging to one customer.

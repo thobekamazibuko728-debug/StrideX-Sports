@@ -1643,6 +1643,7 @@ app.MapGet("/api/delivery-profile", async (
             .AsNoTracking()
             .Where(order =>
                 order.UserId == user.Id &&
+                order.FulfilmentMethod == "Delivery" &&
                 order.StreetAddress != ""
             )
             .OrderByDescending(order => order.OrderDate)
@@ -2557,6 +2558,42 @@ app.MapPost("/api/orders/checkout", async (
 
 
 
+    var fulfilmentMethod =
+        request.FulfilmentMethod?.Trim() ?? "";
+
+    var isCollection =
+        string.Equals(
+            fulfilmentMethod,
+            "Collection",
+            StringComparison.OrdinalIgnoreCase
+        );
+
+    var isDelivery =
+        string.Equals(
+            fulfilmentMethod,
+            "Delivery",
+            StringComparison.OrdinalIgnoreCase
+        );
+
+    if (!isCollection && !isDelivery)
+    {
+        return Results.BadRequest(new
+        {
+            message =
+                "Choose delivery or collect in store."
+        });
+    }
+
+    if (isCollection)
+    {
+        streetAddress =
+            "Mega City Unit 1, Sekame Street";
+        city = "Mafikeng";
+        province = "North West";
+        postalCode = "";
+    }
+
+
     var paymentLast4 =
 
         new string(
@@ -2574,33 +2611,26 @@ app.MapPost("/api/orders/checkout", async (
 
 
     if (
-
         string.IsNullOrWhiteSpace(customerName) ||
-
         string.IsNullOrWhiteSpace(phoneNumber) ||
-
-        string.IsNullOrWhiteSpace(streetAddress) ||
-
-        string.IsNullOrWhiteSpace(city) ||
-
-        string.IsNullOrWhiteSpace(province) ||
-
-        string.IsNullOrWhiteSpace(postalCode)
-
+        (
+            isDelivery &&
+            (
+                string.IsNullOrWhiteSpace(streetAddress) ||
+                string.IsNullOrWhiteSpace(city) ||
+                string.IsNullOrWhiteSpace(province) ||
+                string.IsNullOrWhiteSpace(postalCode)
+            )
+        )
     )
-
     {
-
         return Results.BadRequest(new
-
         {
-
             message =
-
-                "Complete all delivery details before placing your order."
-
+                isCollection
+                    ? "Enter your name and phone number before placing your collection order."
+                    : "Complete all delivery details before placing your order."
         });
-
     }
 
 
@@ -2975,6 +3005,11 @@ app.MapPost("/api/orders/checkout", async (
 
                     "Processing",
 
+                FulfilmentMethod =
+                    isCollection
+                        ? "Collection"
+                        : "Delivery",
+
 
 
                 CustomerName =
@@ -3147,9 +3182,19 @@ app.MapPost("/api/orders/checkout", async (
 
 
 
-        order.TotalAmount =
+        var fulfilmentFee =
+            isCollection
+                ? 50m
+                : orderTotal >= 1500m
+                    ? 0m
+                    : 100m;
 
-            orderTotal;
+        order.FulfilmentFee =
+            fulfilmentFee;
+
+        order.TotalAmount =
+            orderTotal +
+            fulfilmentFee;
 
 
 
@@ -4143,9 +4188,24 @@ app.MapGet(
 
 
 
+        fulfilment = new
+        {
+            method =
+                order.FulfilmentMethod,
+
+            fee =
+                order.FulfilmentFee,
+
+            collectionAddress =
+                order.FulfilmentMethod == "Collection"
+                    ? "Mega City Unit 1, Sekame Street, Mafikeng, North West"
+                    : ""
+        },
+
         subtotal =
 
-            order.TotalAmount,
+            order.TotalAmount -
+            order.FulfilmentFee,
 
 
 
@@ -5931,7 +5991,9 @@ record CheckoutRequest(
 
     string PostalCode,
 
-    string PaymentLast4
+    string PaymentLast4,
+
+    string FulfilmentMethod
 
 );
 

@@ -592,6 +592,17 @@ namespace StrideX.Api.Migrations
                         .HasColumnType("varchar(30)")
                         .HasColumnName("Status");
 
+                    b.Property<decimal>("FulfilmentFee")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)")
+                        .HasColumnName("FulfilmentFee");
+
+                    b.Property<string>("FulfilmentMethod")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("FulfilmentMethod");
+
                     b.Property<string>("StreetAddress")
                         .IsRequired()
                         .HasColumnType("longtext");

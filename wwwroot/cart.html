@@ -339,7 +339,11 @@
             pointer-events:none;
             cursor:not-allowed;
         }
-    </style>
+    .free-delivery-progress{margin:18px 0;padding:14px;border-radius:12px;background:#f5f0ff;border:1px solid #ded0ff}
+.free-delivery-progress p{margin:0 0 9px;font-weight:800;color:#5b21b6;line-height:1.4}
+.free-delivery-track{height:8px;border-radius:999px;background:#e5e7eb;overflow:hidden}
+.free-delivery-bar{display:block;height:100%;width:0;background:linear-gradient(90deg,#7c3aed,#a855f7);transition:width .25s ease}
+</style>
 </head>
 
 
@@ -542,6 +546,22 @@
                     </div>
 
 
+                    <div
+                        id="freeDeliveryProgress"
+                        class="free-delivery-progress"
+                    >
+                        <p id="freeDeliveryMessage">
+                            Spend more to unlock FREE delivery.
+                        </p>
+                        <div class="free-delivery-track">
+                            <span
+                                id="freeDeliveryBar"
+                                class="free-delivery-bar"
+                            ></span>
+                        </div>
+                    </div>
+
+
                     <!-- PLACE ORDER -->
 
                     <a
@@ -635,6 +655,52 @@
             document.getElementById(
                 "checkoutButton"
             );
+
+        const FREE_DELIVERY_THRESHOLD = 1500;
+
+        function updateFreeDeliveryProgress(subtotal) {
+            const message =
+                document.getElementById(
+                    "freeDeliveryMessage"
+                );
+
+            const bar =
+                document.getElementById(
+                    "freeDeliveryBar"
+                );
+
+            if (!message || !bar) {
+                return;
+            }
+
+            const amount =
+                Number(subtotal || 0);
+
+            const remaining =
+                Math.max(
+                    0,
+                    FREE_DELIVERY_THRESHOLD -
+                    amount
+                );
+
+            const progress =
+                Math.min(
+                    100,
+                    (amount /
+                        FREE_DELIVERY_THRESHOLD) *
+                        100
+                );
+
+            bar.style.width =
+                progress + "%";
+
+            message.textContent =
+                remaining <= 0
+                    ? "You've unlocked FREE delivery!"
+                    : "Buy " +
+                      formatPrice(remaining) +
+                      " more to get FREE delivery.";
+        }
 
         function showCartMessage(message, isError) {
             statusText.hidden = false;
@@ -1325,6 +1391,10 @@
                     formatPrice(
                         cart.total
                     );
+
+                updateFreeDeliveryProgress(
+                    cart.total
+                );
 
 
                 cartLayout.hidden =

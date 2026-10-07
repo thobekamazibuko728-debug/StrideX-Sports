@@ -585,7 +585,16 @@
 
         }
 
-    </style>
+    .fulfilment-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.fulfilment-option{display:block;border:1px solid #d8d8df;border-radius:14px;padding:16px;cursor:pointer;background:#fff}
+.fulfilment-option:has(input:checked){border-color:#7c3aed;box-shadow:0 0 0 2px rgba(124,58,237,.12);background:#faf7ff}
+.fulfilment-option input{width:auto;margin:0 8px 0 0}
+.fulfilment-option strong{display:block;margin-bottom:5px}
+.fulfilment-option small{display:block;color:#666;line-height:1.45;margin-top:6px}
+.fulfilment-note{margin:12px 0 0;padding:12px 14px;border-radius:10px;background:#f5f0ff;color:#5b21b6;font-size:14px;line-height:1.5}
+.free-delivery-checkout{font-size:13px;font-weight:700;color:#5b21b6;margin:8px 0 0}
+@media(max-width:650px){.fulfilment-options{grid-template-columns:1fr}}
+</style>
 
 </head>
 
@@ -776,13 +785,56 @@
 
 
                     <!-- =========================================
+                         FULFILMENT METHOD
+                         ========================================= -->
+
+                    <section class="checkout-card">
+                        <h2>How would you like to receive your order?</h2>
+
+                        <div class="fulfilment-options">
+                            <label class="fulfilment-option">
+                                <strong>
+                                    <input
+                                        type="radio"
+                                        name="fulfilmentMethod"
+                                        value="Delivery"
+                                        checked
+                                    >
+                                    Delivery
+                                </strong>
+                                <span>R100 delivery fee</span>
+                                <small>FREE delivery when your product subtotal is R1,500 or more.</small>
+                            </label>
+
+                            <label class="fulfilment-option">
+                                <strong>
+                                    <input
+                                        type="radio"
+                                        name="fulfilmentMethod"
+                                        value="Collection"
+                                    >
+                                    Collect in Store
+                                </strong>
+                                <span>R50 collection fee</span>
+                                <small>Mega City Unit 1, Sekame Street, Mafikeng, North West.</small>
+                            </label>
+                        </div>
+
+                        <p
+                            id="fulfilmentPromo"
+                            class="fulfilment-note"
+                        ></p>
+                    </section>
+
+
+                    <!-- =========================================
                          DELIVERY DETAILS
                          ========================================= -->
 
                     <section class="checkout-card">
 
 
-                        <h2>
+                        <h2 id="deliveryHeading">
                             Delivery Details
                         </h2>
 
@@ -1136,6 +1188,21 @@
                     </div>
 
 
+                    <div class="summary-row">
+                        <span>Subtotal</span>
+                        <strong id="summarySubtotal">R0.00</strong>
+                    </div>
+
+                    <div class="summary-row">
+                        <span id="summaryFulfilmentLabel">Delivery</span>
+                        <strong id="summaryFulfilmentFee">R100.00</strong>
+                    </div>
+
+                    <p
+                        id="summaryFreeDelivery"
+                        class="free-delivery-checkout"
+                    ></p>
+
                     <div
                         class="
                             summary-row
@@ -1258,6 +1325,12 @@
 
 
         let currentCart = null;
+
+        const FREE_DELIVERY_THRESHOLD = 1500;
+        const DELIVERY_FEE = 100;
+        const COLLECTION_FEE = 50;
+        const STORE_ADDRESS =
+            "Mega City Unit 1, Sekame Street, Mafikeng, North West";
 
 
 
@@ -1565,6 +1638,176 @@
 
 
 
+        function selectedFulfilmentMethod() {
+            return (
+                document.querySelector(
+                    'input[name="fulfilmentMethod"]:checked'
+                )?.value ||
+                "Delivery"
+            );
+        }
+
+        function updateFulfilmentUI() {
+            const method =
+                selectedFulfilmentMethod();
+
+            const isCollection =
+                method === "Collection";
+
+            const deliveryControls = [
+                "province",
+                "address",
+                "city",
+                "postalCode"
+            ];
+
+            deliveryControls.forEach(
+                function (id) {
+                    const control =
+                        document.getElementById(id);
+
+                    if (!control) {
+                        return;
+                    }
+
+                    if (isCollection) {
+                        if (
+                            control.dataset.deliveryValue ===
+                            undefined
+                        ) {
+                            control.dataset.deliveryValue =
+                                control.value || "";
+                        }
+
+                        if (id === "province") {
+                            control.value = "North West";
+                        } else if (id === "address") {
+                            control.value =
+                                "Mega City Unit 1, Sekame Street";
+                        } else if (id === "city") {
+                            control.value = "Mafikeng";
+                        } else {
+                            control.value = "";
+                        }
+
+                        control.required = false;
+                        control.disabled = true;
+                    } else {
+                        if (
+                            control.dataset.deliveryValue !==
+                            undefined
+                        ) {
+                            control.value =
+                                control.dataset.deliveryValue;
+                            delete control.dataset.deliveryValue;
+                        }
+
+                        control.disabled = false;
+                        control.required = true;
+                    }
+                }
+            );
+
+            document.getElementById(
+                "deliveryHeading"
+            ).textContent =
+                isCollection
+                    ? "Collection Details"
+                    : "Delivery Details";
+
+            const subtotal =
+                Number(
+                    currentCart?.total || 0
+                );
+
+            const fee =
+                isCollection
+                    ? COLLECTION_FEE
+                    : subtotal >=
+                      FREE_DELIVERY_THRESHOLD
+                        ? 0
+                        : DELIVERY_FEE;
+
+            document.getElementById(
+                "summarySubtotal"
+            ).textContent =
+                formatPrice(subtotal);
+
+            document.getElementById(
+                "summaryFulfilmentLabel"
+            ).textContent =
+                isCollection
+                    ? "Collection Fee"
+                    : "Delivery";
+
+            document.getElementById(
+                "summaryFulfilmentFee"
+            ).textContent =
+                fee === 0
+                    ? "FREE"
+                    : formatPrice(fee);
+
+            document.getElementById(
+                "summaryTotal"
+            ).textContent =
+                formatPrice(
+                    subtotal + fee
+                );
+
+            const promo =
+                document.getElementById(
+                    "fulfilmentPromo"
+                );
+
+            const summaryPromo =
+                document.getElementById(
+                    "summaryFreeDelivery"
+                );
+
+            let promoText = "";
+
+            if (isCollection) {
+                promoText =
+                    "Collect from " +
+                    STORE_ADDRESS +
+                    ". Collection fee: R50.";
+            } else if (
+                subtotal >=
+                FREE_DELIVERY_THRESHOLD
+            ) {
+                promoText =
+                    "You've unlocked FREE delivery!";
+            } else {
+                promoText =
+                    "Buy " +
+                    formatPrice(
+                        FREE_DELIVERY_THRESHOLD -
+                        subtotal
+                    ) +
+                    " more to get FREE delivery.";
+            }
+
+            promo.textContent =
+                promoText;
+
+            summaryPromo.textContent =
+                promoText;
+        }
+
+        document
+            .querySelectorAll(
+                'input[name="fulfilmentMethod"]'
+            )
+            .forEach(
+                function (radio) {
+                    radio.addEventListener(
+                        "change",
+                        updateFulfilmentUI
+                    );
+                }
+            );
+
+
         // =====================================================
         // CART SUMMARY
         // =====================================================
@@ -1789,10 +2032,7 @@
                 cart.itemCount;
 
 
-            summaryTotal.textContent =
-                formatPrice(
-                    cart.total
-                );
+            updateFulfilmentUI();
 
 
             headerCartCount.textContent =
@@ -2242,65 +2482,71 @@
             }
 
 
-            if (!province) {
-
-                showFieldError(
-                    "province",
-                    "Select your province."
-                );
-
-                valid =
-                    false;
-
-            }
-
-
             if (
-                address.length <
-                4
+                selectedFulfilmentMethod() ===
+                "Delivery"
             ) {
 
-                showFieldError(
-                    "address",
-                    "Enter your street address."
-                );
+                if (!province) {
 
-                valid =
-                    false;
+                    showFieldError(
+                        "province",
+                        "Select your province."
+                    );
 
-            }
+                    valid =
+                        false;
 
-
-            if (
-                city.length <
-                2
-            ) {
-
-                showFieldError(
-                    "city",
-                    "Enter your city or town."
-                );
-
-                valid =
-                    false;
-
-            }
+                }
 
 
-            if (
-                !/^\d{4}$/.test(
-                    postalCode
-                )
-            ) {
+                if (
+                    address.length <
+                    4
+                ) {
 
-                showFieldError(
-                    "postalCode",
-                    "Postal code must contain 4 digits."
-                );
+                    showFieldError(
+                        "address",
+                        "Enter your street address."
+                    );
 
-                valid =
-                    false;
+                    valid =
+                        false;
 
+                }
+
+
+                if (
+                    city.length <
+                    2
+                ) {
+
+                    showFieldError(
+                        "city",
+                        "Enter your city or town."
+                    );
+
+                    valid =
+                        false;
+
+                }
+
+
+                if (
+                    !/^\d{4}$/.test(
+                        postalCode
+                    )
+                ) {
+
+                    showFieldError(
+                        "postalCode",
+                        "Postal code must contain 4 digits."
+                    );
+
+                    valid =
+                        false;
+
+                }
             }
 
 
@@ -2490,7 +2736,10 @@ const checkoutData = {
         ).value.trim(),
 
     paymentLast4:
-        cardDigits.slice(-4)
+        cardDigits.slice(-4),
+
+    fulfilmentMethod:
+        selectedFulfilmentMethod()
 
 };
 

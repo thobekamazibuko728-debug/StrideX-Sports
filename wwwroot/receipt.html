@@ -1096,11 +1096,24 @@
 
                 <section>
 
-                    <h2 class="receipt-section-title">
+                    <h2
+                        id="fulfilmentTitle"
+                        class="receipt-section-title"
+                    >
                         Delivery Details
                     </h2>
 
                     <div class="info-card">
+
+                        <div class="info-row">
+                            <strong>Method:</strong>
+                            <span id="fulfilmentMethod">-</span>
+                        </div>
+
+                        <div class="info-row">
+                            <strong>Fee:</strong>
+                            <span id="fulfilmentFee">-</span>
+                        </div>
 
                         <div
                             class="info-row"
@@ -1200,6 +1213,14 @@
                                 R0.00
                             </strong>
 
+                        </div>
+
+
+                        <div class="summary-line">
+                            <span>Fulfilment Fee</span>
+                            <strong id="summaryFulfilmentFee">
+                                R0.00
+                            </strong>
                         </div>
 
 
@@ -1819,7 +1840,35 @@
 
 
 
-                // DELIVERY
+                // FULFILMENT / DELIVERY
+
+                const fulfilmentMethod =
+                    result.fulfilment?.method ||
+                    "Delivery";
+
+                document.getElementById(
+                    "fulfilmentMethod"
+                ).textContent =
+                    fulfilmentMethod;
+
+                document.getElementById(
+                    "fulfilmentFee"
+                ).textContent =
+                    Number(
+                        result.fulfilment?.fee || 0
+                    ) === 0
+                        ? "FREE"
+                        : formatPrice(
+                            result.fulfilment?.fee
+                        );
+
+                document.getElementById(
+                    "fulfilmentTitle"
+                ).textContent =
+                    fulfilmentMethod === "Collection"
+                        ? "Collection Details"
+                        : "Delivery Details";
+
 
                 const deliveryParts = [
 
@@ -1914,6 +1963,18 @@
                     formatPrice(
                         result.subtotal
                     );
+
+
+                document.getElementById(
+                    "summaryFulfilmentFee"
+                ).textContent =
+                    Number(
+                        result.fulfilment?.fee || 0
+                    ) === 0
+                        ? "FREE"
+                        : formatPrice(
+                            result.fulfilment?.fee
+                        );
 
 
                 document.getElementById(

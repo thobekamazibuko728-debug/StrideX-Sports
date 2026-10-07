@@ -15,6 +15,11 @@ public class Order
     public string Status { get; set; } =
         "Pending";
 
+    public string FulfilmentMethod { get; set; } =
+        "Delivery";
+
+    public decimal FulfilmentFee { get; set; }
+
 
     // =====================================================
     // CUSTOMER / DELIVERY DETAILS
