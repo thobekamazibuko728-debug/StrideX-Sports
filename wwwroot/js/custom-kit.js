@@ -5600,9 +5600,9 @@ if (
             if (Array.isArray(order.players) && order.players.length) { teamRoster.replaceChildren(); order.players.forEach(p => teamRoster.appendChild(createRosterRow({playerName:p.playerName||"",playerNumber:p.playerNumber||"",size:p.size||""}))); }
             sportButtons.forEach(button => { const selected=button.dataset.sport===selectedSport; button.classList.toggle("selected",selected); button.setAttribute("aria-pressed",String(selected)); });
             templateCards.forEach(card => card.classList.toggle("selected",card.dataset.template===selectedTemplate));
-            const requestButton=byId("requestKitButton"); if(requestButton) requestButton.textContent="Update Team Kit";
-            if(confirmKitRequest) confirmKitRequest.textContent="Save Changes";
-            document.title="Edit Custom Kit | StrideX Sports";
+            const requestButton=byId("requestKitButton"); if(requestButton) requestButton.textContent="Review Edit";
+            if(confirmKitRequest) confirmKitRequest.textContent="Save Edit";
+            setText("kitReviewTitle","Review Your Edits"); document.title="Edit Custom Kit | StrideX Sports";
             setText("previewTemplateName",selectedTemplate); setText("summaryTemplate",selectedTemplate);
             showCrest(crestData); updateColourLabels(); updateRoster(); applyDesign(); updateKitPreview(); updatePrice();
         } catch(error) { alert(error.message || "Could not load this custom kit request."); }

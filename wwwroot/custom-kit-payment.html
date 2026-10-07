@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pay for Custom Kit | StrideX Sports</title>
+    <style>
+        *{box-sizing:border-box}
+        body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f5f5f7;color:#15151b}
+        header{background:#111018;color:#fff;padding:18px 6%;display:flex;justify-content:space-between;align-items:center;gap:20px}
+        .brand{font-size:24px;font-weight:800;text-decoration:none;color:#fff}
+        .brand span{color:#9b5cff}
+        .back{color:#fff;text-decoration:none;font-weight:700}
+        main{max-width:900px;margin:40px auto;padding:0 20px}
+        .card{background:#fff;border:1px solid #e5e5ea;border-radius:18px;padding:28px;box-shadow:0 12px 35px rgba(0,0,0,.07)}
+        h1{margin-top:0}
+        .summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:22px 0}
+        .summary div{padding:14px;border:1px solid #ececf1;border-radius:12px;background:#fafafd}
+        .summary span{display:block;color:#777;font-size:12px;text-transform:uppercase;margin-bottom:6px}
+        .total{font-size:24px;color:#6d28d9}
+        form{display:grid;gap:16px}
+        label{font-weight:700;font-size:14px}
+        input{width:100%;margin-top:7px;padding:13px 14px;border:1px solid #cfcfd6;border-radius:10px;font:inherit}
+        .row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+        button{border:0;border-radius:11px;background:#6d28d9;color:#fff;padding:14px 20px;font-size:16px;font-weight:800;cursor:pointer}
+        button:disabled{opacity:.55;cursor:not-allowed}
+        .message{margin:15px 0;padding:12px 14px;border-radius:10px;background:#f2edff;color:#4c1d95}
+        .error{background:#fde8eb;color:#a12638}
+        .note{font-size:13px;color:#666;line-height:1.5;margin-top:14px}
+        @media(max-width:650px){.summary,.row{grid-template-columns:1fr}}
+    </style>
+</head>
+<body>
+<header>
+    <a class="brand" href="index.html">Stride<span>X</span> Sports</a>
+    <a class="back" id="backLink" href="orders.html">Back to My Orders</a>
+</header>
+
+<main>
+    <div class="card">
+        <h1>Pay for Custom Kit</h1>
+        <div id="message" class="message">Loading your custom kit...</div>
+
+        <div id="content" hidden>
+            <div class="summary">
+                <div><span>Custom Kit</span><strong id="orderNumber"></strong></div>
+                <div><span>Team</span><strong id="teamName"></strong></div>
+                <div><span>Status</span><strong id="status"></strong></div>
+                <div><span>Amount</span><strong id="amount" class="total"></strong></div>
+            </div>
+
+            <form id="paymentForm">
+                <label>
+                    Cardholder name
+                    <input id="cardholder" autocomplete="cc-name" maxlength="100" required>
+                </label>
+
+                <label>
+                    Card number
+                    <input id="cardNumber" inputmode="numeric" autocomplete="cc-number" maxlength="23" placeholder="1234 5678 9012 3456" required>
+                </label>
+
+                <div class="row">
+                    <label>
+                        Expiry
+                        <input id="expiry" inputmode="numeric" autocomplete="cc-exp" maxlength="5" placeholder="MM/YY" required>
+                    </label>
+                    <label>
+                        CVV
+                        <input id="cvv" inputmode="numeric" autocomplete="cc-csc" maxlength="4" placeholder="123" required>
+                    </label>
+                </div>
+
+                <button id="payButton" type="submit">Pay Now</button>
+            </form>
+
+            <p class="note">For this semester project, payment is simulated. The full card number, expiry date and CVV are not sent to the server or stored. Only the final four card digits are sent for payment validation.</p>
+        </div>
+    </div>
+</main>
+
+<script>
+    const API_BASE="";
+    const params=new URLSearchParams(window.location.search);
+    const orderId=Number(params.get("id"));
+    const message=document.getElementById("message");
+    const content=document.getElementById("content");
+    const form=document.getElementById("paymentForm");
+    const payButton=document.getElementById("payButton");
+    const backLink=document.getElementById("backLink");
+
+    backLink.href="custom-kit-order.html?id="+orderId;
+
+    function money(value){
+        return "R"+Number(value||0).toLocaleString("en-ZA",{minimumFractionDigits:2,maximumFractionDigits:2});
+    }
+
+    function digits(value){
+        return String(value||"").replace(/\D/g,"");
+    }
+
+    async function loadOrder(){
+        if(!Number.isInteger(orderId)||orderId<1){
+            message.classList.add("error");
+            message.textContent="A valid custom kit order number was not provided.";
+            return;
+        }
+
+        try{
+            const response=await fetch(API_BASE+"/api/custom-kits/"+orderId,{credentials:"include"});
+            if(response.status===401){
+                window.location.href="account.html?return="+encodeURIComponent("custom-kit-payment.html?id="+orderId);
+                return;
+            }
+
+            const order=await response.json().catch(()=>({}));
+            if(!response.ok) throw new Error(order.message||"Could not load this custom kit order.");
+
+            if(!order.canPay){
+                message.classList.add("error");
+                message.textContent=String(order.status||"This order")+" custom kit orders cannot be paid.";
+                content.hidden=true;
+                return;
+            }
+
+            document.getElementById("orderNumber").textContent="#"+order.customKitOrderId;
+            document.getElementById("teamName").textContent=order.teamName||"-";
+            document.getElementById("status").textContent=order.status||"Pending";
+            document.getElementById("amount").textContent=money(order.estimatedTotal);
+            message.hidden=true;
+            content.hidden=false;
+        }catch(error){
+            message.classList.add("error");
+            message.textContent=error.message||"Could not load this custom kit order.";
+        }
+    }
+
+    document.getElementById("cardNumber").addEventListener("input",function(){
+        const value=digits(this.value).slice(0,19);
+        this.value=value.replace(/(.{4})/g,"$1 ").trim();
+    });
+
+    document.getElementById("expiry").addEventListener("input",function(){
+        const value=digits(this.value).slice(0,4);
+        this.value=value.length>2?value.slice(0,2)+"/"+value.slice(2):value;
+    });
+
+    document.getElementById("cvv").addEventListener("input",function(){
+        this.value=digits(this.value).slice(0,4);
+    });
+
+    form.addEventListener("submit",async function(event){
+        event.preventDefault();
+
+        const cardNumber=digits(document.getElementById("cardNumber").value);
+        const expiry=document.getElementById("expiry").value.trim();
+        const cvv=digits(document.getElementById("cvv").value);
+        const cardholder=document.getElementById("cardholder").value.trim();
+
+        if(!cardholder){
+            alert("Enter the cardholder name.");
+            return;
+        }
+
+        if(cardNumber.length<13||cardNumber.length>19){
+            alert("Enter a valid card number.");
+            return;
+        }
+
+        if(!/^\d{2}\/\d{2}$/.test(expiry)){
+            alert("Enter the expiry date as MM/YY.");
+            return;
+        }
+
+        const parts=expiry.split("/");
+        const month=Number(parts[0]);
+        const year=2000+Number(parts[1]);
+        const now=new Date();
+        const expiryEnd=new Date(year,month,0,23,59,59);
+
+        if(month<1||month>12||expiryEnd<now){
+            alert("Enter a valid future expiry date.");
+            return;
+        }
+
+        if(cvv.length<3||cvv.length>4){
+            alert("Enter a valid CVV.");
+            return;
+        }
+
+        payButton.disabled=true;
+        payButton.textContent="Processing...";
+
+        try{
+            const response=await fetch(API_BASE+"/api/custom-kits/"+orderId+"/pay",{
+                method:"POST",
+                credentials:"include",
+                headers:{"Content-Type":"application/json"},
+                body:JSON.stringify({paymentLast4:cardNumber.slice(-4)})
+            });
+
+            if(response.status===401){
+                window.location.href="account.html?return="+encodeURIComponent("custom-kit-payment.html?id="+orderId);
+                return;
+            }
+
+            const data=await response.json().catch(()=>({}));
+            if(!response.ok) throw new Error(data.message||data.detail||"Could not complete payment.");
+
+            alert("Payment successful for Custom Kit #"+orderId+".");
+            window.location.href="custom-kit-order.html?id="+orderId;
+        }catch(error){
+            alert(error.message||"Could not complete payment.");
+            payButton.disabled=false;
+            payButton.textContent="Pay Now";
+        }
+    });
+
+    loadOrder();
+</script>
+</body>
+</html>

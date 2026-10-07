@@ -3659,6 +3659,11 @@ app.MapGet("/api/custom-kits", async (
                 order.Status,
                 "Pending",
                 StringComparison.OrdinalIgnoreCase
+            ),
+            canPay = string.Equals(
+                order.Status,
+                "Pending",
+                StringComparison.OrdinalIgnoreCase
             )
         });
 
@@ -3730,6 +3735,7 @@ app.MapGet("/api/custom-kits/{customKitOrderId:int}", async (
         createdAt = order.CreatedAt,
         canEdit = isPending,
         canCancel = isPending,
+        canPay = isPending,
         players = order.Players
             .OrderBy(player => player.CustomKitPlayerId)
             .Select(player => new
@@ -4788,6 +4794,89 @@ app.MapPut("/api/custom-kits/{customKitOrderId:int}", async (
 
 
 // =====================================
+// STRIDEX — PAY FOR CUSTOM KIT ORDER
+// Payment is simulated for the semester project.
+// Only the final four card digits reach the API.
+// =====================================
+
+app.MapPost("/api/custom-kits/{customKitOrderId:int}/pay", async (
+    int customKitOrderId,
+    CustomKitPaymentRequest request,
+    HttpContext httpContext,
+    UserManager<ApplicationUser> userManager,
+    StrideXDbContext db) =>
+{
+    var user =
+        await userManager.GetUserAsync(
+            httpContext.User
+        );
+
+    if (user is null)
+    {
+        return Results.Unauthorized();
+    }
+
+    var last4 =
+        new string(
+            (request.PaymentLast4 ?? "")
+                .Where(char.IsDigit)
+                .ToArray()
+        );
+
+    if (last4.Length != 4)
+    {
+        return Results.BadRequest(new
+        {
+            message = "Payment information is invalid."
+        });
+    }
+
+    var customKitOrder =
+        await db.CustomKitOrders
+            .SingleOrDefaultAsync(
+                order =>
+                    order.CustomKitOrderId == customKitOrderId &&
+                    order.UserId == user.Id
+            );
+
+    if (customKitOrder is null)
+    {
+        return Results.NotFound(new
+        {
+            message = "Custom kit order not found."
+        });
+    }
+
+    if (!string.Equals(
+        customKitOrder.Status,
+        "Pending",
+        StringComparison.OrdinalIgnoreCase
+    ))
+    {
+        return Results.BadRequest(new
+        {
+            message =
+                "Only Pending custom kit orders can be paid."
+        });
+    }
+
+    customKitOrder.Status = "Paid";
+
+    await db.SaveChangesAsync();
+
+    return Results.Ok(new
+    {
+        message = "Custom kit payment completed successfully.",
+        customKitOrderId = customKitOrder.CustomKitOrderId,
+        status = customKitOrder.Status,
+        paymentStatus = "Paid",
+        paymentLast4 = last4
+    });
+})
+.RequireAuthorization();
+
+
+// =====================================
 // STRIDEX — CANCEL CUSTOM KIT ORDER
 // Only Pending requests can be cancelled.
 // =====================================
@@ -4956,6 +5045,10 @@ record CheckoutRequest(
 
     string PaymentLast4
 
+);
+
+record CustomKitPaymentRequest(
+    string PaymentLast4
 );
 
 record CustomKitRequest(
