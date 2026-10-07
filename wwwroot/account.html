@@ -320,6 +320,72 @@
     background: #dc2626;
     color: #ffffff;
 }
+
+.account-overview-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 16px;
+}
+
+.account-overview-card {
+    padding: 17px;
+    border: 1px solid #ececec;
+    border-radius: 11px;
+    background: #fafafa;
+}
+
+.account-overview-card span {
+    display: block;
+    margin-bottom: 7px;
+    color: #777777;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+}
+
+.account-overview-card strong {
+    display: block;
+    margin-bottom: 8px;
+    color: #111111;
+    line-height: 1.45;
+}
+
+.account-overview-card a {
+    color: #6d28d9;
+    font-size: 13px;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.account-quick-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.account-quick-actions a {
+    display: inline-block;
+    padding: 11px 14px;
+    border-radius: 8px;
+    background: #111111;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.account-quick-actions a.primary {
+    background: #7c3aed;
+}
+
+@media screen and (max-width: 620px) {
+    .account-overview-grid {
+        grid-template-columns: 1fr;
+    }
+}
     </style>
 </head>
 
@@ -746,6 +812,77 @@
 
 
 
+    <!-- ACCOUNT OVERVIEW -->
+
+    <div class="account-dashboard-section">
+
+        <h2>
+            Your StrideX Overview
+        </h2>
+
+        <p class="account-section-text">
+            Your latest shopping activity is updated automatically.
+        </p>
+
+        <div class="account-overview-grid">
+
+            <div class="account-overview-card">
+                <span>Cart</span>
+                <strong id="accountCartSummary">
+                    Loading...
+                </strong>
+                <a id="accountCartLink" href="cart.html">
+                    View Cart
+                </a>
+            </div>
+
+            <div class="account-overview-card">
+                <span>Latest Order</span>
+                <strong id="accountLatestOrder">
+                    Loading...
+                </strong>
+                <a id="accountOrderLink" href="my-orders.html">
+                    View Orders
+                </a>
+            </div>
+
+            <div class="account-overview-card">
+                <span>Custom Kit</span>
+                <strong id="accountCustomKit">
+                    Loading...
+                </strong>
+                <a id="accountCustomKitLink" href="custom-kit.xhtml">
+                    Custom Kit
+                </a>
+            </div>
+
+            <div class="account-overview-card">
+                <span>Saved Delivery</span>
+                <strong id="accountDelivery">
+                    Loading...
+                </strong>
+                <a href="checkout.html">
+                    Use at Checkout
+                </a>
+            </div>
+
+        </div>
+
+        <div class="account-quick-actions">
+            <a class="primary" href="shop.xhtml">
+                Shop Now
+            </a>
+            <a href="my-orders.html">
+                My Orders
+            </a>
+            <a href="custom-kit.xhtml">
+                Design a Custom Kit
+            </a>
+        </div>
+
+    </div>
+
+
     <!-- SECURITY -->
 
     <div class="account-dashboard-section">
@@ -913,6 +1050,62 @@
     new URLSearchParams(
         window.location.search
     ).get("return");
+
+        const requestedMode =
+            new URLSearchParams(
+                window.location.search
+            ).get("mode");
+
+        function safeReturnPage() {
+
+            if (!returnPage) {
+                return "";
+            }
+
+            try {
+
+                const target =
+                    new URL(
+                        returnPage,
+                        window.location.origin +
+                        window.location.pathname
+                    );
+
+                if (
+                    target.origin !==
+                    window.location.origin
+                ) {
+                    return "";
+                }
+
+                return (
+                    target.pathname
+                        .split("/")
+                        .pop() +
+                    target.search +
+                    target.hash
+                );
+
+            } catch {
+
+                return "";
+            }
+        }
+
+        function continueAfterAuth() {
+
+            const target =
+                safeReturnPage();
+
+            if (!target) {
+                return false;
+            }
+
+            window.location.href =
+                target;
+
+            return true;
+        }
 
         const registerSection =
             document.getElementById(
@@ -1096,6 +1289,12 @@
                     cartCount.textContent =
                         "0";
 
+                    window.dispatchEvent(
+                        new CustomEvent(
+                            "stridex-auth-changed"
+                        )
+                    );
+
                     return;
                 }
 
@@ -1111,6 +1310,259 @@
 
                 cartCount.textContent =
                     "0";
+            }
+        }
+
+
+        async function loadAccountDashboard() {
+
+            const cartSummary =
+                document.getElementById(
+                    "accountCartSummary"
+                );
+
+            const latestOrder =
+                document.getElementById(
+                    "accountLatestOrder"
+                );
+
+            const orderLink =
+                document.getElementById(
+                    "accountOrderLink"
+                );
+
+            const customKit =
+                document.getElementById(
+                    "accountCustomKit"
+                );
+
+            const customKitLink =
+                document.getElementById(
+                    "accountCustomKitLink"
+                );
+
+            const delivery =
+                document.getElementById(
+                    "accountDelivery"
+                );
+
+            if (
+                !cartSummary ||
+                !latestOrder ||
+                !customKit ||
+                !delivery
+            ) {
+                return;
+            }
+
+            try {
+
+                const [
+                    cartResponse,
+                    orderResponse,
+                    customResponse,
+                    deliveryResponse
+                ] =
+                    await Promise.all([
+                        fetch(
+                            API_BASE +
+                            "/api/cart",
+                            {
+                                credentials:
+                                    "include"
+                            }
+                        ),
+                        fetch(
+                            API_BASE +
+                            "/api/orders",
+                            {
+                                credentials:
+                                    "include"
+                            }
+                        ),
+                        fetch(
+                            API_BASE +
+                            "/api/custom-kits",
+                            {
+                                credentials:
+                                    "include"
+                            }
+                        ),
+                        fetch(
+                            API_BASE +
+                            "/api/delivery-profile",
+                            {
+                                credentials:
+                                    "include"
+                            }
+                        )
+                    ]);
+
+                const cart =
+                    cartResponse.ok
+                        ? await cartResponse.json()
+                        : {
+                            itemCount: 0,
+                            total: 0
+                        };
+
+                cartSummary.textContent =
+                    (cart.itemCount || 0) +
+                    (
+                        cart.itemCount === 1
+                            ? " item"
+                            : " items"
+                    ) +
+                    " • R" +
+                    Number(
+                        cart.total || 0
+                    ).toLocaleString(
+                        "en-ZA",
+                        {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        }
+                    );
+
+                const orders =
+                    orderResponse.ok
+                        ? await orderResponse.json()
+                        : [];
+
+                if (
+                    Array.isArray(orders) &&
+                    orders.length > 0
+                ) {
+
+                    const order =
+                        orders[0];
+
+                    latestOrder.textContent =
+                        "Order #" +
+                        order.orderId +
+                        " • " +
+                        (order.status || "Processing");
+
+                    orderLink.href =
+                        "order-details.html?id=" +
+                        order.orderId;
+
+                    orderLink.textContent =
+                        (
+                            String(
+                                order.status || ""
+                            )
+                                .toLowerCase() ===
+                            "delivered"
+                        )
+                            ? "View / Reorder"
+                            : "Track Order";
+
+                } else {
+
+                    latestOrder.textContent =
+                        "No orders yet.";
+
+                    orderLink.href =
+                        "shop.xhtml";
+
+                    orderLink.textContent =
+                        "Start Shopping";
+                }
+
+                const customOrders =
+                    customResponse.ok
+                        ? await customResponse.json()
+                        : [];
+
+                if (
+                    Array.isArray(customOrders) &&
+                    customOrders.length > 0
+                ) {
+
+                    const order =
+                        customOrders[0];
+
+                    const status =
+                        String(
+                            order.status ||
+                            "Pending"
+                        );
+
+                    customKit.textContent =
+                        "Custom Kit #" +
+                        order.customKitOrderId +
+                        " • " +
+                        (
+                            status.toLowerCase() ===
+                            "pending"
+                                ? "Pending Payment"
+                                : status
+                        );
+
+                    if (
+                        status.toLowerCase() ===
+                        "pending"
+                    ) {
+                        customKitLink.href =
+                            "custom-kit-payment.html?id=" +
+                            order.customKitOrderId;
+
+                        customKitLink.textContent =
+                            "Pay Now";
+                    } else {
+                        customKitLink.href =
+                            "custom-kit-order.html?id=" +
+                            order.customKitOrderId;
+
+                        customKitLink.textContent =
+                            "View Progress";
+                    }
+
+                } else {
+
+                    customKit.textContent =
+                        "No custom kit requests.";
+
+                    customKitLink.href =
+                        "custom-kit.xhtml";
+
+                    customKitLink.textContent =
+                        "Design a Kit";
+                }
+
+                const profile =
+                    deliveryResponse.ok
+                        ? await deliveryResponse.json()
+                        : {};
+
+                const address =
+                    [
+                        profile.streetAddress,
+                        profile.city,
+                        profile.province,
+                        profile.postalCode
+                    ]
+                        .filter(Boolean)
+                        .join(", ");
+
+                delivery.textContent =
+                    address ||
+                    "No saved delivery address yet.";
+
+            } catch (error) {
+
+                cartSummary.textContent =
+                    "Could not load cart.";
+
+                latestOrder.textContent =
+                    "Could not load orders.";
+
+                customKit.textContent =
+                    "Could not load custom kits.";
+
+                delivery.textContent =
+                    "Could not load delivery details.";
             }
         }
 
@@ -1136,6 +1588,14 @@
             showSection(
                 "profile"
             );
+
+            loadAccountDashboard();
+
+            window.dispatchEvent(
+                new CustomEvent(
+                    "stridex-auth-changed"
+                )
+            );
         }
 
 
@@ -1160,7 +1620,10 @@
             } catch {
 
                 showSection(
-                    "login"
+                    requestedMode ===
+                        "register"
+                        ? "register"
+                        : "login"
                 );
             }
         }
@@ -1269,19 +1732,13 @@
 displayProfile(data.user);
 
 if (
-    returnPage ===
-    "my-orders.html"
+    continueAfterAuth()
 ) {
-
-    window.location.href =
-        "my-orders.html";
-
     return;
-
 }
 
 showMessage(
-    "Welcome back to StrideX!"
+    "Welcome to StrideX!"
 );
 
 
@@ -1370,6 +1827,13 @@ showMessage(
                     displayProfile(
                         data.user
                     );
+
+
+                    if (
+                        continueAfterAuth()
+                    ) {
+                        return;
+                    }
 
 
                     showMessage(
@@ -1811,6 +2275,8 @@ confirmDeleteAccountButton.addEventListener(
         updateCartCount();
 
     </script>
+
+    <script src="js/site-auth.js?v=auth-automation-20261007"></script>
 
 </body>
 

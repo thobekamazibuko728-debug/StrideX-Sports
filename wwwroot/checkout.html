@@ -1463,7 +1463,10 @@
             ) {
 
                 window.location.href =
-                    "account.html";
+                    "account.html?mode=login&return=" +
+                    encodeURIComponent(
+                        "checkout.html"
+                    );
 
                 return false;
 
@@ -1699,7 +1702,10 @@
             ) {
 
                 window.location.href =
-                    "account.html";
+                    "account.html?mode=login&return=" +
+                    encodeURIComponent(
+                        "checkout.html"
+                    );
 
                 return false;
 
@@ -2527,7 +2533,10 @@ const response =
                     ) {
 
                         window.location.href =
-                            "account.html";
+                            "account.html?mode=login&return=" +
+                            encodeURIComponent(
+                                "checkout.html"
+                            );
 
                         return;
 
@@ -2668,6 +2677,7 @@ const response =
     </script>
 
 
+    <script src="js/site-auth.js?v=auth-automation-20261007"></script>
 </body>
 
 </html>

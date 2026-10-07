@@ -18,6 +18,7 @@
         .status-confirmed { background: #ede4ff; color: #6d28d9; }
         .status-paid { background: #e4f8ea; color: #22763c; }
         .status-processing { background: #fff4d8; color: #8a5a00; }
+        .status-in-production { background: #fff4d8; color: #8a5a00; }
         .status-completed, .status-delivered { background: #e4f8ea; color: #22763c; }
         .panel { background: #fff; border: 1px solid #e3e3e3; border-radius: 16px; box-shadow: 0 8px 25px rgba(0,0,0,.05); margin-bottom: 22px; overflow: hidden; }
         .panel h2 { margin: 0; padding: 20px 24px; border-bottom: 1px solid #ececec; font-size: 21px; }
@@ -200,5 +201,6 @@
         cancelButton.addEventListener("click",async function(){if(!window.confirm("Cancel this custom kit request?"))return;cancelButton.disabled=true;try{const response=await fetch(API_BASE+"/api/custom-kits/"+orderId+"/cancel",{method:"POST",credentials:"include"});const data=await response.json().catch(()=>({}));if(!response.ok)throw new Error(data.message||"Could not cancel this request.");await loadOrder();}catch(error){alert(error.message||"Could not cancel this request.");cancelButton.disabled=false;}});
         loadCartCount();loadOrder();
     </script>
+    <script src="js/site-auth.js?v=auth-automation-20261007"></script>
 </body>
 </html>

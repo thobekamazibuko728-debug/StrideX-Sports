@@ -2973,7 +2973,7 @@ app.MapPost("/api/orders/checkout", async (
 
                 Status =
 
-                    "Confirmed",
+                    "Processing",
 
 
 
@@ -3294,9 +3294,220 @@ app.MapPost("/api/orders/checkout", async (
 
 
 // =====================================
+// STRIDEX — REORDER A PREVIOUS ORDER
+// Rebuilds the customer's cart using current products,
+// current prices and current stock.
+// =====================================
 
+app.MapPost("/api/orders/{orderId:int}/reorder", async (
+    int orderId,
+    HttpContext httpContext,
+    UserManager<ApplicationUser> userManager,
+    StrideXDbContext db) =>
+{
+    var user =
+        await userManager.GetUserAsync(
+            httpContext.User
+        );
+
+    if (user is null)
+    {
+        return Results.Unauthorized();
+    }
+
+    var order =
+        await db.Orders
+            .AsNoTracking()
+            .Include(item => item.Items)
+            .SingleOrDefaultAsync(
+                item =>
+                    item.OrderId == orderId &&
+                    item.UserId == user.Id
+            );
+
+    if (order is null)
+    {
+        return Results.NotFound(new
+        {
+            message = "Order not found."
+        });
+    }
+
+    if (!string.Equals(
+        order.Status,
+        "Delivered",
+        StringComparison.OrdinalIgnoreCase
+    ))
+    {
+        return Results.BadRequest(new
+        {
+            message =
+                "Reorder becomes available once an order is delivered."
+        });
+    }
+
+    var productIds =
+        order.Items
+            .Select(item => item.ProductId)
+            .Distinct()
+            .ToList();
+
+    var products =
+        await db.Products
+            .AsNoTracking()
+            .Where(product =>
+                productIds.Contains(
+                    product.ProductId
+                )
+            )
+            .ToDictionaryAsync(
+                product => product.ProductId
+            );
+
+    var inventory =
+        await db.ProductInventories
+            .AsNoTracking()
+            .Where(stock =>
+                productIds.Contains(
+                    stock.ProductId
+                )
+            )
+            .ToDictionaryAsync(
+                stock => stock.ProductId
+            );
+
+    var unavailable =
+        order.Items
+            .Where(item =>
+                !products.ContainsKey(
+                    item.ProductId
+                ) ||
+                !inventory.TryGetValue(
+                    item.ProductId,
+                    out var stock
+                ) ||
+                stock.Quantity <
+                    order.Items
+                        .Where(other =>
+                            other.ProductId ==
+                            item.ProductId
+                        )
+                        .Sum(other =>
+                            other.Quantity
+                        )
+            )
+            .Select(item => item.ProductName)
+            .Distinct()
+            .ToList();
+
+    if (unavailable.Count > 0)
+    {
+        return Results.BadRequest(new
+        {
+            message =
+                "Some products from this order are no longer available in the required quantity.",
+            unavailable
+        });
+    }
+
+    var cart =
+        await db.Carts
+            .Include(item => item.Items)
+            .SingleOrDefaultAsync(
+                item =>
+                    item.CartToken == user.Id
+            );
+
+    if (cart is null)
+    {
+        cart = new Cart
+        {
+            CartToken = user.Id,
+            CreatedAt = DateTime.UtcNow
+        };
+
+        db.Carts.Add(cart);
+    }
+
+    foreach (var orderItem in order.Items)
+    {
+        var existing =
+            cart.Items
+                .FirstOrDefault(item =>
+                    item.ProductId ==
+                        orderItem.ProductId &&
+                    item.SelectedSize ==
+                        orderItem.SelectedSize
+                );
+
+        var existingProductQuantity =
+            cart.Items
+                .Where(item =>
+                    item.ProductId ==
+                    orderItem.ProductId
+                )
+                .Sum(item =>
+                    item.Quantity
+                );
+
+        var stock =
+            inventory[
+                orderItem.ProductId
+            ];
+
+        if (
+            existingProductQuantity +
+                orderItem.Quantity >
+            stock.Quantity
+        )
+        {
+            return Results.BadRequest(new
+            {
+                message =
+                    $"There is not enough stock to add {orderItem.ProductName} to your current cart."
+            });
+        }
+
+        if (existing is null)
+        {
+            cart.Items.Add(new CartItem
+            {
+                ProductId =
+                    orderItem.ProductId,
+                SelectedSize =
+                    orderItem.SelectedSize,
+                Quantity =
+                    orderItem.Quantity
+            });
+        }
+        else
+        {
+            existing.Quantity +=
+                orderItem.Quantity;
+        }
+    }
+
+    cart.UpdatedAt =
+        DateTime.UtcNow;
+
+    await db.SaveChangesAsync();
+
+    return Results.Ok(new
+    {
+        message =
+            "Previous order added to your cart using current prices.",
+        orderId,
+        itemCount =
+            cart.Items.Sum(
+                item => item.Quantity
+            )
+    });
+})
+.RequireAuthorization();
+
+
+// =====================================
 // STRIDEX — MY ORDERS
-
 // =====================================
 
 
@@ -5405,7 +5616,7 @@ app.MapPost("/api/custom-kits/{customKitOrderId:int}/pay", async (
         "Paid";
 
     customKitOrder.Status =
-        "Paid";
+        "In Production";
 
     await db.SaveChangesAsync();
 

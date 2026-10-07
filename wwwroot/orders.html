@@ -934,6 +934,11 @@
             color:#22763c;
         }
 
+        .status-in-production {
+            background:#fff4d8;
+            color:#8a5a00;
+        }
+
         .custom-kit-card {
             overflow:hidden;
             background:#fff;
@@ -2824,7 +2829,15 @@ detailsButton.href =
     order.orderId;
 
 detailsButton.textContent =
-    "View Details";
+    (
+        String(
+            order.status || ""
+        )
+            .toLowerCase() ===
+        "delivered"
+    )
+        ? "View Details"
+        : "Track Order";
 
 detailsButton.className =
     "orders-button";
@@ -2889,6 +2902,104 @@ footerRight.appendChild(
     receiptButton
 
 );
+
+if (
+    String(
+        order.status || ""
+    )
+        .toLowerCase() ===
+    "delivered"
+) {
+
+    const reorderButton =
+        document.createElement(
+            "button"
+        );
+
+    reorderButton.type =
+        "button";
+
+    reorderButton.className =
+        "orders-button";
+
+    reorderButton.style.marginTop =
+        "0";
+
+    reorderButton.style.border =
+        "0";
+
+    reorderButton.style.cursor =
+        "pointer";
+
+    reorderButton.textContent =
+        "Reorder";
+
+    reorderButton.addEventListener(
+        "click",
+        async function () {
+
+            reorderButton.disabled =
+                true;
+
+            reorderButton.textContent =
+                "Adding...";
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/api/orders/" +
+                        order.orderId +
+                        "/reorder",
+                        {
+                            method: "POST",
+                            credentials:
+                                "include"
+                        }
+                    );
+
+                const data =
+                    await response
+                        .json()
+                        .catch(
+                            () => ({})
+                        );
+
+                if (!response.ok) {
+                    throw new Error(
+                        data.message ||
+                        "Could not reorder these items."
+                    );
+                }
+
+                window.location.href =
+                    "cart.html";
+
+            } catch (error) {
+
+                ordersStatus.hidden =
+                    false;
+
+                ordersStatus.classList.add(
+                    "error"
+                );
+
+                ordersStatus.textContent =
+                    error.message;
+
+                reorderButton.disabled =
+                    false;
+
+                reorderButton.textContent =
+                    "Reorder";
+            }
+        }
+    );
+
+    footerRight.appendChild(
+        reorderButton
+    );
+}
 
 
 
@@ -3577,7 +3688,24 @@ card.appendChild(
             order.customKitOrderId;
         view.className = "orders-button";
         view.style.marginTop = "0";
-        view.textContent = "View Details";
+        view.textContent =
+            (
+                String(
+                    order.status || ""
+                )
+                    .toLowerCase() ===
+                "pending"
+            )
+                ? "View Details"
+                : (
+                    String(
+                        order.status || ""
+                    )
+                        .toLowerCase() ===
+                    "cancelled"
+                )
+                    ? "View Details"
+                    : "View Progress";
         actions.append(view);
 
         if(order.canPay){
@@ -3643,6 +3771,7 @@ card.appendChild(
 })();
 </script>
 
+    <script src="js/site-auth.js?v=auth-automation-20261007"></script>
 </body>
 
 

@@ -26,9 +26,11 @@ h1{margin:0 0 10px;font-size:34px}
 .message{padding:15px;border-radius:10px;background:#eee;color:#555}.message.error{background:#fde8eb;color:#a12638}
 [hidden]{display:none!important}
 @media(max-width:650px){.summary{grid-template-columns:1fr}.success-card{padding:24px 18px}h1{font-size:29px}}
+.automation-topbar{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:16px 5%;background:#111018;color:#fff}.automation-brand{color:#fff;text-decoration:none;font-size:22px;font-weight:900}.automation-brand span{color:#9b5cff}.automation-topbar .header-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.automation-topbar .header-action{color:#fff;text-decoration:none}
 </style>
 </head>
 <body>
+<header class="automation-topbar"><a class="automation-brand" href="index.html">Stride<span>X</span> Sports</a><div class="header-actions"><a href="cart.html" class="header-action cart-action"><span>Cart</span><span class="cart-count">0</span></a></div></header>
 <main class="success-page">
 <div id="pageMessage" class="message">Loading your payment confirmation...</div>
 <section id="successCard" class="success-card" hidden>
@@ -122,5 +124,6 @@ async function loadSuccess(){
 
 loadSuccess();
 </script>
+<script src="js/site-auth.js?v=auth-automation-20261007"></script>
 </body>
 </html>

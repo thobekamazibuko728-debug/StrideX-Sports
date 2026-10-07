@@ -1204,7 +1204,10 @@
 
 
                     loginLink.href =
-                        "account.html";
+                        "account.html?mode=login&return=" +
+                        encodeURIComponent(
+                            "cart.html"
+                        );
 
 
                     loginLink.textContent =
@@ -1358,6 +1361,7 @@
 
     </script>
 
+    <script src="js/site-auth.js?v=auth-automation-20261007"></script>
 </body>
 
 </html>

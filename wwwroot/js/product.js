@@ -1444,7 +1444,12 @@ async function addCurrentProductToCart(showConfirmation) {
             );
 
             window.setTimeout(function () {
-                window.location.href = "account.html";
+                window.location.href =
+                    "account.html?mode=login&return=" +
+                    encodeURIComponent(
+                        "product.xhtml?id=" +
+                        currentProductId
+                    );
             }, 700);
             return false;
         }

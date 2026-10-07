@@ -5378,7 +5378,13 @@ if (
 
                         window.location.href =
 
-                            "account.html";
+                            "account.html?mode=login&return=" +
+                            encodeURIComponent(
+                                window.location.pathname
+                                    .split("/")
+                                    .pop() +
+                                window.location.search
+                            );
 
 
 
@@ -5599,7 +5605,7 @@ if (
 
         try {
             const response = await fetch(API_BASE + "/api/custom-kits/" + editOrderId, { credentials: "include" });
-            if (response.status === 401) { window.location.href = "account.html?return=" + encodeURIComponent("custom-kit.xhtml?v=save-edit-20261007-2&editId=" + editOrderId); return; }
+            if (response.status === 401) { window.location.href = "account.html?mode=login&return=" + encodeURIComponent("custom-kit.xhtml?v=save-edit-20261007-2&editId=" + editOrderId); return; }
             const order = await response.json().catch(() => ({}));
             if (!response.ok) throw new Error(order.message || "Could not load this custom kit request.");
             if (!order.canEdit) { alert("This custom kit request can no longer be edited."); window.location.href = "custom-kit-order.html?id=" + editOrderId; return; }

@@ -38,7 +38,17 @@
 <body>
 <header>
     <a class="brand" href="index.html">Stride<span>X</span> Sports</a>
-    <a class="back" id="backLink" href="my-orders.html">Back to Order</a>
+
+    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:flex-end">
+        <a class="back" id="backLink" href="my-orders.html">Back to Order</a>
+
+        <div class="header-actions">
+            <a href="cart.html" class="header-action cart-action" style="color:#fff;text-decoration:none">
+                <span>Cart</span>
+                <span class="cart-count">0</span>
+            </a>
+        </div>
+    </div>
 </header>
 
 <main>
@@ -381,5 +391,6 @@
 
     startPayment();
 </script>
+<script src="js/site-auth.js?v=auth-automation-20261007"></script>
 </body>
 </html>
