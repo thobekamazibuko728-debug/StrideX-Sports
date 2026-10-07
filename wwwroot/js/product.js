@@ -640,10 +640,14 @@ const breadcrumbProduct = el("breadcrumbProduct");
 const mainProductImage = el("mainProductImage");
 const productThumbnails = el("productThumbnails");
 const zoomContainer = el("zoomContainer");
+const previousImageButton = el("previousImageButton");
+const nextImageButton = el("nextImageButton");
+const imageCounter = el("imageCounter");
 
 const sizeButtons = Array.from(
     document.querySelectorAll(".size-button")
 );
+const selectedSizeStatus = el("selectedSizeStatus");
 
 const quantityValue = el("quantityValue");
 const decreaseQuantity = el("decreaseQuantity");
@@ -658,6 +662,7 @@ const productNotice = el("productNotice");
 let selectedSize = null;
 let quantity = 1;
 let stockQuantity = null;
+let currentImageIndex = 0;
 
 
 // =========================================================
@@ -689,6 +694,55 @@ function showProductNotice(message, isError) {
         },
         3500
     );
+}
+
+function updateSelectedSizeStatus() {
+    if (!selectedSizeStatus) return;
+
+    selectedSizeStatus.classList.remove(
+        "available",
+        "low",
+        "out"
+    );
+
+    if (!selectedSize) {
+        selectedSizeStatus.textContent =
+            stockQuantity === 0
+                ? "Sizes unavailable — product is out of stock."
+                : "Choose a size.";
+        if (stockQuantity === 0) {
+            selectedSizeStatus.classList.add("out");
+        }
+        return;
+    }
+
+    if (stockQuantity === null) {
+        selectedSizeStatus.textContent =
+            "Selected size: " +
+            selectedSize +
+            " • Stock will be checked when added to cart.";
+        return;
+    }
+
+    if (stockQuantity <= 0) {
+        selectedSizeStatus.textContent =
+            "Selected size: " +
+            selectedSize +
+            " • Out of Stock";
+        selectedSizeStatus.classList.add("out");
+    } else if (stockQuantity <= 5) {
+        selectedSizeStatus.textContent =
+            "Selected size: " +
+            selectedSize +
+            " • Low Stock";
+        selectedSizeStatus.classList.add("low");
+    } else {
+        selectedSizeStatus.textContent =
+            "Selected size: " +
+            selectedSize +
+            " • Available";
+        selectedSizeStatus.classList.add("available");
+    }
 }
 
 async function loadInventory() {
@@ -745,6 +799,14 @@ async function loadInventory() {
         ) {
             increaseQuantity.disabled = true;
         }
+
+        sizeButtons.forEach(function (button) {
+            if (button.style.display !== "none") {
+                button.disabled = stockQuantity <= 0;
+            }
+        });
+
+        updateSelectedSizeStatus();
     } catch (error) {
         stockQuantity = null;
 
@@ -753,6 +815,8 @@ async function loadInventory() {
                 "Stock availability unavailable";
             productStockStatus.classList.add("low");
         }
+
+        updateSelectedSizeStatus();
     }
 }
 
@@ -779,6 +843,64 @@ function resetZoom() {
 // PRODUCT IMAGE GALLERY
 // =========================================================
 
+function selectProductImage(index) {
+    if (
+        !currentProduct ||
+        !mainProductImage ||
+        !currentProduct.images.length
+    ) {
+        return;
+    }
+
+    const total = currentProduct.images.length;
+
+    currentImageIndex =
+        (index + total) % total;
+
+    mainProductImage.src =
+        currentProduct.images[
+            currentImageIndex
+        ];
+
+    mainProductImage.alt =
+        currentProduct.name +
+        " view " +
+        (currentImageIndex + 1);
+
+    if (imageCounter) {
+        imageCounter.textContent =
+            (currentImageIndex + 1) +
+            " / " +
+            total;
+    }
+
+    if (previousImageButton) {
+        previousImageButton.disabled =
+            total <= 1;
+    }
+
+    if (nextImageButton) {
+        nextImageButton.disabled =
+            total <= 1;
+    }
+
+    productThumbnails
+        ?.querySelectorAll(
+            ".product-thumbnail"
+        )
+        .forEach(
+            function (thumb, thumbIndex) {
+                thumb.classList.toggle(
+                    "active-thumbnail",
+                    thumbIndex ===
+                        currentImageIndex
+                );
+            }
+        );
+
+    resetZoom();
+}
+
 function loadProductImages() {
 
     if (!mainProductImage || !productThumbnails) {
@@ -786,10 +908,7 @@ function loadProductImages() {
     }
 
     productThumbnails.innerHTML = "";
-
-    mainProductImage.src = currentProduct.images[0];
-
-    mainProductImage.alt = currentProduct.name;
+    currentImageIndex = 0;
 
     currentProduct.images.forEach(
         function (imagePath, index) {
@@ -799,16 +918,12 @@ function loadProductImages() {
             );
 
             button.type = "button";
-
             button.className = "product-thumbnail";
-
-            if (index === 0) {
-
-                button.classList.add(
-                    "active-thumbnail"
-                );
-
-            }
+            button.setAttribute(
+                "aria-label",
+                "Show product image " +
+                (index + 1)
+            );
 
             const image = document.createElement(
                 "img"
@@ -826,37 +941,39 @@ function loadProductImages() {
             button.addEventListener(
                 "click",
                 function () {
-
-                    mainProductImage.src = imagePath;
-
-                    productThumbnails
-                        .querySelectorAll(
-                            ".product-thumbnail"
-                        )
-                        .forEach(
-                            function (thumb) {
-
-                                thumb.classList.remove(
-                                    "active-thumbnail"
-                                );
-
-                            }
-                        );
-
-                    button.classList.add(
-                        "active-thumbnail"
+                    selectProductImage(
+                        index
                     );
-
-                    resetZoom();
-
                 }
             );
 
             productThumbnails.appendChild(button);
-
         }
     );
 
+    selectProductImage(0);
+}
+
+if (previousImageButton) {
+    previousImageButton.addEventListener(
+        "click",
+        function () {
+            selectProductImage(
+                currentImageIndex - 1
+            );
+        }
+    );
+}
+
+if (nextImageButton) {
+    nextImageButton.addEventListener(
+        "click",
+        function () {
+            selectProductImage(
+                currentImageIndex + 1
+            );
+        }
+    );
 }
 
 
@@ -868,6 +985,8 @@ function loadSizes() {
 
     selectedSize = null;
 
+    updateSelectedSizeStatus();
+
     sizeButtons.forEach(
         function (button, index) {
 
@@ -875,6 +994,11 @@ function loadSizes() {
 
             button.classList.remove(
                 "selected-size"
+            );
+
+            button.setAttribute(
+                "aria-pressed",
+                "false"
             );
 
             button.style.display =
@@ -903,6 +1027,13 @@ function loadSizes() {
             sizeButtons[0].classList.add(
                 "selected-size"
             );
+
+            sizeButtons[0].setAttribute(
+                "aria-pressed",
+                "true"
+            );
+
+            updateSelectedSizeStatus();
 
         }
 
@@ -1074,6 +1205,11 @@ sizeButtons.forEach(
                             "selected-size"
                         );
 
+                        item.setAttribute(
+                            "aria-pressed",
+                            "false"
+                        );
+
                     }
                 );
 
@@ -1081,8 +1217,15 @@ sizeButtons.forEach(
                     "selected-size"
                 );
 
+                button.setAttribute(
+                    "aria-pressed",
+                    "true"
+                );
+
                 selectedSize =
                     button.textContent.trim();
+
+                updateSelectedSizeStatus();
 
             }
         );
