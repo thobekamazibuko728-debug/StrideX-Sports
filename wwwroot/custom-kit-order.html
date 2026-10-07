@@ -82,7 +82,7 @@
             <section class="panel">
                 <h2>Team List</h2>
                 <div class="players-wrap"><table><thead><tr><th>#</th><th>Player Name</th><th>Player Number</th><th>Size</th></tr></thead><tbody id="playersBody"></tbody></table></div>
-                <div class="actions"><a href="orders.html" class="btn secondary">Back to My Orders</a><a id="editButton" href="#" class="btn" hidden>Edit Request</a><button id="cancelButton" type="button" class="btn danger" hidden>Cancel Request</button></div>
+                <div class="actions"><a href="orders.html" class="btn secondary">Back to My Orders</a><a id="receiptButton" href="#" class="btn secondary">View Receipt</a><a id="editButton" href="#" class="btn" hidden>Edit Request</a><button id="cancelButton" type="button" class="btn danger" hidden>Cancel Request</button></div>
             </section>
         </div>
     </main>
@@ -95,6 +95,8 @@
         const orderContent = document.getElementById("orderContent");
         const editButton = document.getElementById("editButton");
         const cancelButton = document.getElementById("cancelButton");
+        const receiptButton = document.getElementById("receiptButton");
+        receiptButton.href = "custom-kit-receipt.html?id=" + orderId;
         function formatPrice(value){return "R"+Number(value||0).toLocaleString("en-ZA",{minimumFractionDigits:2,maximumFractionDigits:2});}
         function formatDate(value){return new Date(value).toLocaleString("en-ZA",{day:"2-digit",month:"long",year:"numeric",hour:"2-digit",minute:"2-digit"});}
         function statusClass(value){return "status-"+String(value||"pending").toLowerCase().replace(/[^a-z0-9]+/g,"-");}
