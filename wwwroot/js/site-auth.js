@@ -9,6 +9,7 @@
 
     const API_BASE = "";
     let currentUser = null;
+    let refreshGeneration = 0;
 
     function currentReturnTarget() {
         const file =
@@ -1304,7 +1305,7 @@
     }
 
 
-    async function hydrateHeader() {
+    async function hydrateHeader(generation) {
         installStyles();
 
         const actions =
@@ -1318,6 +1319,13 @@
 
         const cart =
             createCartControl();
+
+        if (
+            generation !==
+            refreshGeneration
+        ) {
+            return;
+        }
 
         actions.replaceChildren();
 
@@ -1386,6 +1394,17 @@
         const notifications =
             await getNotifications();
 
+        if (
+            generation !==
+            refreshGeneration
+        ) {
+            return;
+        }
+
+        // A newer refresh may have replaced this container.
+        // Start from a clean state before the winning render appends.
+        actions.replaceChildren();
+
         const notificationControl =
             createNotificationControl(
                 notifications
@@ -1403,12 +1422,40 @@
     }
 
     async function refresh() {
-        currentUser =
+        const generation =
+            ++refreshGeneration;
+
+        const user =
             await getUser();
 
-        await hydrateHeader();
+        if (
+            generation !==
+            refreshGeneration
+        ) {
+            return currentUser;
+        }
+
+        currentUser = user;
+
+        await hydrateHeader(
+            generation
+        );
+
+        if (
+            generation !==
+            refreshGeneration
+        ) {
+            return currentUser;
+        }
 
         await updateGlobalCartCount();
+
+        if (
+            generation !==
+            refreshGeneration
+        ) {
+            return currentUser;
+        }
 
         document.documentElement
             .classList.toggle(
