@@ -106,6 +106,9 @@
                     <div class="detail"><span>Street Address</span><strong id="deliveryStreet"></strong></div>
                     <div class="detail"><span>City / Town</span><strong id="deliveryCity"></strong></div>
                     <div class="detail"><span>Province / Postal</span><strong id="deliveryProvince"></strong></div>
+                    <div class="detail"><span>Fulfilment</span><strong id="fulfilmentMethod"></strong></div>
+                    <div class="detail"><span>Fulfilment Fee</span><strong id="fulfilmentFee"></strong></div>
+                    <div class="detail"><span>Total Paid</span><strong id="totalPaid"></strong></div>
                     <div class="detail"><span>Payment</span><strong id="paymentInfo"></strong></div>
                 </div>
             </section>
@@ -182,7 +185,10 @@
                 document.getElementById("teamName").textContent=order.teamName||"-";document.getElementById("sport").textContent=order.sport||"-";document.getElementById("garment").textContent=order.garment||"-";document.getElementById("template").textContent=order.template||"-";document.getElementById("quantity").textContent=order.quantity||0;document.getElementById("pricePerKit").textContent=formatPrice(order.pricePerKit);document.getElementById("estimatedTotal").textContent=formatPrice(order.estimatedTotal);
                 document.getElementById("primaryColour").style.background=order.primaryColour||"#fff";document.getElementById("secondaryColour").style.background=order.secondaryColour||"#fff";document.getElementById("accentColour").style.background=order.accentColour||"#fff";
                 const deliverySection=document.getElementById("deliverySection");
-                if(order.streetAddress){
+                if(order.fulfilmentMethod||order.streetAddress){
+                    document.getElementById("fulfilmentMethod").textContent=order.fulfilmentMethod||"Delivery";
+                    document.getElementById("fulfilmentFee").textContent=Number(order.fulfilmentFee||0)===0?"FREE":formatPrice(order.fulfilmentFee);
+                    document.getElementById("totalPaid").textContent=formatPrice(order.total||order.estimatedTotal);
                     document.getElementById("deliveryName").textContent=order.customerName||"-";
                     document.getElementById("deliveryEmail").textContent=order.customerEmail||"-";
                     document.getElementById("deliveryPhone").textContent=order.phoneNumber||"-";

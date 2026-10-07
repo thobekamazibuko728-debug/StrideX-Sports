@@ -385,6 +385,16 @@ namespace StrideX.Api.Migrations
                         .HasColumnType("decimal(10,2)")
                         .HasColumnName("EstimatedTotal");
 
+                    b.Property<decimal>("FulfilmentFee")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)")
+                        .HasColumnName("FulfilmentFee");
+
+                    b.Property<string>("FulfilmentMethod")
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("FulfilmentMethod");
+
                     b.Property<string>("PaymentLast4")
                         .HasMaxLength(4)
                         .HasColumnType("varchar(4)")

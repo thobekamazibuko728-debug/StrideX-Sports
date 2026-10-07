@@ -32,7 +32,17 @@
         .message{margin:15px 0;padding:12px 14px;border-radius:10px;background:#f2edff;color:#4c1d95}
         .error{background:#fde8eb;color:#a12638}
         .note{font-size:13px;color:#666;line-height:1.5;margin:14px 0 0}
-        @media(max-width:650px){.summary,.form-grid{grid-template-columns:1fr}.full{grid-column:auto}}
+        .fulfilment-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+        .fulfilment-option{display:block;border:1px solid #d8d8df;border-radius:12px;padding:15px;background:#fff;cursor:pointer}
+        .fulfilment-option:has(input:checked){border-color:#6d28d9;box-shadow:0 0 0 2px rgba(109,40,217,.12);background:#faf7ff}
+        .fulfilment-option input{width:auto;margin:0 8px 0 0}
+        .fulfilment-option strong{display:block;margin-bottom:6px}
+        .fulfilment-option small{display:block;color:#666;line-height:1.45;margin-top:5px}
+        .fulfilment-note{margin:14px 0 0;padding:12px 14px;border-radius:10px;background:#f2edff;color:#4c1d95;font-weight:700;line-height:1.45}
+        .cost-breakdown{margin:18px 0 0;padding:14px;border:1px solid #ececf1;border-radius:12px;background:#fafafd}
+        .cost-row{display:flex;justify-content:space-between;gap:16px;padding:5px 0}
+        .cost-row.final{margin-top:7px;padding-top:10px;border-top:1px solid #ddd;font-size:18px;font-weight:900}
+        @media(max-width:650px){.summary,.form-grid,.fulfilment-options{grid-template-columns:1fr}.full{grid-column:auto}}
     </style>
 </head>
 <body>
@@ -68,7 +78,39 @@
 
             <form id="paymentForm">
                 <section class="form-section">
-                    <h2>Delivery Details</h2>
+                    <h2>How would you like to receive your custom kit?</h2>
+
+                    <div class="fulfilment-options">
+                        <label class="fulfilment-option">
+                            <strong>
+                                <input type="radio" name="fulfilmentMethod" value="Delivery" checked>
+                                Delivery
+                            </strong>
+                            <span>R100 delivery fee</span>
+                            <small>FREE delivery when the custom kit subtotal is R1,500 or more.</small>
+                        </label>
+
+                        <label class="fulfilment-option">
+                            <strong>
+                                <input type="radio" name="fulfilmentMethod" value="Collection">
+                                Collect in Store
+                            </strong>
+                            <span>R50 collection fee</span>
+                            <small>Mega City Unit 1, Sekame Street, Mafikeng, North West.</small>
+                        </label>
+                    </div>
+
+                    <p id="fulfilmentPromo" class="fulfilment-note"></p>
+
+                    <div class="cost-breakdown">
+                        <div class="cost-row"><span>Kit subtotal</span><strong id="kitSubtotal">R0.00</strong></div>
+                        <div class="cost-row"><span id="feeLabel">Delivery</span><strong id="fulfilmentFee">R100.00</strong></div>
+                        <div class="cost-row final"><span>Total</span><strong id="paymentTotal">R0.00</strong></div>
+                    </div>
+                </section>
+
+                <section class="form-section">
+                    <h2 id="deliveryHeading">Delivery Details</h2>
 
                     <div class="form-grid">
                         <label>
@@ -164,6 +206,11 @@
     const form=document.getElementById("paymentForm");
     const payButton=document.getElementById("payButton");
     const backLink=document.getElementById("backLink");
+    let currentOrder=null;
+    const FREE_DELIVERY_THRESHOLD=1500;
+    const DELIVERY_FEE=100;
+    const COLLECTION_FEE=50;
+    const STORE_ADDRESS="Mega City Unit 1, Sekame Street, Mafikeng, North West";
 
     backLink.href="custom-kit-order.html?id="+orderId;
 
@@ -174,6 +221,63 @@
     function digits(value){
         return String(value||"").replace(/\D/g,"");
     }
+
+    function selectedFulfilmentMethod(){
+        return document.querySelector('input[name="fulfilmentMethod"]:checked')?.value||"Delivery";
+    }
+
+    function updateFulfilmentUI(){
+        const method=selectedFulfilmentMethod();
+        const isCollection=method==="Collection";
+        const subtotal=Number(currentOrder?.estimatedTotal||0);
+        const fee=isCollection?COLLECTION_FEE:(subtotal>=FREE_DELIVERY_THRESHOLD?0:DELIVERY_FEE);
+        const controls=["province","streetAddress","city","postalCode"];
+
+        controls.forEach(function(id){
+            const input=document.getElementById(id);
+            if(!input)return;
+
+            if(isCollection){
+                if(input.dataset.deliveryValue===undefined){
+                    input.dataset.deliveryValue=input.value||"";
+                }
+
+                if(id==="province")input.value="North West";
+                else if(id==="streetAddress")input.value="Mega City Unit 1, Sekame Street";
+                else if(id==="city")input.value="Mafikeng";
+                else input.value="";
+
+                input.required=false;
+                input.disabled=true;
+            }else{
+                if(input.dataset.deliveryValue!==undefined){
+                    input.value=input.dataset.deliveryValue;
+                    delete input.dataset.deliveryValue;
+                }
+                input.disabled=false;
+                input.required=true;
+            }
+        });
+
+        document.getElementById("deliveryHeading").textContent=
+            isCollection?"Collection Details":"Delivery Details";
+        document.getElementById("kitSubtotal").textContent=money(subtotal);
+        document.getElementById("feeLabel").textContent=isCollection?"Collection Fee":"Delivery";
+        document.getElementById("fulfilmentFee").textContent=fee===0?"FREE":money(fee);
+        document.getElementById("paymentTotal").textContent=money(subtotal+fee);
+        document.getElementById("amount").textContent=money(subtotal+fee);
+
+        document.getElementById("fulfilmentPromo").textContent=
+            isCollection
+                ?"Collect from "+STORE_ADDRESS+". Collection fee: R50."
+                :subtotal>=FREE_DELIVERY_THRESHOLD
+                    ?"You've unlocked FREE delivery!"
+                    :"You are "+money(FREE_DELIVERY_THRESHOLD-subtotal)+" away from FREE delivery.";
+    }
+
+    document.querySelectorAll('input[name="fulfilmentMethod"]').forEach(function(radio){
+        radio.addEventListener("change",updateFulfilmentUI);
+    });
 
     function showPaymentMessage(text,isError){
         message.hidden=false;
@@ -260,7 +364,8 @@
             document.getElementById("orderNumber").textContent="#"+order.customKitOrderId;
             document.getElementById("teamName").textContent=order.teamName||"-";
             document.getElementById("status").textContent=order.status||"Pending";
-            document.getElementById("amount").textContent=money(order.estimatedTotal);
+            currentOrder=order;
+            updateFulfilmentUI();
 
             if(order.customerName) document.getElementById("fullName").value=order.customerName;
             if(order.customerEmail) document.getElementById("email").value=order.customerEmail;
@@ -310,8 +415,20 @@
         const cvv=digits(document.getElementById("cvv").value);
         const cardholder=document.getElementById("cardholder").value.trim();
 
-        if(!fullName||!phoneNumber||!streetAddress||!city||!province||postalCode.length!==4){
-            showPaymentMessage("Complete all delivery details before paying.",true);
+        if(
+            !fullName||
+            !phoneNumber||
+            (
+                selectedFulfilmentMethod()==="Delivery"&&
+                (!streetAddress||!city||!province||postalCode.length!==4)
+            )
+        ){
+            showPaymentMessage(
+                selectedFulfilmentMethod()==="Collection"
+                    ?"Enter your name and phone number before paying."
+                    :"Complete all delivery details before paying.",
+                true
+            );
             return;
         }
 
@@ -361,7 +478,8 @@
                     city,
                     province,
                     postalCode,
-                    paymentLast4:cardNumber.slice(-4)
+                    paymentLast4:cardNumber.slice(-4),
+                    fulfilmentMethod:selectedFulfilmentMethod()
                 })
             });
 

@@ -3664,8 +3664,8 @@ card.appendChild(
                 false
             ),
             makeStat(
-                "Estimated Total",
-                money(order.estimatedTotal),
+                order.fulfilmentMethod ? "Total" : "Estimated Total",
+                money(order.total || order.estimatedTotal),
                 true
             )
         );

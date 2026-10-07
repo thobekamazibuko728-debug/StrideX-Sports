@@ -46,6 +46,10 @@ public class CustomKitOrder
 
     public string? PaymentStatus { get; set; }
 
+    public string? FulfilmentMethod { get; set; }
+
+    public decimal FulfilmentFee { get; set; }
+
     public string Status { get; set; } = "Pending";
 
     public DateTime CreatedAt { get; set; }

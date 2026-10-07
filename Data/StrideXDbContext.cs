@@ -699,6 +699,14 @@ modelBuilder.Entity<CustomKitOrder>(entity =>
         .HasColumnName("PaymentStatus")
         .HasMaxLength(30);
 
+    entity.Property(k => k.FulfilmentMethod)
+        .HasColumnName("FulfilmentMethod")
+        .HasMaxLength(20);
+
+    entity.Property(k => k.FulfilmentFee)
+        .HasColumnName("FulfilmentFee")
+        .HasPrecision(10, 2);
+
 
     entity.Property(
         k => k.Status

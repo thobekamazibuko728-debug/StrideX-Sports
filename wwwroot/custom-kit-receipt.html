@@ -75,8 +75,10 @@ body{background:#fff}.receipt-page{width:100%;margin:0}.receipt-card{border:0;bo
 </div>
 
 <section id="deliverySection" hidden>
-<h2>Delivery Details</h2>
+<h2 id="deliveryHeading">Delivery Details</h2>
 <div class="grid">
+<div class="info"><span>Fulfilment</span><strong id="fulfilmentMethod"></strong></div>
+<div class="info"><span>Fulfilment Fee</span><strong id="receiptFulfilmentFee"></strong></div>
 <div class="info"><span>Recipient</span><strong id="deliveryName"></strong></div>
 <div class="info"><span>Email</span><strong id="deliveryEmail"></strong></div>
 <div class="info"><span>Phone</span><strong id="deliveryPhone"></strong></div>
@@ -97,7 +99,9 @@ body{background:#fff}.receipt-page{width:100%;margin:0}.receipt-card{border:0;bo
 <div class="total-box">
 <div class="total-line"><span>Total kits</span><strong id="summaryQuantity"></strong></div>
 <div class="total-line"><span>Price per kit</span><strong id="summaryPrice"></strong></div>
-<div class="total-line final"><span>Estimated Total</span><strong id="summaryTotal"></strong></div>
+<div class="total-line"><span>Kit subtotal</span><strong id="summarySubtotal"></strong></div>
+<div class="total-line"><span>Fulfilment fee</span><strong id="summaryFulfilmentFee"></strong></div>
+<div class="total-line final"><span>Total</span><strong id="summaryTotal"></strong></div>
 </div>
 
 <div class="actions">
@@ -139,7 +143,12 @@ document.getElementById("secondaryColour").style.background=o.secondaryColour||"
 document.getElementById("accentColour").style.background=o.accentColour||"#fff";
 document.getElementById("summaryQuantity").textContent=o.quantity||0;
 document.getElementById("summaryPrice").textContent=money(o.pricePerKit);
-document.getElementById("summaryTotal").textContent=money(o.estimatedTotal);
+document.getElementById("summarySubtotal").textContent=money(o.estimatedTotal);
+document.getElementById("summaryFulfilmentFee").textContent=
+    o.fulfilmentMethod
+        ?(Number(o.fulfilmentFee||0)===0?"FREE":money(o.fulfilmentFee))
+        :"-";
+document.getElementById("summaryTotal").textContent=money(o.total||o.estimatedTotal);
 document.getElementById("detailsButton").href="custom-kit-order.html?id="+o.customKitOrderId;
 
 const notice=document.getElementById("receiptNotice");
@@ -149,7 +158,11 @@ if(String(o.paymentStatus||"").toLowerCase()==="paid"){
     notice.textContent="This receipt confirms your custom kit request and its estimated value. Payment has not been recorded yet.";
 }
 
-if(o.streetAddress){
+if(o.fulfilmentMethod||o.streetAddress){
+    document.getElementById("fulfilmentMethod").textContent=o.fulfilmentMethod||"Delivery";
+    document.getElementById("receiptFulfilmentFee").textContent=Number(o.fulfilmentFee||0)===0?"FREE":money(o.fulfilmentFee);
+    document.getElementById("deliveryHeading").textContent=
+        o.fulfilmentMethod==="Collection"?"Collection Details":"Delivery Details";
     document.getElementById("deliveryName").textContent=o.customerName||"-";
     document.getElementById("deliveryEmail").textContent=o.customerEmail||"-";
     document.getElementById("deliveryPhone").textContent=o.phoneNumber||"-";

@@ -1654,6 +1654,7 @@ app.MapGet("/api/delivery-profile", async (
             .AsNoTracking()
             .Where(order =>
                 order.UserId == user.Id &&
+                order.FulfilmentMethod == "Delivery" &&
                 order.StreetAddress != null &&
                 order.StreetAddress != ""
             )
@@ -4337,6 +4338,11 @@ app.MapGet("/api/custom-kits", async (
             quantity = order.Quantity,
             pricePerKit = order.PricePerKit,
             estimatedTotal = order.EstimatedTotal,
+            fulfilmentMethod = order.FulfilmentMethod,
+            fulfilmentFee = order.FulfilmentFee,
+            total =
+                order.EstimatedTotal +
+                order.FulfilmentFee,
             status = order.Status,
             createdAt = order.CreatedAt,
             playerCount = order.Players.Count,
@@ -4432,6 +4438,15 @@ app.MapGet("/api/custom-kits/{customKitOrderId:int}", async (
         postalCode = order.PostalCode,
         paymentLast4 = order.PaymentLast4,
         paymentStatus = order.PaymentStatus,
+        fulfilmentMethod = order.FulfilmentMethod,
+        fulfilmentFee = order.FulfilmentFee,
+        total =
+            order.EstimatedTotal +
+            order.FulfilmentFee,
+        collectionAddress =
+            order.FulfilmentMethod == "Collection"
+                ? "Mega City Unit 1, Sekame Street, Mafikeng, North West"
+                : "",
         canEdit = isPending,
         canCancel = isPending,
         canPay = isPending,
@@ -5534,6 +5549,41 @@ app.MapPost("/api/custom-kits/{customKitOrderId:int}/pay", async (
     var postalCode =
         request.PostalCode?.Trim() ?? "";
 
+    var fulfilmentMethod =
+        request.FulfilmentMethod?.Trim() ?? "";
+
+    var isCollection =
+        string.Equals(
+            fulfilmentMethod,
+            "Collection",
+            StringComparison.OrdinalIgnoreCase
+        );
+
+    var isDelivery =
+        string.Equals(
+            fulfilmentMethod,
+            "Delivery",
+            StringComparison.OrdinalIgnoreCase
+        );
+
+    if (!isCollection && !isDelivery)
+    {
+        return Results.BadRequest(new
+        {
+            message =
+                "Choose delivery or collect in store."
+        });
+    }
+
+    if (isCollection)
+    {
+        streetAddress =
+            "Mega City Unit 1, Sekame Street";
+        city = "Mafikeng";
+        province = "North West";
+        postalCode = "";
+    }
+
     var last4 =
         new string(
             (request.PaymentLast4 ?? "")
@@ -5544,16 +5594,23 @@ app.MapPost("/api/custom-kits/{customKitOrderId:int}/pay", async (
     if (
         string.IsNullOrWhiteSpace(customerName) ||
         string.IsNullOrWhiteSpace(phoneNumber) ||
-        string.IsNullOrWhiteSpace(streetAddress) ||
-        string.IsNullOrWhiteSpace(city) ||
-        string.IsNullOrWhiteSpace(province) ||
-        string.IsNullOrWhiteSpace(postalCode)
+        (
+            isDelivery &&
+            (
+                string.IsNullOrWhiteSpace(streetAddress) ||
+                string.IsNullOrWhiteSpace(city) ||
+                string.IsNullOrWhiteSpace(province) ||
+                string.IsNullOrWhiteSpace(postalCode)
+            )
+        )
     )
     {
         return Results.BadRequest(new
         {
             message =
-                "Complete all delivery details before paying."
+                isCollection
+                    ? "Enter your name and phone number before paying."
+                    : "Complete all delivery details before paying."
         });
     }
 
@@ -5598,10 +5655,13 @@ app.MapPost("/api/custom-kits/{customKitOrderId:int}/pay", async (
     }
 
     if (
-        postalCode.Length > 10 ||
-        !System.Text.RegularExpressions.Regex.IsMatch(
-            postalCode,
-            "^\\d{4}$"
+        isDelivery &&
+        (
+            postalCode.Length > 10 ||
+            !System.Text.RegularExpressions.Regex.IsMatch(
+                postalCode,
+                "^\\d{4}$"
+            )
         )
     )
     {
@@ -5672,6 +5732,18 @@ app.MapPost("/api/custom-kits/{customKitOrderId:int}/pay", async (
     customKitOrder.PaymentLast4 =
         last4;
 
+    customKitOrder.FulfilmentMethod =
+        isCollection
+            ? "Collection"
+            : "Delivery";
+
+    customKitOrder.FulfilmentFee =
+        isCollection
+            ? 50m
+            : customKitOrder.EstimatedTotal >= 1500m
+                ? 0m
+                : 100m;
+
     customKitOrder.PaymentStatus =
         "Paid";
 
@@ -5691,7 +5763,14 @@ app.MapPost("/api/custom-kits/{customKitOrderId:int}/pay", async (
         paymentStatus =
             customKitOrder.PaymentStatus,
         paymentLast4 =
-            customKitOrder.PaymentLast4
+            customKitOrder.PaymentLast4,
+        fulfilmentMethod =
+            customKitOrder.FulfilmentMethod,
+        fulfilmentFee =
+            customKitOrder.FulfilmentFee,
+        total =
+            customKitOrder.EstimatedTotal +
+            customKitOrder.FulfilmentFee
     });
 })
 .RequireAuthorization();
@@ -6004,7 +6083,8 @@ record CustomKitPaymentRequest(
     string City,
     string Province,
     string PostalCode,
-    string PaymentLast4
+    string PaymentLast4,
+    string FulfilmentMethod
 );
 
 record CustomKitRequest(
