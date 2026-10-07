@@ -1148,9 +1148,55 @@
 
     <!-- KITLAB JAVASCRIPT -->
 
+    <script>
+        (function () {
+            const params =
+                new URLSearchParams(
+                    window.location.search
+                );
+
+            if (!params.get("editId")) {
+                return;
+            }
+
+            const saveButton =
+                document.getElementById(
+                    "requestKitButton"
+                );
+
+            const confirmButton =
+                document.getElementById(
+                    "confirmKitRequest"
+                );
+
+            const reviewTitle =
+                document.getElementById(
+                    "kitReviewTitle"
+                );
+
+            if (saveButton) {
+                saveButton.textContent =
+                    "Save Edit";
+            }
+
+            if (confirmButton) {
+                confirmButton.textContent =
+                    "Save Edit";
+            }
+
+            if (reviewTitle) {
+                reviewTitle.textContent =
+                    "Review Your Edits";
+            }
+
+            document.title =
+                "Edit Custom Kit | StrideX Sports";
+        })();
+    </script>
+
     <script
         type="text/javascript"
-        src="js/custom-kit.js?v=save-edit-20261007"
+        src="js/custom-kit.js?v=save-edit-20261007-2"
     ></script>
 
 </body>

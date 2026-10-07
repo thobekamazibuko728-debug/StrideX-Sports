@@ -318,7 +318,42 @@ app.UseStaticFiles(
 
         ContentTypeProvider =
 
-            staticFileProvider
+            staticFileProvider,
+
+        OnPrepareResponse = context =>
+        {
+            var path =
+                context.Context.Request.Path.Value ?? "";
+
+            if (
+                path.EndsWith(
+                    ".html",
+                    StringComparison.OrdinalIgnoreCase
+                ) ||
+                path.EndsWith(
+                    ".xhtml",
+                    StringComparison.OrdinalIgnoreCase
+                ) ||
+                path.EndsWith(
+                    ".js",
+                    StringComparison.OrdinalIgnoreCase
+                ) ||
+                path.EndsWith(
+                    ".css",
+                    StringComparison.OrdinalIgnoreCase
+                )
+            )
+            {
+                context.Context.Response.Headers["Cache-Control"] =
+                    "no-cache, no-store, must-revalidate";
+
+                context.Context.Response.Headers["Pragma"] =
+                    "no-cache";
+
+                context.Context.Response.Headers["Expires"] =
+                    "0";
+            }
+        }
 
     }
 
