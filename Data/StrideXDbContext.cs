@@ -560,6 +560,43 @@ modelBuilder.Entity<CustomKitOrder>(entity =>
     .HasPrecision(10, 2);
 
 
+    entity.Property(k => k.CustomerName)
+        .HasColumnName("CustomerName")
+        .HasMaxLength(100);
+
+    entity.Property(k => k.CustomerEmail)
+        .HasColumnName("CustomerEmail")
+        .HasMaxLength(256);
+
+    entity.Property(k => k.PhoneNumber)
+        .HasColumnName("PhoneNumber")
+        .HasMaxLength(20);
+
+    entity.Property(k => k.StreetAddress)
+        .HasColumnName("StreetAddress")
+        .HasMaxLength(200);
+
+    entity.Property(k => k.City)
+        .HasColumnName("City")
+        .HasMaxLength(100);
+
+    entity.Property(k => k.Province)
+        .HasColumnName("Province")
+        .HasMaxLength(100);
+
+    entity.Property(k => k.PostalCode)
+        .HasColumnName("PostalCode")
+        .HasMaxLength(10);
+
+    entity.Property(k => k.PaymentLast4)
+        .HasColumnName("PaymentLast4")
+        .HasMaxLength(4);
+
+    entity.Property(k => k.PaymentStatus)
+        .HasColumnName("PaymentStatus")
+        .HasMaxLength(30);
+
+
     entity.Property(
         k => k.Status
     )

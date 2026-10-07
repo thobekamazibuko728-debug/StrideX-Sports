@@ -11,34 +11,41 @@
         .brand{font-size:24px;font-weight:800;text-decoration:none;color:#fff}
         .brand span{color:#9b5cff}
         .back{color:#fff;text-decoration:none;font-weight:700}
-        main{max-width:900px;margin:40px auto;padding:0 20px}
+        main{max-width:980px;margin:40px auto;padding:0 20px 60px}
         .card{background:#fff;border:1px solid #e5e5ea;border-radius:18px;padding:28px;box-shadow:0 12px 35px rgba(0,0,0,.07)}
-        h1{margin-top:0}
-        .summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:22px 0}
+        h1{margin:0 0 8px}
+        .intro{margin:0;color:#666;line-height:1.5}
+        .summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:24px 0 28px}
         .summary div{padding:14px;border:1px solid #ececf1;border-radius:12px;background:#fafafd}
         .summary span{display:block;color:#777;font-size:12px;text-transform:uppercase;margin-bottom:6px}
         .total{font-size:24px;color:#6d28d9}
-        form{display:grid;gap:16px}
-        label{font-weight:700;font-size:14px}
-        input{width:100%;margin-top:7px;padding:13px 14px;border:1px solid #cfcfd6;border-radius:10px;font:inherit}
-        .row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-        button{border:0;border-radius:11px;background:#6d28d9;color:#fff;padding:14px 20px;font-size:16px;font-weight:800;cursor:pointer}
+        .form-section{margin-top:28px;padding-top:24px;border-top:1px solid #ececf1}
+        .form-section h2{margin:0 0 18px;font-size:20px}
+        .form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+        .full{grid-column:1/-1}
+        label{display:block;font-weight:700;font-size:14px}
+        input,select{width:100%;margin-top:7px;padding:13px 14px;border:1px solid #cfcfd6;border-radius:10px;background:#fff;font:inherit}
+        input[readonly]{background:#f3f3f5;color:#666}
+        .actions{margin-top:24px}
+        button{width:100%;border:0;border-radius:11px;background:#6d28d9;color:#fff;padding:15px 20px;font-size:16px;font-weight:800;cursor:pointer}
         button:disabled{opacity:.55;cursor:not-allowed}
         .message{margin:15px 0;padding:12px 14px;border-radius:10px;background:#f2edff;color:#4c1d95}
         .error{background:#fde8eb;color:#a12638}
-        .note{font-size:13px;color:#666;line-height:1.5;margin-top:14px}
-        @media(max-width:650px){.summary,.row{grid-template-columns:1fr}}
+        .note{font-size:13px;color:#666;line-height:1.5;margin:14px 0 0}
+        @media(max-width:650px){.summary,.form-grid{grid-template-columns:1fr}.full{grid-column:auto}}
     </style>
 </head>
 <body>
 <header>
     <a class="brand" href="index.html">Stride<span>X</span> Sports</a>
-    <a class="back" id="backLink" href="orders.html">Back to My Orders</a>
+    <a class="back" id="backLink" href="my-orders.html">Back to Order</a>
 </header>
 
 <main>
     <div class="card">
         <h1>Pay for Custom Kit</h1>
+        <p class="intro">Add the delivery address for your team kit, then complete payment.</p>
+
         <div id="message" class="message">Loading your custom kit...</div>
 
         <div id="content" hidden>
@@ -50,31 +57,90 @@
             </div>
 
             <form id="paymentForm">
-                <label>
-                    Cardholder name
-                    <input id="cardholder" autocomplete="cc-name" maxlength="100" required>
-                </label>
+                <section class="form-section">
+                    <h2>Delivery Details</h2>
 
-                <label>
-                    Card number
-                    <input id="cardNumber" inputmode="numeric" autocomplete="cc-number" maxlength="23" placeholder="1234 5678 9012 3456" required>
-                </label>
+                    <div class="form-grid">
+                        <label>
+                            Full Name
+                            <input id="fullName" maxlength="100" autocomplete="name" required>
+                        </label>
 
-                <div class="row">
-                    <label>
-                        Expiry
-                        <input id="expiry" inputmode="numeric" autocomplete="cc-exp" maxlength="5" placeholder="MM/YY" required>
-                    </label>
-                    <label>
-                        CVV
-                        <input id="cvv" inputmode="numeric" autocomplete="cc-csc" maxlength="4" placeholder="123" required>
-                    </label>
+                        <label>
+                            Email Address
+                            <input id="email" type="email" autocomplete="email" readonly>
+                        </label>
+
+                        <label>
+                            Phone Number
+                            <input id="phoneNumber" type="tel" maxlength="20" placeholder="071 234 5678" autocomplete="tel" required>
+                        </label>
+
+                        <label>
+                            Province
+                            <select id="province" autocomplete="address-level1" required>
+                                <option value="">Select province</option>
+                                <option>Eastern Cape</option>
+                                <option>Free State</option>
+                                <option>Gauteng</option>
+                                <option>KwaZulu-Natal</option>
+                                <option>Limpopo</option>
+                                <option>Mpumalanga</option>
+                                <option>North West</option>
+                                <option>Northern Cape</option>
+                                <option>Western Cape</option>
+                            </select>
+                        </label>
+
+                        <label class="full">
+                            Street Address
+                            <input id="streetAddress" maxlength="200" placeholder="Street name and number" autocomplete="street-address" required>
+                        </label>
+
+                        <label>
+                            City / Town
+                            <input id="city" maxlength="100" autocomplete="address-level2" required>
+                        </label>
+
+                        <label>
+                            Postal Code
+                            <input id="postalCode" inputmode="numeric" maxlength="4" autocomplete="postal-code" required>
+                        </label>
+                    </div>
+                </section>
+
+                <section class="form-section">
+                    <h2>Payment Details</h2>
+
+                    <div class="form-grid">
+                        <label class="full">
+                            Cardholder Name
+                            <input id="cardholder" autocomplete="cc-name" maxlength="100" required>
+                        </label>
+
+                        <label class="full">
+                            Card Number
+                            <input id="cardNumber" inputmode="numeric" autocomplete="cc-number" maxlength="23" placeholder="1234 5678 9012 3456" required>
+                        </label>
+
+                        <label>
+                            Expiry
+                            <input id="expiry" inputmode="numeric" autocomplete="cc-exp" maxlength="5" placeholder="MM/YY" required>
+                        </label>
+
+                        <label>
+                            CVV
+                            <input id="cvv" inputmode="numeric" autocomplete="cc-csc" maxlength="4" placeholder="123" required>
+                        </label>
+                    </div>
+                </section>
+
+                <div class="actions">
+                    <button id="payButton" type="submit">Pay Now</button>
                 </div>
-
-                <button id="payButton" type="submit">Pay Now</button>
             </form>
 
-            <p class="note">For this semester project, payment is simulated. The full card number, expiry date and CVV are not sent to the server or stored. Only the final four card digits are sent for payment validation.</p>
+            <p class="note">For this semester project, payment is simulated. The full card number, expiry date and CVV are not sent to the server or stored. The delivery details and only the final four card digits are saved with the Custom Kit order.</p>
         </div>
     </div>
 </main>
@@ -97,6 +163,17 @@
 
     function digits(value){
         return String(value||"").replace(/\D/g,"");
+    }
+
+    async function loadAccount(){
+        try{
+            const response=await fetch(API_BASE+"/api/auth/me",{credentials:"include"});
+            if(!response.ok) return;
+            const user=await response.json();
+            document.getElementById("fullName").value=user.fullName||"";
+            document.getElementById("email").value=user.email||"";
+            document.getElementById("cardholder").value=user.fullName||"";
+        }catch{}
     }
 
     async function loadOrder(){
@@ -127,6 +204,15 @@
             document.getElementById("teamName").textContent=order.teamName||"-";
             document.getElementById("status").textContent=order.status||"Pending";
             document.getElementById("amount").textContent=money(order.estimatedTotal);
+
+            if(order.customerName) document.getElementById("fullName").value=order.customerName;
+            if(order.customerEmail) document.getElementById("email").value=order.customerEmail;
+            if(order.phoneNumber) document.getElementById("phoneNumber").value=order.phoneNumber;
+            if(order.streetAddress) document.getElementById("streetAddress").value=order.streetAddress;
+            if(order.city) document.getElementById("city").value=order.city;
+            if(order.province) document.getElementById("province").value=order.province;
+            if(order.postalCode) document.getElementById("postalCode").value=order.postalCode;
+
             message.hidden=true;
             content.hidden=false;
         }catch(error){
@@ -149,13 +235,28 @@
         this.value=digits(this.value).slice(0,4);
     });
 
+    document.getElementById("postalCode").addEventListener("input",function(){
+        this.value=digits(this.value).slice(0,4);
+    });
+
     form.addEventListener("submit",async function(event){
         event.preventDefault();
 
+        const fullName=document.getElementById("fullName").value.trim();
+        const phoneNumber=document.getElementById("phoneNumber").value.trim();
+        const streetAddress=document.getElementById("streetAddress").value.trim();
+        const city=document.getElementById("city").value.trim();
+        const province=document.getElementById("province").value.trim();
+        const postalCode=digits(document.getElementById("postalCode").value);
         const cardNumber=digits(document.getElementById("cardNumber").value);
         const expiry=document.getElementById("expiry").value.trim();
         const cvv=digits(document.getElementById("cvv").value);
         const cardholder=document.getElementById("cardholder").value.trim();
+
+        if(!fullName||!phoneNumber||!streetAddress||!city||!province||postalCode.length!==4){
+            alert("Complete all delivery details before paying.");
+            return;
+        }
 
         if(!cardholder){
             alert("Enter the cardholder name.");
@@ -196,7 +297,15 @@
                 method:"POST",
                 credentials:"include",
                 headers:{"Content-Type":"application/json"},
-                body:JSON.stringify({paymentLast4:cardNumber.slice(-4)})
+                body:JSON.stringify({
+                    fullName,
+                    phoneNumber,
+                    streetAddress,
+                    city,
+                    province,
+                    postalCode,
+                    paymentLast4:cardNumber.slice(-4)
+                })
             });
 
             if(response.status===401){
@@ -216,7 +325,7 @@
         }
     });
 
-    loadOrder();
+    Promise.all([loadAccount(),loadOrder()]);
 </script>
 </body>
 </html>

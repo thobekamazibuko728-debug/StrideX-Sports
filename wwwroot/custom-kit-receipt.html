@@ -46,7 +46,7 @@ body{background:#fff}.receipt-page{width:100%;margin:0}.receipt-card{border:0;bo
 <form class="header-search" action="shop.xhtml" method="get"><input type="text" name="search" placeholder="Search products, brands or sports..."><button type="submit">Search</button></form>
 <div class="header-actions">
 <a href="account.html" class="header-action"><span class="action-icon">&#128100;</span><span>Account</span></a>
-<a href="orders.html" class="header-action"><span class="action-icon">&#128230;</span><span>My Orders</span></a>
+<a href="my-orders.html" class="header-action"><span class="action-icon">&#128230;</span><span>My Orders</span></a>
 <a href="cart.html" class="header-action cart-action"><span class="action-icon">&#128722;</span><span>Cart</span><span class="cart-count" id="headerCartCount">0</span></a>
 </div></div>
 <nav class="main-nav"><a href="index.html">Home</a><a href="shop.xhtml">Shop</a><a href="shop.xhtml?sport=soccer">Soccer</a><a href="shop.xhtml?sport=rugby">Rugby</a><a href="shop.xhtml?sport=tennis">Tennis</a><a href="shop.xhtml?sport=cycling">Cycling</a><a href="custom-kit.xhtml">Custom Kit</a></nav>
@@ -60,7 +60,7 @@ body{background:#fff}.receipt-page{width:100%;margin:0}.receipt-card{border:0;bo
 <div class="receipt-number"><span>Receipt / Request No.</span><strong id="receiptNumber"></strong></div>
 </div>
 <div class="receipt-body">
-<div class="notice">This receipt confirms your custom kit request and its estimated value. It is not proof of payment unless payment is recorded separately.</div>
+<div class="notice" id="receiptNotice">This receipt confirms your custom kit request and its estimated value.</div>
 
 <div class="grid">
 <div class="info"><span>Team</span><strong id="teamName"></strong></div>
@@ -73,6 +73,20 @@ body{background:#fff}.receipt-page{width:100%;margin:0}.receipt-card{border:0;bo
 <div class="info"><span>Price per kit</span><strong id="pricePerKit"></strong></div>
 <div class="info"><span>Colours</span><div class="colours"><span id="primaryColour" class="swatch"></span><span id="secondaryColour" class="swatch"></span><span id="accentColour" class="swatch"></span></div></div>
 </div>
+
+<section id="deliverySection" hidden>
+<h2>Delivery Details</h2>
+<div class="grid">
+<div class="info"><span>Recipient</span><strong id="deliveryName"></strong></div>
+<div class="info"><span>Email</span><strong id="deliveryEmail"></strong></div>
+<div class="info"><span>Phone</span><strong id="deliveryPhone"></strong></div>
+<div class="info"><span>Street Address</span><strong id="deliveryStreet"></strong></div>
+<div class="info"><span>City / Town</span><strong id="deliveryCity"></strong></div>
+<div class="info"><span>Province</span><strong id="deliveryProvince"></strong></div>
+<div class="info"><span>Postal Code</span><strong id="deliveryPostal"></strong></div>
+<div class="info"><span>Payment</span><strong id="paymentSummary"></strong></div>
+</div>
+</section>
 
 <h2>Team List</h2>
 <table>
@@ -89,7 +103,7 @@ body{background:#fff}.receipt-page{width:100%;margin:0}.receipt-card{border:0;bo
 <div class="actions">
 <button class="btn" id="printButton" type="button">Print / Save as PDF</button>
 <a class="btn secondary" id="detailsButton" href="#">View Order Details</a>
-<a class="btn secondary" href="orders.html">My Orders</a>
+<a class="btn secondary" href="my-orders.html">My Orders</a>
 </div>
 </div>
 </article>
@@ -127,6 +141,27 @@ document.getElementById("summaryQuantity").textContent=o.quantity||0;
 document.getElementById("summaryPrice").textContent=money(o.pricePerKit);
 document.getElementById("summaryTotal").textContent=money(o.estimatedTotal);
 document.getElementById("detailsButton").href="custom-kit-order.html?id="+o.customKitOrderId;
+
+const notice=document.getElementById("receiptNotice");
+if(String(o.paymentStatus||"").toLowerCase()==="paid"){
+    notice.textContent="Payment received. This receipt includes the saved delivery details for your custom kit order.";
+}else{
+    notice.textContent="This receipt confirms your custom kit request and its estimated value. Payment has not been recorded yet.";
+}
+
+if(o.streetAddress){
+    document.getElementById("deliveryName").textContent=o.customerName||"-";
+    document.getElementById("deliveryEmail").textContent=o.customerEmail||"-";
+    document.getElementById("deliveryPhone").textContent=o.phoneNumber||"-";
+    document.getElementById("deliveryStreet").textContent=o.streetAddress||"-";
+    document.getElementById("deliveryCity").textContent=o.city||"-";
+    document.getElementById("deliveryProvince").textContent=o.province||"-";
+    document.getElementById("deliveryPostal").textContent=o.postalCode||"-";
+    document.getElementById("paymentSummary").textContent=
+        (o.paymentStatus||"-")+
+        (o.paymentLast4?" • Card ending "+o.paymentLast4:"");
+    document.getElementById("deliverySection").hidden=false;
+}
 const body=document.getElementById("playersBody");body.replaceChildren();
 (o.players||[]).forEach((p,i)=>{const tr=document.createElement("tr");[i+1,p.playerName||"-",p.playerNumber||"-",p.size||"-"].forEach(v=>{const td=document.createElement("td");td.textContent=v;tr.appendChild(td)});body.appendChild(tr)});
 pageMessage.hidden=true;receipt.hidden=false;

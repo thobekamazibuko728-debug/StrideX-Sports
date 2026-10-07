@@ -3768,6 +3768,15 @@ app.MapGet("/api/custom-kits/{customKitOrderId:int}", async (
         estimatedTotal = order.EstimatedTotal,
         status = order.Status,
         createdAt = order.CreatedAt,
+        customerName = order.CustomerName,
+        customerEmail = order.CustomerEmail,
+        phoneNumber = order.PhoneNumber,
+        streetAddress = order.StreetAddress,
+        city = order.City,
+        province = order.Province,
+        postalCode = order.PostalCode,
+        paymentLast4 = order.PaymentLast4,
+        paymentStatus = order.PaymentStatus,
         canEdit = isPending,
         canCancel = isPending,
         canPay = isPending,
@@ -4831,6 +4840,7 @@ app.MapPut("/api/custom-kits/{customKitOrderId:int}", async (
 // =====================================
 // STRIDEX — PAY FOR CUSTOM KIT ORDER
 // Payment is simulated for the semester project.
+// Delivery details are saved with the custom kit order.
 // Only the final four card digits reach the API.
 // =====================================
 
@@ -4851,12 +4861,100 @@ app.MapPost("/api/custom-kits/{customKitOrderId:int}/pay", async (
         return Results.Unauthorized();
     }
 
+    var customerName =
+        request.FullName?.Trim() ?? "";
+
+    var phoneNumber =
+        request.PhoneNumber?.Trim() ?? "";
+
+    var streetAddress =
+        request.StreetAddress?.Trim() ?? "";
+
+    var city =
+        request.City?.Trim() ?? "";
+
+    var province =
+        request.Province?.Trim() ?? "";
+
+    var postalCode =
+        request.PostalCode?.Trim() ?? "";
+
     var last4 =
         new string(
             (request.PaymentLast4 ?? "")
                 .Where(char.IsDigit)
                 .ToArray()
         );
+
+    if (
+        string.IsNullOrWhiteSpace(customerName) ||
+        string.IsNullOrWhiteSpace(phoneNumber) ||
+        string.IsNullOrWhiteSpace(streetAddress) ||
+        string.IsNullOrWhiteSpace(city) ||
+        string.IsNullOrWhiteSpace(province) ||
+        string.IsNullOrWhiteSpace(postalCode)
+    )
+    {
+        return Results.BadRequest(new
+        {
+            message =
+                "Complete all delivery details before paying."
+        });
+    }
+
+    if (customerName.Length > 100)
+    {
+        return Results.BadRequest(new
+        {
+            message = "Full name is too long."
+        });
+    }
+
+    if (phoneNumber.Length > 20)
+    {
+        return Results.BadRequest(new
+        {
+            message = "Phone number is too long."
+        });
+    }
+
+    if (streetAddress.Length > 200)
+    {
+        return Results.BadRequest(new
+        {
+            message = "Street address is too long."
+        });
+    }
+
+    if (city.Length > 100)
+    {
+        return Results.BadRequest(new
+        {
+            message = "City name is too long."
+        });
+    }
+
+    if (province.Length > 100)
+    {
+        return Results.BadRequest(new
+        {
+            message = "Province name is too long."
+        });
+    }
+
+    if (
+        postalCode.Length > 10 ||
+        !System.Text.RegularExpressions.Regex.IsMatch(
+            postalCode,
+            "^\\d{4}$"
+        )
+    )
+    {
+        return Results.BadRequest(new
+        {
+            message = "Enter a valid 4-digit postal code."
+        });
+    }
 
     if (last4.Length != 4)
     {
@@ -4895,17 +4993,50 @@ app.MapPost("/api/custom-kits/{customKitOrderId:int}/pay", async (
         });
     }
 
-    customKitOrder.Status = "Paid";
+    customKitOrder.CustomerName =
+        customerName;
+
+    customKitOrder.CustomerEmail =
+        user.Email ?? "";
+
+    customKitOrder.PhoneNumber =
+        phoneNumber;
+
+    customKitOrder.StreetAddress =
+        streetAddress;
+
+    customKitOrder.City =
+        city;
+
+    customKitOrder.Province =
+        province;
+
+    customKitOrder.PostalCode =
+        postalCode;
+
+    customKitOrder.PaymentLast4 =
+        last4;
+
+    customKitOrder.PaymentStatus =
+        "Paid";
+
+    customKitOrder.Status =
+        "Paid";
 
     await db.SaveChangesAsync();
 
     return Results.Ok(new
     {
-        message = "Custom kit payment completed successfully.",
-        customKitOrderId = customKitOrder.CustomKitOrderId,
-        status = customKitOrder.Status,
-        paymentStatus = "Paid",
-        paymentLast4 = last4
+        message =
+            "Custom kit payment completed successfully.",
+        customKitOrderId =
+            customKitOrder.CustomKitOrderId,
+        status =
+            customKitOrder.Status,
+        paymentStatus =
+            customKitOrder.PaymentStatus,
+        paymentLast4 =
+            customKitOrder.PaymentLast4
     });
 })
 .RequireAuthorization();
@@ -5083,6 +5214,12 @@ record CheckoutRequest(
 );
 
 record CustomKitPaymentRequest(
+    string FullName,
+    string PhoneNumber,
+    string StreetAddress,
+    string City,
+    string Province,
+    string PostalCode,
     string PaymentLast4
 );
 

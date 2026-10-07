@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StrideX.Api.Data;
 
@@ -11,9 +12,11 @@ using StrideX.Api.Data;
 namespace StrideX.Api.Migrations
 {
     [DbContext(typeof(StrideXDbContext))]
-    partial class StrideXDbContextModelSnapshot : ModelSnapshot
+    [Migration("20261007103000_AddCustomKitDeliveryDetails")]
+    partial class AddCustomKitDeliveryDetails
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
