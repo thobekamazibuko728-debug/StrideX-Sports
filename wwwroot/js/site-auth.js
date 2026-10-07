@@ -88,31 +88,126 @@
         style.textContent = `
             .header-actions.stridex-auth-ready{
                 visibility:visible;
+                align-items:center;
+                gap:8px;
             }
 
-            .stridex-auth-greeting{
-                display:flex;
-                align-items:center;
-                padding:8px 4px;
-                color:inherit;
-                font-size:13px;
-                font-weight:800;
-                white-space:nowrap;
+            .header-actions .stridex-compact-action,
+            .header-actions .stridex-account-button,
+            .header-actions .stridex-notification-button{
+                width:42px;
+                height:42px;
+                padding:0 !important;
+                border:1px solid #e5e5ea !important;
+                border-radius:12px;
+                display:grid;
+                place-items:center;
+                background:#ffffff !important;
+                color:#111111 !important;
+                box-shadow:none !important;
+                cursor:pointer;
+                transition:.2s;
+            }
+
+            .header-actions .stridex-compact-action:hover,
+            .header-actions .stridex-account-button:hover,
+            .header-actions .stridex-notification-button:hover{
+                border-color:#cfc2f8 !important;
+                background:#f8f5ff !important;
+                color:#6d28d9 !important;
             }
 
             .header-action.auth-signup{
                 padding:10px 14px;
-                border-radius:8px;
+                border-radius:10px;
+                border:1px solid #7c3aed;
                 background:#7c3aed;
                 color:#fff !important;
             }
 
             .header-action.auth-signup:hover{
                 background:#5b21b6;
+                border-color:#5b21b6;
             }
 
-            .header-action.auth-logout{
+            .stridex-account-wrap{
+                position:relative;
+            }
+
+            .header-actions .stridex-account-button{
+                width:auto;
+                min-width:0;
+                padding:0 12px !important;
+                grid-template-columns:auto auto auto;
+                gap:8px;
+                font:inherit;
+                font-size:14px;
+                font-weight:800;
+                white-space:nowrap;
+            }
+
+            .stridex-avatar{
+                width:28px;
+                height:28px;
+                border-radius:50%;
+                display:grid;
+                place-items:center;
+                background:#efe7ff;
+                color:#6d28d9;
+                font-size:12px;
+                font-weight:900;
+            }
+
+            .stridex-account-name{
+                max-width:120px;
+                overflow:hidden;
+                text-overflow:ellipsis;
+                white-space:nowrap;
+            }
+
+            .stridex-chevron{
+                color:#777;
+                font-size:11px;
+            }
+
+            .stridex-account-menu{
+                position:absolute;
+                top:calc(100% + 10px);
+                right:0;
+                z-index:5000;
+                min-width:190px;
+                padding:8px;
+                border:1px solid #e4e4e8;
+                border-radius:12px;
+                background:#ffffff;
+                box-shadow:0 16px 40px rgba(0,0,0,.14);
+            }
+
+            .stridex-account-menu a,
+            .stridex-account-menu button{
+                width:100%;
+                display:block;
+                padding:11px 12px;
+                border:0;
+                border-radius:8px;
+                background:transparent;
+                color:#222;
+                text-align:left;
+                text-decoration:none;
+                font:inherit;
+                font-size:13px;
+                font-weight:700;
                 cursor:pointer;
+            }
+
+            .stridex-account-menu a:hover,
+            .stridex-account-menu button:hover{
+                background:#f5f0ff;
+                color:#5b21b6;
+            }
+
+            .stridex-account-menu .logout-item{
+                color:#a12638;
             }
 
             .stridex-notification-wrap{
@@ -131,8 +226,8 @@
 
             .stridex-notification-badge{
                 position:absolute;
-                top:0;
-                right:0;
+                top:-7px;
+                right:-7px;
                 min-width:18px;
                 height:18px;
                 padding:0 5px;
@@ -194,12 +289,22 @@
             }
 
             @media(max-width:760px){
-                .stridex-auth-greeting{
+                .stridex-account-name{
+                    display:none;
+                }
+
+                .header-actions .stridex-account-button{
+                    width:42px;
+                    padding:0 !important;
+                    grid-template-columns:1fr;
+                }
+
+                .stridex-account-button .stridex-chevron{
                     display:none;
                 }
 
                 .stridex-notification-panel{
-                    right:-90px;
+                    right:-70px;
                 }
             }
         `;
@@ -398,6 +503,322 @@
         }
     }
 
+    function createSvgIcon(kind) {
+        const namespace =
+            "http://www.w3.org/2000/svg";
+
+        const svg =
+            document.createElementNS(
+                namespace,
+                "svg"
+            );
+
+        svg.setAttribute(
+            "viewBox",
+            "0 0 24 24"
+        );
+
+        svg.setAttribute(
+            "width",
+            "20"
+        );
+
+        svg.setAttribute(
+            "height",
+            "20"
+        );
+
+        svg.setAttribute(
+            "aria-hidden",
+            "true"
+        );
+
+        svg.setAttribute(
+            "fill",
+            "none"
+        );
+
+        svg.setAttribute(
+            "stroke",
+            "currentColor"
+        );
+
+        svg.setAttribute(
+            "stroke-width",
+            "1.8"
+        );
+
+        svg.setAttribute(
+            "stroke-linecap",
+            "round"
+        );
+
+        svg.setAttribute(
+            "stroke-linejoin",
+            "round"
+        );
+
+        const paths =
+            kind === "bell"
+                ? [
+                    "M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9",
+                    "M10 21h4"
+                ]
+                : [
+                    "M3 4h2l2.2 10.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.6L20 8H6",
+                    "M10 21a1 1 0 1 1 0-2",
+                    "M18 21a1 1 0 1 1 0-2"
+                ];
+
+        paths.forEach(
+            function (data) {
+                const path =
+                    document.createElementNS(
+                        namespace,
+                        "path"
+                    );
+
+                path.setAttribute(
+                    "d",
+                    data
+                );
+
+                svg.appendChild(
+                    path
+                );
+            }
+        );
+
+        return svg;
+    }
+
+    function createCartControl() {
+        const cart =
+            document.createElement(
+                "a"
+            );
+
+        cart.href = "cart.html";
+        cart.className =
+            "header-action cart-action stridex-compact-action";
+        cart.setAttribute(
+            "aria-label",
+            "Cart"
+        );
+        cart.title = "Cart";
+
+        cart.appendChild(
+            createSvgIcon(
+                "cart"
+            )
+        );
+
+        const count =
+            document.createElement(
+                "span"
+            );
+
+        count.className =
+            "cart-count";
+        count.textContent = "0";
+
+        cart.appendChild(
+            count
+        );
+
+        return cart;
+    }
+
+    function createAccountControl(
+        firstName
+    ) {
+        const wrap =
+            document.createElement(
+                "div"
+            );
+
+        wrap.className =
+            "stridex-account-wrap";
+
+        const button =
+            document.createElement(
+                "button"
+            );
+
+        button.type = "button";
+        button.className =
+            "stridex-account-button";
+        button.setAttribute(
+            "aria-expanded",
+            "false"
+        );
+        button.setAttribute(
+            "aria-label",
+            "Open account menu"
+        );
+
+        const avatar =
+            document.createElement(
+                "span"
+            );
+
+        avatar.className =
+            "stridex-avatar";
+
+        avatar.textContent =
+            String(
+                firstName ||
+                "M"
+            )
+                .charAt(0)
+                .toUpperCase();
+
+        const name =
+            document.createElement(
+                "span"
+            );
+
+        name.className =
+            "stridex-account-name";
+
+        name.textContent =
+            "Hi, " +
+            firstName;
+
+        const chevron =
+            document.createElement(
+                "span"
+            );
+
+        chevron.className =
+            "stridex-chevron";
+
+        chevron.textContent =
+            "▼";
+
+        button.append(
+            avatar,
+            name,
+            chevron
+        );
+
+        const menu =
+            document.createElement(
+                "div"
+            );
+
+        menu.className =
+            "stridex-account-menu";
+        menu.hidden = true;
+
+        const account =
+            document.createElement(
+                "a"
+            );
+
+        account.href =
+            "account.html";
+        account.textContent =
+            "My Account";
+
+        const orders =
+            document.createElement(
+                "a"
+            );
+
+        orders.href =
+            "my-orders.html";
+        orders.textContent =
+            "My Orders";
+
+        const logout =
+            document.createElement(
+                "button"
+            );
+
+        logout.type = "button";
+        logout.className =
+            "logout-item";
+        logout.textContent =
+            "Log Out";
+
+        logout.addEventListener(
+            "click",
+            async function () {
+                try {
+                    await fetch(
+                        API_BASE +
+                        "/api/auth/logout",
+                        {
+                            method: "POST",
+                            credentials:
+                                "include"
+                        }
+                    );
+                } finally {
+                    currentUser = null;
+
+                    window.dispatchEvent(
+                        new CustomEvent(
+                            "stridex-auth-changed"
+                        )
+                    );
+
+                    window.location.href =
+                        "index.html";
+                }
+            }
+        );
+
+        menu.append(
+            account,
+            orders,
+            logout
+        );
+
+        button.addEventListener(
+            "click",
+            function (event) {
+                event.stopPropagation();
+
+                menu.hidden =
+                    !menu.hidden;
+
+                button.setAttribute(
+                    "aria-expanded",
+                    String(
+                        !menu.hidden
+                    )
+                );
+            }
+        );
+
+        document.addEventListener(
+            "click",
+            function (event) {
+                if (
+                    !wrap.contains(
+                        event.target
+                    )
+                ) {
+                    menu.hidden = true;
+                    button.setAttribute(
+                        "aria-expanded",
+                        "false"
+                    );
+                }
+            }
+        );
+
+        wrap.append(
+            button,
+            menu
+        );
+
+        return wrap;
+    }
+
+
     function createNotificationControl(
         notifications
     ) {
@@ -422,27 +843,17 @@
             "false"
         );
 
-        const icon =
-            document.createElement(
-                "span"
-            );
-
-        icon.className =
-            "action-icon";
-
-        icon.textContent = "🔔";
-
-        const label =
-            document.createElement(
-                "span"
-            );
-
-        label.textContent =
+        button.setAttribute(
+            "aria-label",
+            "Notifications"
+        );
+        button.title =
             "Notifications";
 
-        button.append(
-            icon,
-            label
+        button.appendChild(
+            createSvgIcon(
+                "bell"
+            )
         );
 
         if (
@@ -656,51 +1067,8 @@
             return;
         }
 
-        const existingCart =
-            actions.querySelector(
-                ".cart-action"
-            );
-
-        let cart =
-            existingCart;
-
-        if (!cart) {
-            cart =
-                createLink(
-                    "Cart",
-                    "cart.html",
-                    "cart-action"
-                );
-
-            const count =
-                document.createElement(
-                    "span"
-                );
-
-            count.className =
-                "cart-count";
-            count.textContent = "0";
-
-            cart.appendChild(
-                count
-            );
-        }
-
-        cart.href =
-            "cart.html";
-
-        const count =
-            cart.querySelector(
-                ".cart-count"
-            );
-
-        if (
-            count &&
-            !count.id
-        ) {
-            count.id =
-                "siteCartCount";
-        }
+        const cart =
+            createCartControl();
 
         actions.replaceChildren();
 
@@ -759,30 +1127,11 @@
                 "Member"
             )
                 .trim()
-                .split(/s+/)[0];
+                .split(/\s+/)[0];
 
-        const greeting =
-            document.createElement(
-                "span"
-            );
-
-        greeting.className =
-            "stridex-auth-greeting";
-
-        greeting.textContent =
-            "Hi, " +
-            firstName;
-
-        const account =
-            createLink(
-                "My Account",
-                "account.html"
-            );
-
-        const orders =
-            createLink(
-                "My Orders",
-                "my-orders.html"
+        const accountControl =
+            createAccountControl(
+                firstName
             );
 
         const notifications =
@@ -793,50 +1142,10 @@
                 notifications
             );
 
-        const logout =
-            createLink(
-                "Log Out",
-                "#",
-                "auth-logout"
-            );
-
-        logout.addEventListener(
-            "click",
-            async function (event) {
-                event.preventDefault();
-
-                try {
-                    await fetch(
-                        API_BASE +
-                        "/api/auth/logout",
-                        {
-                            method: "POST",
-                            credentials:
-                                "include"
-                        }
-                    );
-                } finally {
-                    currentUser = null;
-
-                    window.dispatchEvent(
-                        new CustomEvent(
-                            "stridex-auth-changed"
-                        )
-                    );
-
-                    window.location.href =
-                        "index.html";
-                }
-            }
-        );
-
         actions.append(
-            greeting,
-            account,
-            orders,
+            accountControl,
             notificationControl,
-            cart,
-            logout
+            cart
         );
 
         actions.classList.add(
