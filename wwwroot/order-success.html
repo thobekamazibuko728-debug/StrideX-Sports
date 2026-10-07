@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Payment Successful | StrideX Sports</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f5f5f7;color:#15151b;font-family:Arial,Helvetica,sans-serif}
+.success-page{width:min(820px,calc(100% - 32px));margin:55px auto 80px}
+.success-card{background:#fff;border:1px solid #e4e4e8;border-radius:20px;padding:34px;box-shadow:0 14px 40px rgba(0,0,0,.08);text-align:center}
+.success-icon{width:74px;height:74px;margin:0 auto 20px;border-radius:50%;display:grid;place-items:center;background:#e4f8ea;color:#22763c;font-size:34px;font-weight:900}
+h1{margin:0 0 10px;font-size:34px}
+.lead{margin:0 auto 26px;color:#666;line-height:1.6;max-width:580px}
+.summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:26px 0;text-align:left}
+.summary div{padding:16px;border:1px solid #ececf0;background:#fafafa;border-radius:12px}
+.summary span{display:block;margin-bottom:6px;color:#777;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.05em}
+.summary strong{font-size:17px}
+.total strong{font-size:22px;color:#6d28d9}
+.delivery{text-align:left;padding:18px;border-radius:12px;background:#f5f0ff;border:1px solid #e5d8ff;margin:20px 0;line-height:1.6}
+.delivery h2{margin:0 0 8px;font-size:18px}.delivery p{margin:0;color:#555}
+.actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:28px}
+.btn{display:inline-block;padding:13px 18px;border-radius:9px;background:#7c3aed;color:#fff;text-decoration:none;font-weight:800}
+.btn.secondary{background:#111}
+.message{padding:15px;border-radius:10px;background:#eee;color:#555}.message.error{background:#fde8eb;color:#a12638}
+[hidden]{display:none!important}
+@media(max-width:650px){.summary{grid-template-columns:1fr}.success-card{padding:24px 18px}h1{font-size:29px}}
+</style>
+</head>
+<body>
+<main class="success-page">
+<div id="pageMessage" class="message">Loading your payment confirmation...</div>
+<section id="successCard" class="success-card" hidden>
+<div class="success-icon">&#10003;</div>
+<h1>Payment Successful</h1>
+<p class="lead" id="successLead">Your StrideX order has been confirmed.</p>
+
+<div class="summary">
+<div><span>Order</span><strong id="orderNumber"></strong></div>
+<div><span>Status</span><strong id="orderStatus"></strong></div>
+<div><span>Payment</span><strong id="paymentStatus">Paid</strong></div>
+<div class="total"><span>Amount Paid</span><strong id="amount"></strong></div>
+</div>
+
+<div class="delivery">
+<h2>Delivery Address</h2>
+<p id="deliveryText"></p>
+</div>
+
+<div class="actions">
+<a id="detailsButton" class="btn" href="#">View Order Details</a>
+<a id="receiptButton" class="btn secondary" href="#">View Receipt</a>
+<a class="btn secondary" href="my-orders.html">My Orders</a>
+</div>
+</section>
+</main>
+
+<script>
+const params=new URLSearchParams(window.location.search);
+const type=params.get("type")==="custom"?"custom":"order";
+const id=Number(params.get("id"));
+const message=document.getElementById("pageMessage");
+const card=document.getElementById("successCard");
+const money=value=>"R"+Number(value||0).toLocaleString("en-ZA",{minimumFractionDigits:2,maximumFractionDigits:2});
+
+async function loadSuccess(){
+    if(!Number.isInteger(id)||id<1){
+        message.classList.add("error");
+        message.textContent="A valid order number was not provided.";
+        return;
+    }
+
+    const url=type==="custom"
+        ?"/api/custom-kits/"+id
+        :"/api/orders/"+id+"/receipt";
+
+    try{
+        const response=await fetch(url,{credentials:"include"});
+
+        if(response.status===401){
+            window.location.href="account.html?return="+encodeURIComponent(window.location.pathname+window.location.search);
+            return;
+        }
+
+        const data=await response.json().catch(()=>({}));
+        if(!response.ok) throw new Error(data.message||"Could not load your order.");
+
+        if(type==="custom"){
+            document.getElementById("successLead").textContent=
+                "Your custom team kit payment has been received.";
+            document.getElementById("orderNumber").textContent=
+                "Custom Kit #"+data.customKitOrderId;
+            document.getElementById("orderStatus").textContent=data.status||"Paid";
+            document.getElementById("paymentStatus").textContent=data.paymentStatus||"Paid";
+            document.getElementById("amount").textContent=money(data.estimatedTotal);
+            document.getElementById("deliveryText").textContent=
+                [data.streetAddress,data.city,data.province,data.postalCode].filter(Boolean).join(", ")||"Delivery details saved.";
+            document.getElementById("detailsButton").href="custom-kit-order.html?id="+id;
+            document.getElementById("receiptButton").href="custom-kit-receipt.html?id="+id;
+        }else{
+            document.getElementById("successLead").textContent=
+                "Your StrideX order has been placed and payment has been received.";
+            document.getElementById("orderNumber").textContent="Order #"+data.orderId;
+            document.getElementById("orderStatus").textContent=data.status||"Confirmed";
+            document.getElementById("paymentStatus").textContent=data.payment?.status||"Paid";
+            document.getElementById("amount").textContent=money(data.total);
+            const d=data.delivery||{};
+            document.getElementById("deliveryText").textContent=
+                [d.streetAddress,d.city,d.province,d.postalCode].filter(Boolean).join(", ")||"Delivery details saved.";
+            document.getElementById("detailsButton").href="order-details.html?id="+id;
+            document.getElementById("receiptButton").href="receipt.html?orderId="+id;
+        }
+
+        message.hidden=true;
+        card.hidden=false;
+    }catch(error){
+        message.classList.add("error");
+        message.textContent=error.message||"Could not load your payment confirmation.";
+    }
+}
+
+loadSuccess();
+</script>
+</body>
+</html>

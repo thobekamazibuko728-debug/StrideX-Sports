@@ -37,6 +37,16 @@
         .btn.danger { background: #b42318; }
         .message { padding: 16px; border-radius: 9px; background: #f0f0f0; color: #555; }
         .message.error { background: #fff0f2; color: #9d2638; border: 1px solid #f1b6bd; }
+        .tracker{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;padding:22px 24px}
+        .track-step{text-align:center;position:relative;color:#888;font-size:12px;font-weight:700}
+        .track-step:not(:last-child)::after{content:"";position:absolute;top:17px;left:58%;width:84%;height:2px;background:#e4e4e8}
+        .track-dot{position:relative;z-index:1;width:34px;height:34px;margin:0 auto 8px;border-radius:50%;display:grid;place-items:center;background:#e4e4e8;color:#777;font-weight:900}
+        .track-step.done .track-dot,.track-step.active .track-dot{background:#7c3aed;color:#fff}
+        .track-step.done:not(:last-child)::after{background:#7c3aed}
+        .track-step.done,.track-step.active{color:#5b21b6}
+        .cancelled-track{padding:20px 24px;color:#a12638;font-weight:800}
+        .delivery-panel{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px;padding:22px 24px}
+        @media (max-width:760px){.tracker{grid-template-columns:1fr}.track-step:not(:last-child)::after{display:none}.delivery-panel{grid-template-columns:1fr}}
         [hidden] { display: none !important; }
         @media (max-width: 760px) { .details-grid { grid-template-columns: 1fr; } .kit-order-top { flex-direction: column; } }
     </style>
@@ -51,7 +61,7 @@
             </form>
             <div class="header-actions">
                 <a href="account.html" class="header-action"><span class="action-icon">&#128100;</span><span>Account</span></a>
-                <a href="orders.html" class="header-action"><span class="action-icon">&#128230;</span><span>My Orders</span></a>
+                <a href="my-orders.html" class="header-action"><span class="action-icon">&#128230;</span><span>My Orders</span></a>
                 <a href="cart.html" class="header-action cart-action"><span class="action-icon">&#128722;</span><span>Cart</span><span class="cart-count" id="headerCartCount">0</span></a>
             </div>
         </div>
@@ -67,6 +77,12 @@
                 <div><h1 id="pageTitle">Custom Kit Order</h1><p id="orderDate"></p></div>
                 <span id="orderStatus" class="status-pill"></span>
             </div>
+
+            <section class="panel">
+                <h2>Order Tracking</h2>
+                <div id="orderTracker" class="tracker"></div>
+            </section>
+
             <section class="panel">
                 <h2>Kit Details</h2>
                 <div class="details-grid">
@@ -80,10 +96,23 @@
                     <div class="detail"><span>Colours</span><div class="colour-row"><span class="swatch" id="primaryColour"></span><span class="swatch" id="secondaryColour"></span><span class="swatch" id="accentColour"></span></div></div>
                 </div>
             </section>
+            <section class="panel" id="deliverySection" hidden>
+                <h2>Delivery & Payment</h2>
+                <div class="delivery-panel">
+                    <div class="detail"><span>Recipient</span><strong id="deliveryName"></strong></div>
+                    <div class="detail"><span>Email</span><strong id="deliveryEmail"></strong></div>
+                    <div class="detail"><span>Phone</span><strong id="deliveryPhone"></strong></div>
+                    <div class="detail"><span>Street Address</span><strong id="deliveryStreet"></strong></div>
+                    <div class="detail"><span>City / Town</span><strong id="deliveryCity"></strong></div>
+                    <div class="detail"><span>Province / Postal</span><strong id="deliveryProvince"></strong></div>
+                    <div class="detail"><span>Payment</span><strong id="paymentInfo"></strong></div>
+                </div>
+            </section>
+
             <section class="panel">
                 <h2>Team List</h2>
                 <div class="players-wrap"><table><thead><tr><th>#</th><th>Player Name</th><th>Player Number</th><th>Size</th></tr></thead><tbody id="playersBody"></tbody></table></div>
-                <div class="actions"><a href="orders.html" class="btn secondary">Back to My Orders</a><a id="receiptButton" href="#" class="btn secondary">View Receipt</a><a id="payButton" href="#" class="btn" hidden>Pay Now</a><a id="editButton" href="#" class="btn secondary" hidden>Edit Request</a><button id="cancelButton" type="button" class="btn danger" hidden>Cancel Request</button></div>
+                <div class="actions"><a id="payButton" href="#" class="btn" hidden>Pay Now</a><a id="editButton" href="#" class="btn secondary" hidden>Edit Request</a><a id="receiptButton" href="#" class="btn secondary">View Receipt</a><button id="cancelButton" type="button" class="btn danger" hidden>Cancel Request</button><a href="my-orders.html" class="btn secondary">Back to My Orders</a></div>
             </section>
         </div>
     </main>
@@ -102,6 +131,44 @@
         function formatPrice(value){return "R"+Number(value||0).toLocaleString("en-ZA",{minimumFractionDigits:2,maximumFractionDigits:2});}
         function formatDate(value){return new Date(value).toLocaleString("en-ZA",{day:"2-digit",month:"long",year:"numeric",hour:"2-digit",minute:"2-digit"});}
         function statusClass(value){return "status-"+String(value||"pending").toLowerCase().replace(/[^a-z0-9]+/g,"-");}
+        function statusLabel(value){
+            return String(value||"Pending").toLowerCase()==="pending"
+                ?"Pending Payment"
+                :(value||"Pending");
+        }
+
+        function renderTracker(value){
+            const normalized=String(value||"Pending").toLowerCase();
+            const node=document.getElementById("orderTracker");
+            node.replaceChildren();
+
+            if(normalized==="cancelled"){
+                node.className="cancelled-track";
+                node.textContent="This custom kit request was cancelled.";
+                return;
+            }
+
+            node.className="tracker";
+            const steps=["Pending Payment","Paid","In Production","Shipped","Delivered"];
+            let current=0;
+            if(normalized==="paid") current=1;
+            if(normalized==="processing"||normalized==="in production") current=2;
+            if(normalized==="shipped") current=3;
+            if(normalized==="delivered"||normalized==="completed") current=4;
+
+            steps.forEach((label,index)=>{
+                const step=document.createElement("div");
+                step.className="track-step"+(index<current?" done":index===current?" active":"");
+                const dot=document.createElement("div");
+                dot.className="track-dot";
+                dot.textContent=index<current?"✓":String(index+1);
+                const text=document.createElement("span");
+                text.textContent=label;
+                step.append(dot,text);
+                node.append(step);
+            });
+        }
+
         async function loadCartCount(){try{const response=await fetch(API_BASE+"/api/cart",{credentials:"include"});if(!response.ok)return;const cart=await response.json();document.getElementById("headerCartCount").textContent=cart.itemCount||0;}catch{}}
         async function loadOrder(){
             if(!Number.isInteger(orderId)||orderId<1){pageMessage.classList.add("error");pageMessage.textContent="A valid custom kit order number was not provided.";return;}
@@ -110,9 +177,22 @@
                 if(response.status===401){window.location.href="account.html?return="+encodeURIComponent("custom-kit-order.html?id="+orderId);return;}
                 const order=await response.json().catch(()=>({}));if(!response.ok)throw new Error(order.message||"Could not load this custom kit order.");
                 document.getElementById("pageTitle").textContent=(order.teamName||"Team")+" - Kit #"+order.customKitOrderId;document.getElementById("orderDate").textContent=formatDate(order.createdAt);
-                const status=document.getElementById("orderStatus");status.textContent=order.status||"Pending";status.className="status-pill "+statusClass(order.status);
+                const status=document.getElementById("orderStatus");status.textContent=statusLabel(order.status);status.className="status-pill "+statusClass(order.status);renderTracker(order.status);
                 document.getElementById("teamName").textContent=order.teamName||"-";document.getElementById("sport").textContent=order.sport||"-";document.getElementById("garment").textContent=order.garment||"-";document.getElementById("template").textContent=order.template||"-";document.getElementById("quantity").textContent=order.quantity||0;document.getElementById("pricePerKit").textContent=formatPrice(order.pricePerKit);document.getElementById("estimatedTotal").textContent=formatPrice(order.estimatedTotal);
                 document.getElementById("primaryColour").style.background=order.primaryColour||"#fff";document.getElementById("secondaryColour").style.background=order.secondaryColour||"#fff";document.getElementById("accentColour").style.background=order.accentColour||"#fff";
+                const deliverySection=document.getElementById("deliverySection");
+                if(order.streetAddress){
+                    document.getElementById("deliveryName").textContent=order.customerName||"-";
+                    document.getElementById("deliveryEmail").textContent=order.customerEmail||"-";
+                    document.getElementById("deliveryPhone").textContent=order.phoneNumber||"-";
+                    document.getElementById("deliveryStreet").textContent=order.streetAddress||"-";
+                    document.getElementById("deliveryCity").textContent=order.city||"-";
+                    document.getElementById("deliveryProvince").textContent=[order.province,order.postalCode].filter(Boolean).join(" • ")||"-";
+                    document.getElementById("paymentInfo").textContent=(order.paymentStatus||"-")+(order.paymentLast4?" • Card ending "+order.paymentLast4:"");
+                    deliverySection.hidden=false;
+                }else{
+                    deliverySection.hidden=true;
+                }
                 const body=document.getElementById("playersBody");body.replaceChildren();(order.players||[]).forEach((player,index)=>{const row=document.createElement("tr");[index+1,player.playerName||"-",player.playerNumber||"-",player.size||"-"].forEach(value=>{const cell=document.createElement("td");cell.textContent=value;row.appendChild(cell);});body.appendChild(row);});
                 payButton.hidden=!order.canPay;if(order.canPay)payButton.href="custom-kit-payment.html?id="+order.customKitOrderId;editButton.hidden=!order.canEdit;if(order.canEdit)editButton.href="custom-kit.xhtml?v=save-edit-20261007-2&editId="+order.customKitOrderId;cancelButton.hidden=!order.canCancel;cancelButton.disabled=false;pageMessage.hidden=true;orderContent.hidden=false;
             }catch(error){pageMessage.hidden=false;pageMessage.classList.add("error");pageMessage.textContent=error.message||"Could not load this custom kit order.";}

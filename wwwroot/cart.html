@@ -331,6 +331,14 @@
                 height: 180px;
             }
         }
+            .stock-note{font-weight:800;color:#22763c}
+        .stock-note.low{color:#8a5a00}
+        .stock-note.out{color:#a12638}
+        .cart-button.disabled{
+            opacity:.5;
+            pointer-events:none;
+            cursor:not-allowed;
+        }
     </style>
 </head>
 
@@ -537,6 +545,7 @@
                     <!-- PLACE ORDER -->
 
                     <a
+    id="checkoutButton"
     class="cart-button"
     href="checkout.html"
 >
@@ -621,6 +630,30 @@
             document.getElementById(
                 "headerCartCount"
             );
+
+        const checkoutButton =
+            document.getElementById(
+                "checkoutButton"
+            );
+
+        function showCartMessage(message, isError) {
+            statusText.hidden = false;
+            statusText.textContent = message;
+            statusText.style.color =
+                isError ? "#a12638" : "#22763c";
+
+            window.clearTimeout(
+                showCartMessage.timer
+            );
+
+            showCartMessage.timer =
+                window.setTimeout(
+                    function () {
+                        statusText.hidden = true;
+                    },
+                    3000
+                );
+        }
 
 
 
@@ -842,6 +875,26 @@
                 )
             );
 
+            const stock =
+                document.createElement("p");
+
+            stock.className = "stock-note";
+
+            if (item.stockQuantity <= 0) {
+                stock.textContent = "Out of Stock";
+                stock.classList.add("out");
+            } else if (item.stockQuantity <= 5) {
+                stock.textContent =
+                    "Low Stock — " +
+                    item.stockQuantity +
+                    " left";
+                stock.classList.add("low");
+            } else {
+                stock.textContent = "In Stock";
+            }
+
+            details.appendChild(stock);
+
 
             // QUANTITY CONTROLS
 
@@ -908,6 +961,11 @@
             increaseButton.textContent =
                 "+";
 
+            increaseButton.disabled =
+                item.stockQuantity <= 0 ||
+                item.quantity >=
+                    item.stockQuantity;
+
 
             decreaseButton.addEventListener(
                 "click",
@@ -930,8 +988,9 @@
 
                     } catch (error) {
 
-                        alert(
-                            error.message
+                        showCartMessage(
+                            error.message,
+                            true
                         );
                     }
                 }
@@ -959,8 +1018,9 @@
 
                     } catch (error) {
 
-                        alert(
-                            error.message
+                        showCartMessage(
+                            error.message,
+                            true
                         );
                     }
                 }
@@ -1034,8 +1094,9 @@
 
                     } catch (error) {
 
-                        alert(
-                            error.message
+                        showCartMessage(
+                            error.message,
+                            true
                         );
 
 
@@ -1169,6 +1230,38 @@
 
                 const cart =
                     await response.json();
+
+
+                const hasStockProblem =
+                    Array.isArray(cart.items) &&
+                    cart.items.some(
+                        item =>
+                            !item.hasEnoughStock
+                    );
+
+                if (checkoutButton) {
+                    checkoutButton.classList.toggle(
+                        "disabled",
+                        hasStockProblem
+                    );
+
+                    checkoutButton.setAttribute(
+                        "aria-disabled",
+                        String(hasStockProblem)
+                    );
+
+                    checkoutButton.title =
+                        hasStockProblem
+                            ? "Update your cart before checkout."
+                            : "";
+                }
+
+                if (hasStockProblem) {
+                    statusText.hidden = false;
+                    statusText.style.color = "#a12638";
+                    statusText.textContent =
+                        "One or more items no longer have enough stock. Adjust your cart before checkout.";
+                }
 
 
                 headerCartCount.textContent =

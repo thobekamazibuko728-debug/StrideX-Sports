@@ -1500,6 +1500,67 @@
         }
 
 
+        async function loadDeliveryProfile() {
+            try {
+                const response =
+                    await fetch(
+                        API_BASE +
+                        "/api/delivery-profile",
+                        {
+                            credentials:
+                                "include"
+                        }
+                    );
+
+                if (!response.ok) {
+                    return;
+                }
+
+                const profile =
+                    await response.json();
+
+                const values = {
+                    fullName:
+                        profile.fullName || "",
+                    phone:
+                        profile.phoneNumber || "",
+                    address:
+                        profile.streetAddress || "",
+                    city:
+                        profile.city || "",
+                    province:
+                        profile.province || "",
+                    postalCode:
+                        profile.postalCode || ""
+                };
+
+                Object.entries(values)
+                    .forEach(
+                        function (entry) {
+                            const input =
+                                document.getElementById(
+                                    entry[0]
+                                );
+
+                            if (
+                                input &&
+                                !input.value
+                            ) {
+                                input.value =
+                                    entry[1];
+                            }
+                        }
+                    );
+
+            } catch (error) {
+                console.error(
+                    "Could not load saved delivery details:",
+                    error
+                );
+            }
+        }
+
+
 
         // =====================================================
         // CART SUMMARY
@@ -1668,6 +1729,33 @@
 
                 return false;
 
+            }
+
+
+            const stockProblem =
+                cart.items.some(
+                    item =>
+                        !item.hasEnoughStock
+                );
+
+            if (stockProblem) {
+                checkoutStatus.hidden = false;
+                checkoutStatus.classList.add(
+                    "error"
+                );
+                checkoutStatus.textContent =
+                    "One or more cart items no longer have enough stock. Please update your cart.";
+                checkoutForm.hidden = true;
+
+                window.setTimeout(
+                    function () {
+                        window.location.href =
+                            "cart.html";
+                    },
+                    1200
+                );
+
+                return false;
             }
 
 
@@ -2460,66 +2548,19 @@ const response =
 
 
                     /*
-                        Clear sensitive payment
-                        fields immediately.
+                        Clear sensitive payment fields
+                        before leaving the checkout page.
                     */
 
-                    cardNumberInput.value =
-                        "";
+                    cardNumberInput.value = "";
+                    expiryInput.value = "";
+                    cvvInput.value = "";
 
-
-                    expiryInput.value =
-                        "";
-
-
-                    cvvInput.value =
-                        "";
-
-
-                    checkoutForm.hidden =
-                        true;
-
-
-                    checkoutStatus.hidden =
-                        true;
-
-
-                    headerCartCount.textContent =
-                        "0";
-
-
-                    document.getElementById(
-                        "successOrderNumber"
-                    ).textContent =
-                        "Order #" +
+                    window.location.href =
+                        "order-success.html?type=order&id=" +
                         result.orderId;
-                        document.getElementById(
-    "viewReceiptButton"
-).href =
-    "receipt.html?orderId=" +
-    result.orderId;
 
-
-                    document.getElementById(
-                        "successDetails"
-                    ).textContent =
-                        result.itemCount +
-                        " item(s) • " +
-                        formatPrice(
-                            result.total
-                        ) +
-                        " • " +
-                        result.status;
-
-
-                    orderSuccess.hidden =
-                        false;
-
-
-                    window.scrollTo({
-                        top: 0,
-                        behavior: "smooth"
-                    });
+                    return;
 
 
                 } catch (error) {
@@ -2574,6 +2615,9 @@ const response =
                     return;
 
                 }
+
+
+                await loadDeliveryProfile();
 
 
                 const cartLoaded =

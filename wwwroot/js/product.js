@@ -652,9 +652,12 @@ const increaseQuantity = el("increaseQuantity");
 const cartCount = el("cartCount");
 const addToCartButton = el("addToCartButton");
 const buyNowButton = el("buyNowButton");
+const productStockStatus = el("productStockStatus");
+const productNotice = el("productNotice");
 
 let selectedSize = null;
 let quantity = 1;
+let stockQuantity = null;
 
 
 // =========================================================
@@ -670,6 +673,87 @@ function formatPrice(price) {
             .replace(/\B(?=(\d{3})+(?!\d))/g, " ")
     );
 
+}
+
+function showProductNotice(message, isError) {
+    if (!productNotice) return;
+
+    productNotice.textContent = message;
+    productNotice.classList.toggle("error", Boolean(isError));
+    productNotice.hidden = false;
+
+    window.clearTimeout(showProductNotice.timer);
+    showProductNotice.timer = window.setTimeout(
+        function () {
+            productNotice.hidden = true;
+        },
+        3500
+    );
+}
+
+async function loadInventory() {
+    if (!currentProductId || !currentProduct) return;
+
+    try {
+        const response = await fetch(
+            STRIDEX_API +
+            "/api/inventory/" +
+            encodeURIComponent(currentProductId)
+        );
+
+        if (!response.ok) {
+            throw new Error("Inventory unavailable");
+        }
+
+        const inventory = await response.json();
+        stockQuantity = Number(inventory.quantity) || 0;
+
+        if (productStockStatus) {
+            productStockStatus.classList.remove("low", "out");
+
+            if (stockQuantity <= 0) {
+                productStockStatus.textContent = "Out of Stock";
+                productStockStatus.classList.add("out");
+            } else if (stockQuantity <= 5) {
+                productStockStatus.textContent =
+                    "Low Stock — only " +
+                    stockQuantity +
+                    " left";
+                productStockStatus.classList.add("low");
+            } else {
+                productStockStatus.textContent =
+                    "In Stock — " +
+                    stockQuantity +
+                    " available";
+            }
+        }
+
+        if (addToCartButton) {
+            addToCartButton.disabled = stockQuantity <= 0;
+            if (stockQuantity <= 0) {
+                addToCartButton.textContent = "Out of Stock";
+            }
+        }
+
+        if (buyNowButton) {
+            buyNowButton.disabled = stockQuantity <= 0;
+        }
+
+        if (
+            increaseQuantity &&
+            stockQuantity <= quantity
+        ) {
+            increaseQuantity.disabled = true;
+        }
+    } catch (error) {
+        stockQuantity = null;
+
+        if (productStockStatus) {
+            productStockStatus.textContent =
+                "Stock availability unavailable";
+            productStockStatus.classList.add("low");
+        }
+    }
 }
 
 
@@ -1063,6 +1147,17 @@ if (increaseQuantity) {
         "click",
         function () {
 
+            if (
+                stockQuantity !== null &&
+                quantity >= stockQuantity
+            ) {
+                showProductNotice(
+                    "You have reached the available stock for this product.",
+                    true
+                );
+                return;
+            }
+
             quantity += 1;
 
             if (quantityValue) {
@@ -1070,6 +1165,14 @@ if (increaseQuantity) {
                 quantityValue.textContent =
                     quantity;
 
+            }
+
+            if (
+                increaseQuantity &&
+                stockQuantity !== null
+            ) {
+                increaseQuantity.disabled =
+                    quantity >= stockQuantity;
             }
 
         }
@@ -1093,6 +1196,14 @@ if (decreaseQuantity) {
                 quantityValue.textContent =
                     quantity;
 
+            }
+
+            if (
+                increaseQuantity &&
+                stockQuantity !== null
+            ) {
+                increaseQuantity.disabled =
+                    quantity >= stockQuantity;
             }
 
         }
@@ -1150,9 +1261,9 @@ async function addCurrentProductToCart(showConfirmation) {
     }
 
     if (!selectedSize) {
-        alert(
-            "Please select a size before adding " +
-            "this product to your cart."
+        showProductNotice(
+            "Please select a size before adding this product to your cart.",
+            true
         );
 
         return false;
@@ -1184,12 +1295,14 @@ async function addCurrentProductToCart(showConfirmation) {
         );
 
         if (response.status === 401) {
-            alert(
-                "Please log in to your StrideX account " +
-                "before adding products to your cart."
+            showProductNotice(
+                "Please log in before adding products to your cart.",
+                true
             );
 
-            window.location.href = "account.html";
+            window.setTimeout(function () {
+                window.location.href = "account.html";
+            }, 700);
             return false;
         }
 
@@ -1213,6 +1326,7 @@ async function addCurrentProductToCart(showConfirmation) {
                 addToCartButton.textContent;
 
             addToCartButton.textContent = "Added ✓";
+            showProductNotice("Added to your cart.", false);
 
             setTimeout(() => {
                 addToCartButton.textContent =
@@ -1224,19 +1338,24 @@ async function addCurrentProductToCart(showConfirmation) {
     } catch (error) {
         console.error("Add to Cart failed:", error);
 
-        alert(
+        showProductNotice(
             error.message ||
-            "Could not connect to the StrideX backend."
+            "Could not connect to the StrideX backend.",
+            true
         );
 
         return false;
     } finally {
         if (addToCartButton) {
-            addToCartButton.disabled = false;
+            addToCartButton.disabled =
+                stockQuantity !== null &&
+                stockQuantity <= 0;
         }
 
         if (buyNowButton) {
-            buyNowButton.disabled = false;
+            buyNowButton.disabled =
+                stockQuantity !== null &&
+                stockQuantity <= 0;
         }
     }
 }
@@ -1268,10 +1387,7 @@ if (buyNowButton) {
                 await addCurrentProductToCart(false);
 
             if (added) {
-                alert(
-                    "Product added to your cart. " +
-                    "We will connect checkout next."
-                );
+                window.location.href = "checkout.html";
             }
         }
     );
@@ -1283,5 +1399,7 @@ if (buyNowButton) {
 // =========================================================
 
 loadProduct();
+
+loadInventory();
 
 updateCartCount();

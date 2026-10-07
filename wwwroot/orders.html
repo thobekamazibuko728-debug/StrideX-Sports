@@ -953,6 +953,10 @@
             font-weight:600;
         }
 
+        .custom-kit-overview .mini-tracker{
+            padding:4px 0 20px;
+        }
+
         .custom-kit-key-info {
             display:grid;
             grid-template-columns:repeat(2,minmax(0,1fr));
@@ -996,6 +1000,60 @@
 
         .orders-button.secondary {
             background:#111;
+        }
+
+        .mini-tracker{
+            display:flex;
+            align-items:flex-start;
+            gap:0;
+            padding:16px 25px 2px;
+            overflow-x:auto;
+        }
+        .mini-track-step{
+            position:relative;
+            flex:1 0 105px;
+            min-width:0;
+            text-align:center;
+            color:#888;
+            font-size:11px;
+            font-weight:700;
+        }
+        .mini-track-step:not(:last-child)::after{
+            content:"";
+            position:absolute;
+            top:8px;
+            left:58%;
+            width:84%;
+            height:2px;
+            background:#e4e4e8;
+        }
+        .mini-track-dot{
+            position:relative;
+            z-index:1;
+            width:18px;
+            height:18px;
+            margin:0 auto 7px;
+            border-radius:50%;
+            display:grid;
+            place-items:center;
+            background:#e4e4e8;
+            color:#777;
+            font-size:10px;
+        }
+        .mini-track-step.done .mini-track-dot,
+        .mini-track-step.active .mini-track-dot{
+            background:#7c3aed;
+            color:#fff;
+        }
+        .mini-track-step.done:not(:last-child)::after{background:#7c3aed}
+        .mini-track-step.active,
+        .mini-track-step.done{color:#5b21b6}
+        .mini-tracker.cancelled{
+            display:block;
+            padding:14px 25px 0;
+            color:#a12638;
+            font-size:13px;
+            font-weight:800;
         }
 
         @media screen and (max-width:750px){
@@ -1976,6 +2034,49 @@
 
         }
 
+        function createMiniTracker(status,isCustomKit){
+            const normalized=String(status||"").toLowerCase();
+            const tracker=document.createElement("div");
+            tracker.className="mini-tracker";
+
+            if(normalized==="cancelled"){
+                tracker.classList.add("cancelled");
+                tracker.textContent="Order cancelled";
+                return tracker;
+            }
+
+            const steps=isCustomKit
+                ?["Pending Payment","Paid","In Production","Shipped","Delivered"]
+                :["Confirmed","Processing","Shipped","Delivered"];
+
+            let current=0;
+
+            if(isCustomKit){
+                if(normalized==="paid")current=1;
+                if(normalized==="processing"||normalized==="in production")current=2;
+                if(normalized==="shipped")current=3;
+                if(normalized==="delivered"||normalized==="completed")current=4;
+            }else{
+                if(normalized==="processing")current=1;
+                if(normalized==="shipped")current=2;
+                if(normalized==="delivered")current=3;
+            }
+
+            steps.forEach(function(label,index){
+                const step=document.createElement("div");
+                step.className="mini-track-step"+(index<current?" done":index===current?" active":"");
+                const dot=document.createElement("span");
+                dot.className="mini-track-dot";
+                dot.textContent=index<current?"✓":String(index+1);
+                const text=document.createElement("span");
+                text.textContent=label;
+                step.append(dot,text);
+                tracker.appendChild(step);
+            });
+
+            return tracker;
+        }
+
 
 
 
@@ -2541,6 +2642,13 @@
 
             );
 
+            card.appendChild(
+                createMiniTracker(
+                    order.status,
+                    false
+                )
+            );
+
 
 
 
@@ -2703,6 +2811,33 @@ footerRight.appendChild(
 
 
 
+const detailsButton =
+
+    document.createElement(
+
+        "a"
+
+    );
+
+detailsButton.href =
+    "order-details.html?id=" +
+    order.orderId;
+
+detailsButton.textContent =
+    "View Details";
+
+detailsButton.className =
+    "orders-button";
+
+detailsButton.style.marginTop =
+    "0";
+
+footerRight.appendChild(
+    detailsButton
+);
+
+
+
 const receiptButton =
 
     document.createElement(
@@ -2735,7 +2870,7 @@ receiptButton.textContent =
 
 receiptButton.className =
 
-    "orders-button";
+    "orders-button secondary";
 
 
 
@@ -3367,6 +3502,10 @@ card.appendChild(
         return box;
     }
 
+    function customTracker(status){
+        return createMiniTracker(status,true);
+    }
+
     function card(order){
         const card = document.createElement("article");
         card.className = "custom-kit-card";
@@ -3420,7 +3559,11 @@ card.appendChild(
             )
         );
 
-        overview.append(type,keyInfo);
+        overview.append(
+            type,
+            customTracker(order.status),
+            keyInfo
+        );
 
         const footer = document.createElement("div");
         footer.className = "order-footer";

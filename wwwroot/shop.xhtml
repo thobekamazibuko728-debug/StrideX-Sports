@@ -20,6 +20,14 @@
         href="css/style.css"
     />
 
+    <style>
+        .active-filters{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 18px}
+        .filter-chip{border:1px solid #d8c9ff;background:#f4efff;color:#5b21b6;border-radius:999px;padding:8px 11px;font:inherit;font-size:13px;font-weight:700;cursor:pointer}
+        .shop-stock{display:inline-block;margin:8px 0 2px;font-size:12px;font-weight:800;color:#22763c}
+        .shop-stock.low{color:#8a5a00}
+        .shop-stock.out{color:#a12638}
+        .shop-cart-btn:disabled{opacity:.55;cursor:not-allowed}
+    </style>
 </head>
 
 
@@ -167,7 +175,7 @@
 
         <p>
             Shop StrideX originals and selected performance
-            brands across all five of our sports.
+            brands across all four of our sports.
         </p>
 
     </section>
@@ -399,6 +407,14 @@
             </div>
 
 
+            <div
+                id="activeFilters"
+                class="active-filters"
+                aria-live="polite"
+                hidden
+            ></div>
+
+
             <!-- PRODUCT GRID -->
 
             <div
@@ -536,7 +552,7 @@
 
     <script
         type="text/javascript"
-        src="js/shop.js"
+        src="js/shop.js?v=store-upgrade-20261007"
     ></script>
 
 </body>

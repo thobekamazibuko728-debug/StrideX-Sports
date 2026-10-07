@@ -21,6 +21,32 @@
         href="css/style.css"
     />
 
+    <style>
+        .product-stock-status{
+            display:inline-flex;
+            align-items:center;
+            gap:8px;
+            margin:8px 0 14px;
+            padding:8px 12px;
+            border-radius:999px;
+            background:#eef8f1;
+            color:#22763c;
+            font-size:13px;
+            font-weight:800;
+        }
+        .product-stock-status.low{background:#fff4d8;color:#8a5a00}
+        .product-stock-status.out{background:#fde8eb;color:#a12638}
+        .product-notice{
+            margin-top:12px;
+            padding:11px 13px;
+            border-radius:9px;
+            background:#f1ebff;
+            color:#5522a8;
+            font-size:14px;
+            font-weight:700;
+        }
+        .product-notice.error{background:#fde8eb;color:#a12638}
+    </style>
 </head>
 
 <body>
@@ -149,7 +175,7 @@
                 Tennis
             </a>
 
-            <a href="#">
+            <a href="custom-kit.xhtml">
                 Custom Kit
             </a>
 
@@ -327,6 +353,14 @@
             >
                 R0.00
             </p>
+
+            <div
+                id="productStockStatus"
+                class="product-stock-status"
+                aria-live="polite"
+            >
+                Checking stock...
+            </div>
 
 
             <!-- DESCRIPTION -->
@@ -529,6 +563,13 @@
                 Buy Now
             </button>
 
+            <div
+                id="productNotice"
+                class="product-notice"
+                aria-live="polite"
+                hidden
+            ></div>
+
 
             <!-- =================================================
                  PRODUCT BENEFITS
@@ -685,7 +726,7 @@
                     Shop
                 </a>
 
-                <a href="#">
+                <a href="custom-kit.xhtml">
                     Custom Kit
                 </a>
 
@@ -769,7 +810,7 @@
 
     <script
         type="text/javascript"
-        src="js/product.js"
+        src="js/product.js?v=store-upgrade-20261007"
     ></script>
 
 

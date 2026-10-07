@@ -165,6 +165,13 @@
         return String(value||"").replace(/\D/g,"");
     }
 
+    function showPaymentMessage(text,isError){
+        message.hidden=false;
+        message.textContent=text;
+        message.classList.toggle("error",Boolean(isError));
+        window.scrollTo({top:0,behavior:"smooth"});
+    }
+
     async function loadAccount(){
         try{
             const response=await fetch(API_BASE+"/api/auth/me",{credentials:"include"});
@@ -174,6 +181,46 @@
             document.getElementById("email").value=user.email||"";
             document.getElementById("cardholder").value=user.fullName||"";
         }catch{}
+    }
+
+    async function loadDeliveryProfile(){
+        try{
+            const response=await fetch(
+                API_BASE+"/api/delivery-profile",
+                {credentials:"include"}
+            );
+
+            if(!response.ok) return;
+
+            const profile=await response.json();
+
+            const values={
+                fullName:profile.fullName||"",
+                email:profile.email||"",
+                phoneNumber:profile.phoneNumber||"",
+                streetAddress:profile.streetAddress||"",
+                city:profile.city||"",
+                province:profile.province||"",
+                postalCode:profile.postalCode||""
+            };
+
+            Object.entries(values).forEach(function(entry){
+                const input=document.getElementById(entry[0]);
+                if(input && !input.value){
+                    input.value=entry[1];
+                }
+            });
+
+            if(
+                !document.getElementById("cardholder").value &&
+                profile.fullName
+            ){
+                document.getElementById("cardholder").value=
+                    profile.fullName;
+            }
+        }catch(error){
+            console.error("Could not load saved delivery details:",error);
+        }
     }
 
     async function loadOrder(){
@@ -254,22 +301,22 @@
         const cardholder=document.getElementById("cardholder").value.trim();
 
         if(!fullName||!phoneNumber||!streetAddress||!city||!province||postalCode.length!==4){
-            alert("Complete all delivery details before paying.");
+            showPaymentMessage("Complete all delivery details before paying.",true);
             return;
         }
 
         if(!cardholder){
-            alert("Enter the cardholder name.");
+            showPaymentMessage("Enter the cardholder name.",true);
             return;
         }
 
         if(cardNumber.length<13||cardNumber.length>19){
-            alert("Enter a valid card number.");
+            showPaymentMessage("Enter a valid card number.",true);
             return;
         }
 
         if(!/^\d{2}\/\d{2}$/.test(expiry)){
-            alert("Enter the expiry date as MM/YY.");
+            showPaymentMessage("Enter the expiry date as MM/YY.",true);
             return;
         }
 
@@ -280,12 +327,12 @@
         const expiryEnd=new Date(year,month,0,23,59,59);
 
         if(month<1||month>12||expiryEnd<now){
-            alert("Enter a valid future expiry date.");
+            showPaymentMessage("Enter a valid future expiry date.",true);
             return;
         }
 
         if(cvv.length<3||cvv.length>4){
-            alert("Enter a valid CVV.");
+            showPaymentMessage("Enter a valid CVV.",true);
             return;
         }
 
@@ -316,16 +363,23 @@
             const data=await response.json().catch(()=>({}));
             if(!response.ok) throw new Error(data.message||data.detail||"Could not complete payment.");
 
-            alert("Payment successful for Custom Kit #"+orderId+".");
-            window.location.href="custom-kit-order.html?id="+orderId;
+            window.location.href=
+                "order-success.html?type=custom&id="+orderId;
+            return;
         }catch(error){
-            alert(error.message||"Could not complete payment.");
+            showPaymentMessage(error.message||"Could not complete payment.",true);
             payButton.disabled=false;
             payButton.textContent="Pay Now";
         }
     });
 
-    Promise.all([loadAccount(),loadOrder()]);
+    async function startPayment(){
+        await loadAccount();
+        await loadDeliveryProfile();
+        await loadOrder();
+    }
+
+    startPayment();
 </script>
 </body>
 </html>

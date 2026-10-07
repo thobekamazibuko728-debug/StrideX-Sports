@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const noProducts = document.getElementById("noProducts");
     const searchInput = document.getElementById("shopSearch");
     const cartCount = document.getElementById("cartCount");
+    const activeFilters = document.getElementById("activeFilters");
 
     let searchTerm = "";
 
@@ -810,6 +811,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 formatPrice(product.price) +
             '</p>' +
 
+            '<p class="shop-stock">Checking stock...</p>' +
+
             '<div class="shop-card-actions">' +
 
                 '<a class="product-btn" href="product.xhtml?id=' +
@@ -848,6 +851,60 @@ document.addEventListener("DOMContentLoaded", function () {
     const productCards = Array.from(
         productGrid.querySelectorAll(".shop-product-card")
     );
+
+    async function loadInventory() {
+        try {
+            const response = await fetch("/api/inventory");
+
+            if (!response.ok) {
+                throw new Error("Could not load inventory.");
+            }
+
+            const rows = await response.json();
+            const byProduct = new Map(
+                (Array.isArray(rows) ? rows : []).map(
+                    item => [item.productId, item]
+                )
+            );
+
+            productCards.forEach(function (card) {
+                const inventory = byProduct.get(card.dataset.id);
+                const label = card.querySelector(".shop-stock");
+                const button = card.querySelector(".shop-cart-btn");
+                const quantity = Number(inventory?.quantity) || 0;
+
+                card.dataset.stock = String(quantity);
+
+                if (!label) return;
+
+                label.classList.remove("low", "out");
+
+                if (quantity <= 0) {
+                    label.textContent = "Out of Stock";
+                    label.classList.add("out");
+
+                    if (button) {
+                        button.disabled = true;
+                        button.textContent = "Out of Stock";
+                    }
+                } else if (quantity <= 5) {
+                    label.textContent =
+                        "Low Stock — " + quantity + " left";
+                    label.classList.add("low");
+                } else {
+                    label.textContent = "In Stock";
+                }
+            });
+        } catch (error) {
+            productCards.forEach(function (card) {
+                const label = card.querySelector(".shop-stock");
+                if (label) {
+                    label.textContent = "Stock unavailable";
+                    label.classList.add("low");
+                }
+            });
+        }
+    }
 
 
     /* =====================================================
@@ -985,6 +1042,48 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
+    function renderActiveFilters() {
+        if (!activeFilters) return;
+
+        activeFilters.replaceChildren();
+
+        if (searchTerm) {
+            const chip = document.createElement("button");
+            chip.type = "button";
+            chip.className = "filter-chip";
+            chip.textContent = 'Search: "' + searchTerm + '" ×';
+            chip.addEventListener("click", function () {
+                searchTerm = "";
+                if (searchInput) searchInput.value = "";
+                applyFilters();
+            });
+            activeFilters.appendChild(chip);
+        }
+
+        checkboxes
+            .filter(input => input.checked)
+            .forEach(function (input) {
+                const chip = document.createElement("button");
+                chip.type = "button";
+                chip.className = "filter-chip";
+                chip.textContent =
+                    input.value.charAt(0).toUpperCase() +
+                    input.value.slice(1) +
+                    " ×";
+
+                chip.addEventListener("click", function () {
+                    input.checked = false;
+                    applyFilters();
+                });
+
+                activeFilters.appendChild(chip);
+            });
+
+        activeFilters.hidden =
+            activeFilters.children.length === 0;
+    }
+
+
     function applyFilters() {
 
         const sports =
@@ -1100,6 +1199,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     : "block";
 
         }
+
+        renderActiveFilters();
 
     }
 
@@ -1389,6 +1490,8 @@ document.addEventListener("DOMContentLoaded", function () {
        ===================================================== */
 
     updateCartCount();
+
+    loadInventory();
 
     sortProducts();
 

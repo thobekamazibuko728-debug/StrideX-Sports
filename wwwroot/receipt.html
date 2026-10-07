@@ -1257,6 +1257,17 @@
 
 
                     <a
+                        href="#"
+                        id="orderDetailsButton"
+                        class="
+                            receipt-button
+                            secondary
+                        "
+                    >
+                        View Order Details
+                    </a>
+
+                    <a
                         href="my-orders.html"
                         class="
                             receipt-button
@@ -1750,6 +1761,12 @@
                     "orderNumber"
                 ).textContent =
                     "#" +
+                    result.orderId;
+
+                document.getElementById(
+                    "orderDetailsButton"
+                ).href =
+                    "order-details.html?id=" +
                     result.orderId;
 
 
