@@ -5700,12 +5700,139 @@ app.MapPost("/api/custom-kits/{customKitOrderId:int}/cancel", async (
 })
 .RequireAuthorization();
 
+// =====================================
+// STRIDEX — CONTACT SUPPORT
+// =====================================
+
+app.MapPost("/api/contact", async (
+    ContactRequest request,
+    StrideXDbContext db) =>
+{
+    var fullName =
+        request.FullName?.Trim() ?? "";
+
+    var email =
+        request.Email?.Trim() ?? "";
+
+    var subject =
+        request.Subject?.Trim() ?? "";
+
+    var message =
+        request.Message?.Trim() ?? "";
+
+    if (
+        string.IsNullOrWhiteSpace(fullName) ||
+        string.IsNullOrWhiteSpace(email) ||
+        string.IsNullOrWhiteSpace(subject) ||
+        string.IsNullOrWhiteSpace(message)
+    )
+    {
+        return Results.BadRequest(new
+        {
+            message =
+                "Complete all contact fields before sending your message."
+        });
+    }
+
+    if (fullName.Length > 100)
+    {
+        return Results.BadRequest(new
+        {
+            message =
+                "Full name must be 100 characters or fewer."
+        });
+    }
+
+    if (email.Length > 256)
+    {
+        return Results.BadRequest(new
+        {
+            message =
+                "Email address is too long."
+        });
+    }
+
+    try
+    {
+        _ =
+            new System.Net.Mail.MailAddress(
+                email
+            );
+    }
+    catch
+    {
+        return Results.BadRequest(new
+        {
+            message =
+                "Enter a valid email address."
+        });
+    }
+
+    if (subject.Length > 150)
+    {
+        return Results.BadRequest(new
+        {
+            message =
+                "Subject must be 150 characters or fewer."
+        });
+    }
+
+    if (message.Length > 4000)
+    {
+        return Results.BadRequest(new
+        {
+            message =
+                "Message must be 4,000 characters or fewer."
+        });
+    }
+
+    var contact =
+        new ContactMessage
+        {
+            FullName = fullName,
+            Email = email,
+            Subject = subject,
+            Message = message,
+            Status = "New",
+            CreatedAt = DateTime.UtcNow
+        };
+
+    db.ContactMessages.Add(
+        contact
+    );
+
+    await db.SaveChangesAsync();
+
+    return Results.Ok(new
+    {
+        message =
+            "Your message has been submitted to StrideX support.",
+        reference =
+            "SXC-" +
+            contact.ContactMessageId
+                .ToString()
+                .PadLeft(
+                    6,
+                    '0'
+                )
+    });
+});
+
+
 app.Run();
 
 
 
 // REQUEST MODELS
 
+
+
+record ContactRequest(
+    string FullName,
+    string Email,
+    string Subject,
+    string Message
+);
 
 
 record RegisterRequest(

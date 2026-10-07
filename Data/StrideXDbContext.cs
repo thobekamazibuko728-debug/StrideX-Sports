@@ -35,6 +35,9 @@ public class StrideXDbContext
 
     public DbSet<OrderItem> OrderItems =>
         Set<OrderItem>();
+
+    public DbSet<ContactMessage> ContactMessages =>
+        Set<ContactMessage>();
         public DbSet<CustomKitOrder> CustomKitOrders
     => Set<CustomKitOrder>();
 
@@ -168,6 +171,66 @@ public DbSet<CustomKitPlayer> CustomKitPlayers
             entity.Property(i => i.UpdatedAt)
                 .HasColumnName("UpdatedAt")
                 .IsRequired();
+        });
+
+
+        // =================================================
+        // CONTACT MESSAGES TABLE
+        // =================================================
+
+        modelBuilder.Entity<ContactMessage>(entity =>
+        {
+            entity.ToTable("contactmessages");
+
+            entity.HasKey(message =>
+                message.ContactMessageId
+            );
+
+            entity.Property(message =>
+                message.ContactMessageId
+            )
+            .HasColumnName("ContactMessageID")
+            .ValueGeneratedOnAdd();
+
+            entity.Property(message =>
+                message.FullName
+            )
+            .HasColumnName("FullName")
+            .HasMaxLength(100)
+            .IsRequired();
+
+            entity.Property(message =>
+                message.Email
+            )
+            .HasColumnName("Email")
+            .HasMaxLength(256)
+            .IsRequired();
+
+            entity.Property(message =>
+                message.Subject
+            )
+            .HasColumnName("Subject")
+            .HasMaxLength(150)
+            .IsRequired();
+
+            entity.Property(message =>
+                message.Message
+            )
+            .HasColumnName("Message")
+            .HasColumnType("text")
+            .IsRequired();
+
+            entity.Property(message =>
+                message.Status
+            )
+            .HasColumnName("Status")
+            .HasMaxLength(30)
+            .IsRequired();
+
+            entity.Property(message =>
+                message.CreatedAt
+            )
+            .HasColumnName("CreatedAt");
         });
 
 
