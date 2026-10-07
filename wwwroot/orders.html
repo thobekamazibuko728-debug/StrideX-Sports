@@ -913,14 +913,95 @@
 
 
 
-        .custom-kit-card { background:#fff; border:1px solid #e3e3e3; border-radius:16px; overflow:hidden; box-shadow:0 8px 25px rgba(0,0,0,.05); }
-        .custom-kit-summary { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; padding:22px 25px; }
-        .custom-kit-summary div { padding:14px; border:1px solid #ececec; border-radius:10px; background:#fafafa; }
-        .custom-kit-summary span { display:block; margin-bottom:6px; color:#777; font-size:12px; text-transform:uppercase; }
-        .custom-kit-actions { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
-        .orders-button.secondary { background:#111; }
-        .orders-button.danger { border:0; cursor:pointer; background:#b42318; font:inherit; }
-        @media screen and (max-width:750px){ .custom-kit-summary{grid-template-columns:1fr;} }
+        .section-count {
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            min-width:30px;
+            height:30px;
+            margin-left:8px;
+            padding:0 9px;
+            border-radius:999px;
+            background:#f0eaff;
+            color:#6d28d9;
+            font-size:14px;
+            font-weight:800;
+            vertical-align:middle;
+        }
+
+        .status-paid {
+            background:#e4f8ea;
+            color:#22763c;
+        }
+
+        .custom-kit-card {
+            overflow:hidden;
+            background:#fff;
+            border:1px solid #e3e3e3;
+            border-radius:16px;
+            box-shadow:0 8px 25px rgba(0,0,0,.05);
+        }
+
+        .custom-kit-overview {
+            padding:24px 25px;
+        }
+
+        .custom-kit-type {
+            margin:0 0 20px;
+            color:#666;
+            font-size:15px;
+            font-weight:600;
+        }
+
+        .custom-kit-key-info {
+            display:grid;
+            grid-template-columns:repeat(2,minmax(0,1fr));
+            gap:14px;
+        }
+
+        .custom-kit-stat {
+            padding:15px 16px;
+            border:1px solid #ececec;
+            border-radius:11px;
+            background:#fafafa;
+        }
+
+        .custom-kit-stat span {
+            display:block;
+            margin-bottom:7px;
+            color:#777;
+            font-size:12px;
+            font-weight:700;
+            text-transform:uppercase;
+            letter-spacing:.03em;
+        }
+
+        .custom-kit-stat strong {
+            font-size:18px;
+        }
+
+        .custom-kit-stat.total strong {
+            color:#7c3aed;
+            font-size:21px;
+        }
+
+        .custom-kit-actions {
+            display:flex;
+            gap:10px;
+            flex-wrap:wrap;
+            align-items:center;
+            justify-content:flex-end;
+            width:100%;
+        }
+
+        .orders-button.secondary {
+            background:#111;
+        }
+
+        @media screen and (max-width:750px){
+            .custom-kit-key-info{grid-template-columns:1fr;}
+            .custom-kit-actions{justify-content:flex-start;}
+        }
 
         [hidden] {
 
@@ -1189,7 +1270,7 @@
 
                 </a>
 
-                <a href="orders.html" class="header-action">
+                <a href="my-orders.html" class="header-action">
 
     <span class="action-icon">&#128230;</span>
 
@@ -1361,9 +1442,9 @@
 
             <p>
 
-                View your current orders and previous
+                Track your orders, manage custom kit requests
 
-                StrideX purchases.
+                and view previous purchases.
 
             </p>
 
@@ -1408,9 +1489,8 @@
 
 
             <h2>
-
                 Current Orders
-
+                <span class="section-count" id="currentOrdersCount">0</span>
             </h2>
 
 
@@ -1435,7 +1515,10 @@
 
         <!-- CUSTOM KIT ORDERS -->
         <section class="orders-section" id="customKitOrdersSection" hidden>
-            <h2>Custom Kit Orders</h2>
+            <h2>
+                Custom Kit Orders
+                <span class="section-count" id="customKitOrdersCount">0</span>
+            </h2>
             <div class="orders-list" id="customKitOrders"></div>
         </section>
 
@@ -1457,9 +1540,8 @@
 
 
             <h2>
-
                 Order History
-
+                <span class="section-count" id="pastOrdersCount">0</span>
             </h2>
 
 
@@ -1508,9 +1590,9 @@
 
             <p>
 
-                Your StrideX purchases will appear
+                Your StrideX orders and custom kit requests
 
-                here after you complete checkout.
+                will appear here.
 
             </p>
 
@@ -2859,7 +2941,7 @@ card.appendChild(
 
     window.location.href =
 
-        "account.html?return=orders.html";
+        "account.html?return=my-orders.html";
 
 
 
@@ -3032,7 +3114,11 @@ card.appendChild(
 
 
 
+                document.getElementById("currentOrdersCount").textContent =
+                    current.length;
 
+                document.getElementById("pastOrdersCount").textContent =
+                    past.length;
 
 
 
@@ -3231,36 +3317,186 @@ card.appendChild(
 
 <script>
 (function(){
-    const section=document.getElementById("customKitOrdersSection");
-    const list=document.getElementById("customKitOrders");
-    const empty=document.getElementById("emptyOrders");
-    if(!section||!list)return;
-    const money=v=>"R"+Number(v||0).toLocaleString("en-ZA",{minimumFractionDigits:2,maximumFractionDigits:2});
-    const date=v=>new Date(v).toLocaleString("en-ZA",{day:"2-digit",month:"long",year:"numeric",hour:"2-digit",minute:"2-digit"});
-    const statusClass=s=>"status-"+String(s||"pending").toLowerCase();
-    function card(o){
-        const a=document.createElement("article");a.className="custom-kit-card";
-        const h=document.createElement("div");h.className="order-header";
-        const l=document.createElement("div");l.className="order-header-left";
-        const t=document.createElement("h3");t.textContent=(o.teamName||"Team")+" - Kit #"+o.customKitOrderId;
-        const d=document.createElement("p");d.className="order-date";d.textContent=date(o.createdAt);l.append(t,d);
-        const s=document.createElement("span");s.className="order-status "+statusClass(o.status);s.textContent=o.status||"Pending";h.append(l,s);
-        const g=document.createElement("div");g.className="custom-kit-summary";
-        [["Sport",o.sport],["Garment",o.garment],["Design",o.template],["Players",o.playerCount||o.quantity||0],["Price per kit",money(o.pricePerKit)],["Estimated total",money(o.estimatedTotal)]].forEach(x=>{const b=document.createElement("div"),lab=document.createElement("span"),val=document.createElement("strong");lab.textContent=x[0];val.textContent=x[1]??"-";b.append(lab,val);g.append(b);});
-        const f=document.createElement("div");f.className="order-footer";
-        const c=document.createElement("span");c.className="order-count";c.textContent=(o.quantity||0)+" kits";
-        const acts=document.createElement("div");acts.className="custom-kit-actions";
-        const view=document.createElement("a");view.href="custom-kit-order.html?id="+o.customKitOrderId;view.className="orders-button";view.style.marginTop="0";view.textContent="View Details";acts.append(view);
+    const section = document.getElementById("customKitOrdersSection");
+    const list = document.getElementById("customKitOrders");
+    const count = document.getElementById("customKitOrdersCount");
+    const empty = document.getElementById("emptyOrders");
 
-        if(o.canPay){const pay=document.createElement("a");pay.href="custom-kit-payment.html?id="+o.customKitOrderId;pay.className="orders-button";pay.style.marginTop="0";pay.textContent="Pay Now";acts.append(pay);}
-        if(o.canEdit){const edit=document.createElement("a");edit.href="custom-kit.xhtml?editId="+o.customKitOrderId;edit.className="orders-button secondary";edit.style.marginTop="0";edit.textContent="Edit Request";acts.append(edit);}
+    if(!section || !list) return;
 
-        f.append(c,acts);a.append(h,g,f);return a;
+    const money = value =>
+        "R" + Number(value || 0).toLocaleString(
+            "en-ZA",
+            { minimumFractionDigits:2, maximumFractionDigits:2 }
+        );
+
+    const date = value =>
+        new Date(value).toLocaleString(
+            "en-ZA",
+            {
+                day:"2-digit",
+                month:"long",
+                year:"numeric",
+                hour:"2-digit",
+                minute:"2-digit"
+            }
+        );
+
+    const statusClass = value =>
+        "status-" +
+        String(value || "pending")
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g,"-");
+
+    const statusLabel = value => {
+        const normalized = String(value || "Pending").toLowerCase();
+        return normalized === "pending" ? "Pending Payment" : (value || "Pending");
+    };
+
+    function makeStat(label,value,isTotal){
+        const box = document.createElement("div");
+        box.className = "custom-kit-stat" + (isTotal ? " total" : "");
+
+        const caption = document.createElement("span");
+        caption.textContent = label;
+
+        const strong = document.createElement("strong");
+        strong.textContent = value;
+
+        box.append(caption,strong);
+        return box;
     }
+
+    function card(order){
+        const card = document.createElement("article");
+        card.className = "custom-kit-card";
+
+        const header = document.createElement("div");
+        header.className = "order-header";
+
+        const headerLeft = document.createElement("div");
+        headerLeft.className = "order-header-left";
+
+        const title = document.createElement("h3");
+        title.textContent =
+            (order.teamName || "Team") +
+            " — Custom Kit #" +
+            order.customKitOrderId;
+
+        const created = document.createElement("p");
+        created.className = "order-date";
+        created.textContent = date(order.createdAt);
+
+        headerLeft.append(title,created);
+
+        const status = document.createElement("span");
+        status.className = "order-status " + statusClass(order.status);
+        status.textContent = statusLabel(order.status);
+
+        header.append(headerLeft,status);
+
+        const overview = document.createElement("div");
+        overview.className = "custom-kit-overview";
+
+        const type = document.createElement("p");
+        type.className = "custom-kit-type";
+        type.textContent = [order.sport,order.garment]
+            .filter(Boolean)
+            .join(" • ");
+
+        const keyInfo = document.createElement("div");
+        keyInfo.className = "custom-kit-key-info";
+        keyInfo.append(
+            makeStat(
+                "Quantity",
+                (order.quantity || 0) +
+                ((order.quantity || 0) === 1 ? " kit" : " kits"),
+                false
+            ),
+            makeStat(
+                "Estimated Total",
+                money(order.estimatedTotal),
+                true
+            )
+        );
+
+        overview.append(type,keyInfo);
+
+        const footer = document.createElement("div");
+        footer.className = "order-footer";
+
+        const actions = document.createElement("div");
+        actions.className = "custom-kit-actions";
+
+        const view = document.createElement("a");
+        view.href =
+            "custom-kit-order.html?id=" +
+            order.customKitOrderId;
+        view.className = "orders-button";
+        view.style.marginTop = "0";
+        view.textContent = "View Details";
+        actions.append(view);
+
+        if(order.canPay){
+            const pay = document.createElement("a");
+            pay.href =
+                "custom-kit-payment.html?id=" +
+                order.customKitOrderId;
+            pay.className = "orders-button";
+            pay.style.marginTop = "0";
+            pay.textContent = "Pay Now";
+            actions.append(pay);
+        }
+
+        if(order.canEdit){
+            const edit = document.createElement("a");
+            edit.href =
+                "custom-kit.xhtml?editId=" +
+                order.customKitOrderId;
+            edit.className = "orders-button secondary";
+            edit.style.marginTop = "0";
+            edit.textContent = "Edit Request";
+            actions.append(edit);
+        }
+
+        footer.append(actions);
+        card.append(header,overview,footer);
+        return card;
+    }
+
     async function loadCustomKits(){
-        try{const r=await fetch("/api/custom-kits",{credentials:"include"});if(r.status===401)return;const rows=await r.json();list.replaceChildren();if(Array.isArray(rows)&&rows.length){section.hidden=false;if(empty)empty.hidden=true;rows.forEach(o=>list.append(card(o)));}else{section.hidden=true;}}catch(e){console.error(e);}
+        try{
+            const response = await fetch(
+                "/api/custom-kits",
+                { credentials:"include" }
+            );
+
+            if(response.status === 401) return;
+
+            const rows = await response.json();
+            list.replaceChildren();
+
+            const total =
+                Array.isArray(rows) ? rows.length : 0;
+
+            if(count) count.textContent = total;
+
+            if(total > 0){
+                section.hidden = false;
+                if(empty) empty.hidden = true;
+                rows.forEach(order =>
+                    list.append(card(order))
+                );
+            } else {
+                section.hidden = true;
+            }
+        } catch(error){
+            console.error(error);
+        }
     }
-    window.loadCustomKits=loadCustomKits;loadCustomKits();
+
+    window.loadCustomKits = loadCustomKits;
+    loadCustomKits();
 })();
 </script>
 
