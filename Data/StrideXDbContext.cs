@@ -21,6 +21,9 @@ public class StrideXDbContext
     public DbSet<Product> Products =>
         Set<Product>();
 
+    public DbSet<ProductInventory> ProductInventories =>
+        Set<ProductInventory>();
+
     public DbSet<Cart> Carts =>
         Set<Cart>();
 
@@ -141,6 +144,30 @@ public DbSet<CustomKitPlayer> CustomKitPlayers
             )
             .HasColumnName("Description")
             .HasColumnType("text");
+        });
+
+
+        // =================================================
+        // PRODUCT INVENTORY TABLE
+        // =================================================
+
+        modelBuilder.Entity<ProductInventory>(entity =>
+        {
+            entity.ToTable("productinventory");
+
+            entity.HasKey(i => i.ProductId);
+
+            entity.Property(i => i.ProductId)
+                .HasColumnName("ProductID")
+                .HasMaxLength(120);
+
+            entity.Property(i => i.Quantity)
+                .HasColumnName("Quantity")
+                .IsRequired();
+
+            entity.Property(i => i.UpdatedAt)
+                .HasColumnName("UpdatedAt")
+                .IsRequired();
         });
 
 

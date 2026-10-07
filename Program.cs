@@ -1619,6 +1619,180 @@ app.MapPost("/api/auth/delete-account", async (
 
 
 // =====================================
+// STRIDEX — SAVED DELIVERY DETAILS
+// Reuses the customer's most recent completed address.
+// =====================================
+
+app.MapGet("/api/delivery-profile", async (
+    HttpContext httpContext,
+    UserManager<ApplicationUser> userManager,
+    StrideXDbContext db) =>
+{
+    var user =
+        await userManager.GetUserAsync(
+            httpContext.User
+        );
+
+    if (user is null)
+    {
+        return Results.Unauthorized();
+    }
+
+    var normalOrder =
+        await db.Orders
+            .AsNoTracking()
+            .Where(order =>
+                order.UserId == user.Id &&
+                order.StreetAddress != ""
+            )
+            .OrderByDescending(order => order.OrderDate)
+            .FirstOrDefaultAsync();
+
+    var customKitOrder =
+        await db.CustomKitOrders
+            .AsNoTracking()
+            .Where(order =>
+                order.UserId == user.Id &&
+                order.StreetAddress != null &&
+                order.StreetAddress != ""
+            )
+            .OrderByDescending(order => order.CreatedAt)
+            .FirstOrDefaultAsync();
+
+    if (
+        normalOrder is null &&
+        customKitOrder is null
+    )
+    {
+        return Results.Ok(new
+        {
+            fullName = user.FullName ?? "",
+            email = user.Email ?? "",
+            phoneNumber = "",
+            streetAddress = "",
+            city = "",
+            province = "",
+            postalCode = ""
+        });
+    }
+
+    if (
+        customKitOrder is not null &&
+        (
+            normalOrder is null ||
+            customKitOrder.CreatedAt >
+                normalOrder.OrderDate
+        )
+    )
+    {
+        return Results.Ok(new
+        {
+            fullName =
+                customKitOrder.CustomerName ??
+                user.FullName ??
+                "",
+            email =
+                customKitOrder.CustomerEmail ??
+                user.Email ??
+                "",
+            phoneNumber =
+                customKitOrder.PhoneNumber ?? "",
+            streetAddress =
+                customKitOrder.StreetAddress ?? "",
+            city =
+                customKitOrder.City ?? "",
+            province =
+                customKitOrder.Province ?? "",
+            postalCode =
+                customKitOrder.PostalCode ?? ""
+        });
+    }
+
+    return Results.Ok(new
+    {
+        fullName =
+            normalOrder!.CustomerName,
+        email =
+            normalOrder.CustomerEmail,
+        phoneNumber =
+            normalOrder.PhoneNumber,
+        streetAddress =
+            normalOrder.StreetAddress,
+        city =
+            normalOrder.City,
+        province =
+            normalOrder.Province,
+        postalCode =
+            normalOrder.PostalCode
+    });
+})
+.RequireAuthorization();
+
+
+// =====================================
+// STRIDEX — PRODUCT INVENTORY
+// =====================================
+
+app.MapGet("/api/inventory", async (
+    StrideXDbContext db) =>
+{
+    var inventory =
+        await db.ProductInventories
+            .AsNoTracking()
+            .OrderBy(item => item.ProductId)
+            .Select(item => new
+            {
+                productId = item.ProductId,
+                quantity = item.Quantity,
+                status =
+                    item.Quantity <= 0
+                        ? "Out of Stock"
+                        : item.Quantity <= 5
+                            ? "Low Stock"
+                            : "In Stock"
+            })
+            .ToListAsync();
+
+    return Results.Ok(inventory);
+});
+
+app.MapGet("/api/inventory/{productId}", async (
+    string productId,
+    StrideXDbContext db) =>
+{
+    var item =
+        await db.ProductInventories
+            .AsNoTracking()
+            .SingleOrDefaultAsync(
+                inventory =>
+                    inventory.ProductId ==
+                    productId
+            );
+
+    if (item is null)
+    {
+        return Results.NotFound(new
+        {
+            message =
+                "Inventory was not found for this product."
+        });
+    }
+
+    return Results.Ok(new
+    {
+        productId = item.ProductId,
+        quantity = item.Quantity,
+        status =
+            item.Quantity <= 0
+                ? "Out of Stock"
+                : item.Quantity <= 5
+                    ? "Low Stock"
+                    : "In Stock"
+    });
+});
+
+
+// =====================================
 
 // STRIDEX — ADD TO CART
 
@@ -1728,6 +1902,28 @@ app.MapPost("/api/cart/items", async (
 
 
 
+    var inventory =
+        await db.ProductInventories
+            .SingleOrDefaultAsync(
+                item =>
+                    item.ProductId ==
+                    request.ProductId
+            );
+
+    if (
+        inventory is null ||
+        inventory.Quantity <= 0
+    )
+    {
+        return Results.BadRequest(new
+        {
+            message =
+                "This product is currently out of stock."
+        });
+    }
+
+
+
     // Use the logged-in customer's Identity ID
 
     // as their cart token.
@@ -1762,6 +1958,31 @@ app.MapPost("/api/cart/items", async (
 
         db.Carts.Add(cart);
 
+    }
+
+
+
+    var quantityAlreadyInCart =
+        cart.Items
+            .Where(item =>
+                item.ProductId ==
+                request.ProductId
+            )
+            .Sum(item => item.Quantity);
+
+    if (
+        quantityAlreadyInCart +
+            request.Quantity >
+        inventory.Quantity
+    )
+    {
+        return Results.BadRequest(new
+        {
+            message =
+                inventory.Quantity <= 5
+                    ? $"Only {inventory.Quantity} left in stock."
+                    : "The requested quantity is not available."
+        });
     }
 
 
@@ -1930,15 +2151,77 @@ app.MapGet("/api/cart", async (
 
 
 
+    var productIds =
+        items
+            .Select(item => item.productId)
+            .Distinct()
+            .ToList();
+
+    var stockByProduct =
+        await db.ProductInventories
+            .AsNoTracking()
+            .Where(item =>
+                productIds.Contains(
+                    item.ProductId
+                )
+            )
+            .ToDictionaryAsync(
+                item => item.ProductId,
+                item => item.Quantity
+            );
+
+    var responseItems =
+        items.Select(item =>
+        {
+            var stockQuantity =
+                stockByProduct.TryGetValue(
+                    item.productId,
+                    out var quantity
+                )
+                    ? quantity
+                    : 0;
+
+            return new
+            {
+                item.cartItemId,
+                item.productId,
+                item.name,
+                item.image,
+                item.size,
+                item.quantity,
+                item.price,
+                item.lineTotal,
+                stockQuantity,
+                stockStatus =
+                    stockQuantity <= 0
+                        ? "Out of Stock"
+                        : stockQuantity <= 5
+                            ? "Low Stock"
+                            : "In Stock",
+                hasEnoughStock =
+                    stockQuantity >=
+                    item.quantity
+            };
+        })
+        .ToList();
+
+
+
     return Results.Ok(new
 
     {
 
-        items,
+        items = responseItems,
 
-        itemCount = items.Sum(item => item.quantity),
+        itemCount =
+            responseItems.Sum(
+                item => item.quantity
+            ),
 
-        total = items.Sum(item => item.lineTotal)
+        total =
+            responseItems.Sum(
+                item => item.lineTotal
+            )
 
     });
 
@@ -2028,6 +2311,47 @@ app.MapPut("/api/cart/items/{cartItemId:int}", async (
 
         });
 
+    }
+
+
+    var inventory =
+        await db.ProductInventories
+            .AsNoTracking()
+            .SingleOrDefaultAsync(
+                stock =>
+                    stock.ProductId ==
+                    item.ProductId
+            );
+
+    var otherQuantity =
+        await db.CartItems
+            .Where(other =>
+                other.CartId ==
+                    item.CartId &&
+                other.ProductId ==
+                    item.ProductId &&
+                other.CartItemId !=
+                    item.CartItemId
+            )
+            .SumAsync(other =>
+                (int?)other.Quantity
+            ) ?? 0;
+
+    if (
+        inventory is null ||
+        otherQuantity +
+            request.Quantity >
+        inventory.Quantity
+    )
+    {
+        return Results.BadRequest(new
+        {
+            message =
+                inventory is null ||
+                inventory.Quantity <= 0
+                    ? "This product is currently out of stock."
+                    : $"Only {inventory.Quantity} available in stock."
+        });
     }
 
 
@@ -2560,6 +2884,54 @@ app.MapPost("/api/orders/checkout", async (
 
 
     // =====================================
+    // VALIDATE CURRENT INVENTORY
+    // =====================================
+
+    var requiredByProduct =
+        cart.Items
+            .GroupBy(item => item.ProductId)
+            .ToDictionary(
+                group => group.Key,
+                group => group.Sum(
+                    item => item.Quantity
+                )
+            );
+
+    var inventoryByProduct =
+        await db.ProductInventories
+            .Where(item =>
+                productIds.Contains(
+                    item.ProductId
+                )
+            )
+            .ToDictionaryAsync(
+                item => item.ProductId
+            );
+
+    foreach (
+        var required in requiredByProduct
+    )
+    {
+        if (
+            !inventoryByProduct.TryGetValue(
+                required.Key,
+                out var inventory
+            ) ||
+            inventory.Quantity <
+                required.Value
+        )
+        {
+            return Results.BadRequest(new
+            {
+                message =
+                    "One or more products no longer have enough stock. Please review your cart."
+            });
+        }
+    }
+
+
+
+    // =====================================
 
     // CREATE ORDER
 
@@ -2756,6 +3128,18 @@ app.MapPost("/api/orders/checkout", async (
                 }
 
             );
+
+
+            var inventory =
+                inventoryByProduct[
+                    cartItem.ProductId
+                ];
+
+            inventory.Quantity -=
+                cartItem.Quantity;
+
+            inventory.UpdatedAt =
+                DateTime.UtcNow;
 
         }
 

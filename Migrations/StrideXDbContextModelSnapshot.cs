@@ -470,6 +470,26 @@ namespace StrideX.Api.Migrations
                     b.ToTable("customkitplayers", (string)null);
                 });
 
+            modelBuilder.Entity("StrideX.Api.Models.ProductInventory", b =>
+                {
+                    b.Property<string>("ProductId")
+                        .HasMaxLength(120)
+                        .HasColumnType("varchar(120)")
+                        .HasColumnName("ProductID");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int")
+                        .HasColumnName("Quantity");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("UpdatedAt");
+
+                    b.HasKey("ProductId");
+
+                    b.ToTable("productinventory", (string)null);
+                });
+
             modelBuilder.Entity("StrideX.Api.Models.Order", b =>
                 {
                     b.Property<int>("OrderId")
