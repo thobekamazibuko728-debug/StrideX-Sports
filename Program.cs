@@ -44,7 +44,9 @@ builder.Services.AddCors(options =>
 
                 "http://127.0.0.1:5500",
 
-                "http://localhost:5500"
+                "http://localhost:5500",
+
+                "https://thobekamazibuko728-debug.github.io"
 
             )
 
@@ -180,7 +182,10 @@ builder.Services.ConfigureApplicationCookie(options =>
 
     options.Cookie.HttpOnly = true;
 
-    options.Cookie.SameSite = SameSiteMode.Lax;
+    options.Cookie.SameSite =
+        builder.Environment.IsDevelopment()
+            ? SameSiteMode.Lax
+            : SameSiteMode.None;
 
 
 
