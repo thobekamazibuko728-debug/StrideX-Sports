@@ -39,6 +39,20 @@ jobs:
           while IFS= read -r -d '' file; do
             mv "$file" "${file%.xhtml}.html"
           done < <(find _site -type f -name '*.xhtml' -print0)
+          python3 - <<'PY'
+          from pathlib import Path
+
+          script = '<script src="js/github-pages-api.js"></script>'
+
+          for page in Path("_site").glob("*.html"):
+              text = page.read_text(encoding="utf-8")
+              if script not in text:
+                  if "</head>" in text:
+                      text = text.replace("</head>", f"    {script}\n</head>", 1)
+                  else:
+                      text = script + "\n" + text
+                  page.write_text(text, encoding="utf-8")
+          PY
           touch _site/.nojekyll
 
       - name: Upload site
