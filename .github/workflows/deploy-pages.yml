@@ -28,13 +28,23 @@ jobs:
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
-        with:
-          enablement: true
 
-      - name: Upload wwwroot
+      - name: Prepare static GitHub Pages copy
+        shell: bash
+        run: |
+          rm -rf _site
+          mkdir _site
+          cp -R wwwroot/. _site/
+          find _site -type f \( -name '*.html' -o -name '*.xhtml' -o -name '*.js' -o -name '*.css' \) -print0 | xargs -0 sed -i 's/\.xhtml/\.html/g'
+          while IFS= read -r -d '' file; do
+            mv "$file" "${file%.xhtml}.html"
+          done < <(find _site -type f -name '*.xhtml' -print0)
+          touch _site/.nojekyll
+
+      - name: Upload site
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./wwwroot
+          path: ./_site
 
       - name: Deploy to GitHub Pages
         id: deployment
